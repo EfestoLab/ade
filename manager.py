@@ -65,7 +65,6 @@ class StructureManager(object):
 
 		# Remove the reference indicator from the folder *name*
 		clean_name = name.replace(self.__reference_indicator, '')
-
 		# Build the first level of the schema
 		entry = {clean_name: {}}
 
@@ -80,7 +79,6 @@ class StructureManager(object):
 	def _build_schema(self, schema, output):
 		'''Recursively build the given *schema* schema into *output*.'''
 		for item_name, item_value in schema.items():
-
 			# If the item is a reference to another path fragment,
 			# Resolve it
 			if item_name.startswith(self.__reference_indicator,):
@@ -126,14 +124,17 @@ class StructureManager(object):
 
 			# Collect the content
 			folders = os.listdir(root)
-			for folder in folders:
-
+			for entry in folders:
+				# INFO : Here is where folders and files are found...
+				if entry.startswith('.'):
+					# Skip any hidden file
+					continue
 				# Add the current folder
-				mapped.setdefault(folder, {})
+				mapped.setdefault(entry, {})
 
 				# Continue searching in folder
-				subfolder = os.path.join(root, folder)
-				self._parse_templates(subfolder, mapped[folder])
+				subfolder = os.path.join(root, entry)
+				self._parse_templates(subfolder, mapped[entry])
 
 if __name__ == '__main__':
 	'''Function entry point'''
