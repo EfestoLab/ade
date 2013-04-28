@@ -123,8 +123,8 @@ class StructureManager(object):
 		if os.path.isdir(root):
 
 			# Collect the content
-			folders = os.listdir(root)
-			for entry in folders:
+			entries = os.listdir(root)
+			for entry in entries:
 				# INFO : Here is where folders and files are found...
 				if entry.startswith('.'):
 					# Skip any hidden file
