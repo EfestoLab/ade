@@ -29,16 +29,16 @@ class StructureManager(object):
 		''' Return the content of the class register.'''
 		return self._register
 
-	def resolve_schema(self, schema):
+	def resolve(self, schema):
 		'''resolve the given schema name and return all the folders.'''
 		paths = []
-		self._resolve_schema(
+		self._resolve(
 			schema,
 			paths
 		)
 		return paths
 
-	def _resolve_schema(self, schema, final_path_list, path=None):
+	def _resolve(self, schema, final_path_list, path=None):
 		'''Recursively build the final_path_list from schema.'''
 		path = path or []
 		for schema_name, schema_fragment in schema.items():
@@ -47,8 +47,12 @@ class StructureManager(object):
 
 			# If the fragment exists and it's a compatible type, resolve it,
 			# otherwise, add the path to the final path list (we reached a leaf)
+			if not schema_fragment:
+				'this is a leaf'
+				#print schema_name
+
 			if schema_fragment and isinstance(schema_fragment, dict):
-				self._resolve_schema(schema_fragment, final_path_list, path)
+				self._resolve(schema_fragment, final_path_list, path)
 			else:
 				current_path = path[:]
 				final_path_list.append(current_path)
@@ -56,7 +60,7 @@ class StructureManager(object):
 			# Remove the previously visited path entry
 			path.pop()
 
-	def build_schema(self, name):
+	def resolve_schema(self, name):
 		'''Return the built schema path of the given variable *name*.'''
 		# Check if the given schema *name* exists
 		root = self.register.get(name)
@@ -69,15 +73,18 @@ class StructureManager(object):
 		entry = {clean_name: {}}
 
 		# Start the recursive build of the *root* folder, using *entry*
-		self._build_schema(
+		self._resolve_schema(
 			root,
 			entry[clean_name]
 		)
 
 		return entry
 
-	def _build_schema(self, schema, output):
+	def _resolve_schema(self, schema, output):
 		'''Recursively build the given *schema* schema into *output*.'''
+		if not schema:
+			return
+
 		for item_name, item_value in schema.items():
 			# If the item is a reference to another path fragment,
 			# Resolve it
@@ -88,7 +95,7 @@ class StructureManager(object):
 
 				# Build the given fragment into data
 				data = {}
-				self._build_schema(fragment_path, data)
+				self._resolve_schema(fragment_path, data)
 
 				# Insert the resolved path fragment instead of the variable
 				output.setdefault(
@@ -96,13 +103,18 @@ class StructureManager(object):
 					data
 				)
 			else:
+				# Mark with None any file level, and with a dict any folder
+				default = None
+				if isinstance(item_value, dict):
+					default = {}
+
 				# Insert the path fragment name and continue the build
-				output.setdefault(item_name, {})
-				self._build_schema(item_value, output[item_name])
+				output.setdefault(item_name, default)
+				self._resolve_schema(item_value, output[item_name])
 
 	def parse_templates(self):
 		'''Parse template path and fill up the register table.'''
-		# resolve_schema the and list the content of the template path
+		# resolve the and list the content of the template path
 		template_path = os.path.realpath(self._template_folder)
 		templates = os.listdir(template_path)
 
@@ -129,18 +141,23 @@ class StructureManager(object):
 				if entry.startswith('.'):
 					# Skip any hidden file
 					continue
-				# Add the current folder
-				mapped.setdefault(entry, {})
 
-				# Continue searching in folder
-				subfolder = os.path.join(root, entry)
-				self._parse_templates(subfolder, mapped[entry])
+				# Check whether a file or a folder
+				subentry = os.path.join(root, entry)
+				if os.path.isdir(subentry):
+					# Add the current entry
+					mapped.setdefault(entry, {})
+					# Continue searching in folder
+					self._parse_templates(subentry, mapped[entry])
+				else:
+					mapped.setdefault(entry, None)
+
 
 if __name__ == '__main__':
 	'''Function entry point'''
 	M = StructureManager('./templates')
 	#print 'register: ', pformat(M.register)
-	built = M.build_schema('@+shot+@')
-	#print 'built: ', pformat(built)
-	result = M.resolve_schema(built)
+	built = M.resolve_schema('@+shot+@')
+	print 'built: ', pformat(built)
+	result = M.resolve(built)
 	print 'Result', pformat(result)
