@@ -29,12 +29,18 @@ class StructureManager(object):
 
 	def resolve(self, schema):
 		'''resolve the given schema name and return all the folders'''
+
 		paths = []
 		self._resolve(
 			schema,
 			paths
 		)
-		return paths
+
+		rpath = []
+		for path in paths:
+			cpath = '/'.join(path)
+			rpath.append(cpath)
+		return rpath
 
 	def build(self, name):
 		'''Return the buildd path of the given variable *name*'''
@@ -55,6 +61,8 @@ class StructureManager(object):
 		''' Build the final paths from fragment '''
 		path = path or []
 		for name, item in fragment.items():
+			if '+' in name:
+				name = '{' + name.split('+')[1] + '}'
 			path.append(name)
 
 			if item and isinstance(item, dict):
@@ -63,8 +71,7 @@ class StructureManager(object):
 				cpath = path[:]
 				paths.append(cpath)
 
-			removed = path.pop()
-			fragment.pop(removed, None)
+			path.pop()
 
 	def _build(self, input, output):
 		'''Recursively build the given *input* path into *output*'''
@@ -115,18 +122,7 @@ class StructureManager(object):
 if __name__ == '__main__':
 	'''Function entrypoint'''
 	M = StructureManager('./templates')
-
-	show_result = M.build('@+show+@')
-	#print 'fragment: ', pformat(show_result)
+	show_result = M.build('@+shot+@')
+	print 'fragment: ', pformat(show_result)
 	result = M.resolve(show_result)
 	print 'Result', pformat(result)
-
-	# seq_result = M.build('@+sequence+@')
-	# shot_result = M.build('@+shot+@')
-	# nuke_result = M.build('@nuke@')
-	# sandbox_result = M.build('@sandbox@')
-	#print 'Schema', pformat(show_result)
-	# #print pformat(shot_result)
-	# print pformat(seq_result)
-	# #print pformat(nuke_result)
-	# print pformat(sandbox_result)
