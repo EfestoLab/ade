@@ -24,6 +24,37 @@ class StructureManager(object):
 		self._template_folder = template_folder
 		self.parse_templates()
 
+	def to_parser(self, paths):
+		result_paths = []
+		for path in paths:
+			result_path = []
+			variable = None
+			for entry in path:
+				if '+' in entry:
+					variable = entry.split('+')[1]
+					variable = '(?P<{0}>[a-zA-Z0-9_]+)'.format(variable)
+				else:
+					variable = entry
+
+				result_path.append(variable)
+			result_paths.append(result_path)
+		return result_paths
+
+	def to_path(self, paths, data):
+		result_paths = []
+		for path in paths:
+			result_path = []
+			variable = None
+			for entry in path:
+				if '+' in entry:
+					entry = entry.split('+')[1]
+					entry = '{%s}' % entry
+					entry = entry.format(**data)
+
+				result_path.append(entry)
+			result_paths.append(result_path)
+		return result_paths
+
 	@property
 	def register(self):
 		''' Return the content of the class register.'''
@@ -146,15 +177,5 @@ class StructureManager(object):
 					mapped.setdefault(entry, {})
 					# Continue searching in folder
 					self._parse_templates(subentry, mapped[entry])
-				# else:
+				#else:
 				# 	mapped.setdefault(entry, None)
-
-if __name__ == '__main__':
-	'''Function entry point'''
-	M = StructureManager('./templates')
-	#print 'register: ', pformat(M.register)
-	built = M.resolve_schema('@+sequence+@')
-	#print 'built: ', pformat(built)
-	results = M.resolve(built)
-	for result in results:
-		print '/'.join(result)
