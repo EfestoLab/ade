@@ -1,7 +1,11 @@
+import sys
+import argparse
 from manager import StructureManager
 
 
 if __name__ == '__main__':
+	parser = argparse.ArgumentParser()
+	parser.add_argument
 	'''Function entry point'''
 	M = StructureManager('./templates')
 	#print 'register: ', pformat(M.register)
@@ -15,13 +19,14 @@ if __name__ == '__main__':
 		print '/'.join(result)
 
 	context = {
-		'show': 'smurf',
-		'department': 'dev',
-		'sequence': 'AA',
-		'shot': 'AA001',
-		'user': 'hdd',
+		'show': 'white',
+		'department': 'pipeline',
+		'sequence': 'staging',
+		'shot': 'src',
+		'user': 'ennio',
 		'python_version': '2.6.4'
 	}
+
 	pareser_results = M.to_path(results, context)
 	print 'PATHs:'
 	for result in pareser_results:
