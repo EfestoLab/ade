@@ -36,6 +36,7 @@ class StructureManager(object):
 			schema,
 			paths
 		)
+		paths.reverse()
 		return paths
 
 	def _resolve(self, schema, final_path_list, path=None):
@@ -44,18 +45,14 @@ class StructureManager(object):
 		for schema_name, schema_fragment in schema.items():
 			# Add schema_name to path
 			path.append(schema_name)
+			current_path = path[:]
 
 			# If the fragment exists and it's a compatible type, resolve it,
 			# otherwise, add the path to the final path list (we reached a leaf)
-			if not schema_fragment:
-				'this is a leaf'
-				#print schema_name
-
 			if schema_fragment and isinstance(schema_fragment, dict):
 				self._resolve(schema_fragment, final_path_list, path)
-			else:
-				current_path = path[:]
-				final_path_list.append(current_path)
+
+			final_path_list.append(current_path)
 
 			# Remove the previously visited path entry
 			path.pop()
@@ -149,15 +146,15 @@ class StructureManager(object):
 					mapped.setdefault(entry, {})
 					# Continue searching in folder
 					self._parse_templates(subentry, mapped[entry])
-				else:
-					mapped.setdefault(entry, None)
-
+				# else:
+				# 	mapped.setdefault(entry, None)
 
 if __name__ == '__main__':
 	'''Function entry point'''
 	M = StructureManager('./templates')
 	#print 'register: ', pformat(M.register)
-	built = M.resolve_schema('@+shot+@')
-	print 'built: ', pformat(built)
-	result = M.resolve(built)
-	print 'Result', pformat(result)
+	built = M.resolve_schema('@+sequence+@')
+	#print 'built: ', pformat(built)
+	results = M.resolve(built)
+	for result in results:
+		print '/'.join(result)
