@@ -18,6 +18,8 @@ class StructureManager(object):
 	'''
 	def __init__(self, template_folder):
 		''' Initialization function.'''
+		self.__path_regex = '(?P<{0}>[a-zA-Z0-9_]+)'
+
 		self.__reference_indicator = '@'
 		self.__variable_indicator = '+'
 		self._register = {}
@@ -28,31 +30,29 @@ class StructureManager(object):
 		result_paths = []
 		for path in paths:
 			result_path = []
-			variable = None
 			for entry in path:
 				if '+' in entry:
-					variable = entry.split('+')[1]
-					variable = '(?P<{0}>[a-zA-Z0-9_]+)'.format(variable)
-				else:
-					variable = entry
+					entry = entry.split('+')[1]
+					entry = self.__path_regex.format(entry)
 
-				result_path.append(variable)
+				result_path.append(entry)
 			result_paths.append(result_path)
 		return result_paths
 
-	def to_path(self, paths, data):
+	def to_path(self, paths, data, limit=100):
 		result_paths = []
 		for path in paths:
 			result_path = []
-			variable = None
-			for entry in path:
+			for entry in path[:limit]:
 				if '+' in entry:
 					entry = entry.split('+')[1]
 					entry = '{%s}' % entry
 					entry = entry.format(**data)
-
 				result_path.append(entry)
-			result_paths.append(result_path)
+
+			if result_path not in result_paths:
+				result_paths.append(result_path)
+
 		return result_paths
 
 	@property
