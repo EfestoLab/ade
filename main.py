@@ -1,21 +1,20 @@
 import re
-import argparse
+from pprint import pformat
+
 from manager import StructureManager
 
 
 if __name__ == '__main__':
-	parser = argparse.ArgumentParser()
-	parser.add_argument
 	'''Function entry point'''
 
 	M = StructureManager('./templates')
 	schema = '@+show+@'
 
-	pareser_results = M.to_parser(schema)
 	print 'PARSERs:'
-	for result in pareser_results:
-		print '/'.join(result)
+	pareser_results = M.to_parser(schema)
+	print pformat(pareser_results)
 
+	print 'PATHs:'
 	context = {
 		'show': 'white',
 		'department': 'pipeline',
@@ -26,18 +25,13 @@ if __name__ == '__main__':
 	}
 
 	path_results = M.to_path(schema, context)
-	print 'PATHs:'
-	for result in path_results:
-		print '/'.join(result)
+	print pformat(path_results)
 
 	print 'TEST:'
 	for result in pareser_results:
-		regex = '/'.join(result)
-		check = re.compile(regex)
-		match = check.match('/'.join(path_results[4]))
-
+		check = re.compile(result)
+		match = check.match(path_results[16])
 		if not match:
 			continue
 
 		print match.groupdict()
-
