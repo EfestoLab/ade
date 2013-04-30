@@ -1,5 +1,5 @@
 '''
-Structure manager 
+Structure manager
 
 Provide a convenient class to construct virtual file path mapping
 from a folder containing fragments.
@@ -7,7 +7,13 @@ from a folder containing fragments.
 '''
 
 import os
-from pprint import pformat
+
+
+regexp_config = {
+	'show': '(?P<show>[a-zA-Z0-9_]+)',
+	'sequence': '(?P<show>[a-zA-Z0-9_]+)',
+	'shot': '(?P<show>[a-zA-Z0-9_]+)'
+}
 
 
 class StructureManager(object):
@@ -26,15 +32,28 @@ class StructureManager(object):
 		self._template_folder = template_folder
 		self.parse_templates()
 
+	@property
+	def register(self):
+		''' Return the content of the class register.'''
+		return self._register
+
 	def to_parser(self, name):
 		built = self.resolve_schema(name)
 		results = self.resolve(built)
-		return self._to_parser(results)
+		parsers = self._to_parser(results)
+		paths = []
+		for result in parsers:
+			paths.append('/'.join(result))
+		return paths
 
 	def to_path(self, name, data, limit=100):
 		built = self.resolve_schema(name)
 		results = self.resolve(built)
-		return self._to_path(results, data, limit)
+		paths = self._to_path(results, data, limit)
+		paths_result = []
+		for result in paths:
+			paths_result.append('/'.join(result))
+		return paths_result
 
 	def _to_parser(self, paths):
 		result_paths = []
@@ -64,11 +83,6 @@ class StructureManager(object):
 				result_paths.append(result_path)
 
 		return result_paths
-
-	@property
-	def register(self):
-		''' Return the content of the class register.'''
-		return self._register
 
 	def resolve(self, schema):
 		'''resolve the given schema name and return all the folders.'''
@@ -150,10 +164,11 @@ class StructureManager(object):
 				output.setdefault(item_name, default)
 				self._resolve_schema(item_value, output[item_name])
 
-	def parse_templates(self):
+	def parse_templates(self, template_folder=None):
+		template_folder = template_folder or self._template_folder
 		'''Parse template path and fill up the register table.'''
 		# resolve the and list the content of the template path
-		template_path = os.path.realpath(self._template_folder)
+		template_path = os.path.realpath(template_folder)
 		templates = os.listdir(template_path)
 
 		# For each template root, recursively walk the content,
