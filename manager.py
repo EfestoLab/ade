@@ -5,8 +5,8 @@ Provide a convenient class to construct virtual file path mapping
 from a folder containing fragments.
 
 '''
-
 import os
+import re
 
 
 regexp_config = {
@@ -22,20 +22,39 @@ class StructureManager(object):
 	from disk fragments.
 
 	'''
-	def __init__(self, template_folder):
+	def __init__(self, template_folder=None):
 		''' Initialization function.'''
+		if not template_folder:
+			print 'Using default ./templates folder'
 		self.__path_regex = '(?P<{0}>[a-zA-Z0-9_]+)'
 
 		self.__reference_indicator = '@'
 		self.__variable_indicator = '+'
 		self._register = {}
-		self._template_folder = template_folder
+		self._template_folder = template_folder or './templates'
 		self.parse_templates()
 
 	@property
 	def register(self):
 		''' Return the content of the class register.'''
 		return self._register
+
+	def parse(self, path, name):
+		parsers = self.to_parser(name)
+		results = []
+
+		for parser in parsers:
+			check = re.compile(parser)
+			match = check.match(path)
+			if not match:
+				continue
+			result = match.groupdict()
+			if result and result not in results:
+				results.append(result)
+
+		results.sort()
+		results.reverse()
+		return results
 
 	def to_parser(self, name):
 		built = self.resolve_schema(name)
@@ -165,8 +184,8 @@ class StructureManager(object):
 				self._resolve_schema(item_value, output[item_name])
 
 	def parse_templates(self, template_folder=None):
-		template_folder = template_folder or self._template_folder
 		'''Parse template path and fill up the register table.'''
+		template_folder = template_folder or self._template_folder
 		# resolve the and list the content of the template path
 		template_path = os.path.realpath(template_folder)
 		templates = os.listdir(template_path)
