@@ -1,13 +1,11 @@
-import re
 from pprint import pformat
-
 from manager import StructureManager
 
 
 if __name__ == '__main__':
 	'''Function entry point'''
 
-	M = StructureManager('./templates')
+	M = StructureManager()
 	schema = '@+show+@'
 
 	print 'PARSERs:'
@@ -27,11 +25,9 @@ if __name__ == '__main__':
 	path_results = M.to_path(schema, context)
 	print pformat(path_results)
 
-	print 'TEST:'
-	for result in pareser_results:
-		check = re.compile(result)
-		match = check.match(path_results[16])
-		if not match:
-			continue
+	path = path_results[12]
+	print 'TEST PARSE:', path
 
-		print match.groupdict()
+	results = M.parse(path, schema)
+	print pformat(results[0])
+	#print pformat(results)
