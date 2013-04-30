@@ -26,7 +26,17 @@ class StructureManager(object):
 		self._template_folder = template_folder
 		self.parse_templates()
 
-	def to_parser(self, paths):
+	def to_parser(self, name):
+		built = self.resolve_schema(name)
+		results = self.resolve(built)
+		return self._to_parser(results)
+
+	def to_path(self, name, data, limit=100):
+		built = self.resolve_schema(name)
+		results = self.resolve(built)
+		return self._to_path(results, data, limit)
+
+	def _to_parser(self, paths):
 		result_paths = []
 		for path in paths:
 			result_path = []
@@ -39,7 +49,7 @@ class StructureManager(object):
 			result_paths.append(result_path)
 		return result_paths
 
-	def to_path(self, paths, data, limit=100):
+	def _to_path(self, paths, data, limit=100):
 		result_paths = []
 		for path in paths:
 			result_path = []
