@@ -5,7 +5,7 @@ Provide a convenient class to construct virtual file path mapping
 from a folder containing fragments.
 
 '''
-import os
+import os, stat
 import re
 
 # DEFAULT REGEX FOR COMMON FOLDER TYPES
@@ -31,7 +31,7 @@ class StructureManager(object):
 
 		self.__reference_indicator = '@'
 		self.__variable_indicator = '+'
-		self._register = {}
+		self._register = []
 		self._template_folder = template_folder or './templates'
 		self.parse_templates()
 
@@ -195,10 +195,13 @@ class StructureManager(object):
 		# For each template root, recursively walk the content,
 		# and register the hierarcy path in form of dictionary
 		for template in templates:
-			current_template_map = {}
+			current_template_map = {'name': template, 'children': []}
 			current_template_path = os.path.join(template_path, template)
-			self._parse_templates(current_template_path, current_template_map)
-			self._register.setdefault(template, current_template_map)
+			self._parse_templates(
+				current_template_path,
+				current_template_map['children']
+			)
+			self._register.append(current_template_map)
 
 	def _parse_templates(self, root, mapped):
 		''' Recursively fill up the given *mapped* object with the
@@ -218,10 +221,23 @@ class StructureManager(object):
 
 				# Check whether a file or a folder
 				subentry = os.path.join(root, entry)
+
+				# Convert to a common format the file/folder permissions
+				permission = oct(stat.S_IMODE(os.stat(subentry).st_mode))
+
 				if os.path.isdir(subentry):
 					# Add the current entry
-					mapped.setdefault(entry, {})
+					item = {
+						'name': entry,
+						'children': [],
+						'permission': permission
+					}
+					mapped.append(item)
 					# Continue searching in folder
-					self._parse_templates(subentry, mapped[entry])
-				#else:
-				# 	mapped.setdefault(entry, None)
+					self._parse_templates(subentry, item['children'])
+				else:
+					item = {
+						'name': entry,
+						'permission': permission
+					}
+					mapped.append(item)
