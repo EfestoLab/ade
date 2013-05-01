@@ -8,11 +8,12 @@ from a folder containing fragments.
 import os
 import re
 
-
+# DEFAULT REGEX FOR COMMON FOLDER TYPES
 regexp_config = {
 	'show': '(?P<show>[a-zA-Z0-9_]+)',
-	'sequence': '(?P<show>[a-zA-Z0-9_]+)',
-	'shot': '(?P<show>[a-zA-Z0-9_]+)'
+	'sequence': '(?P<sequence>[a-zA-Z0-9_]+)',
+	'shot': '(?P<shot>[a-zA-Z0-9_]+)',
+	'department': '(?P<department>[a-zA-Z0-9_]+)'
 }
 
 
@@ -26,7 +27,7 @@ class StructureManager(object):
 		''' Initialization function.'''
 		if not template_folder:
 			print 'Using default ./templates folder'
-		self.__path_regex = '(?P<{0}>[a-zA-Z0-9_]+)'
+		self.__default_path_regex = '(?P<{0}>[a-zA-Z0-9_]+)'
 
 		self.__reference_indicator = '@'
 		self.__variable_indicator = '+'
@@ -81,8 +82,8 @@ class StructureManager(object):
 			for entry in path:
 				if '+' in entry:
 					entry = entry.split('+')[1]
-					entry = self.__path_regex.format(entry)
-
+					parser = regexp_config.get(entry, self.__default_path_regex)
+					entry = parser.format(entry)
 				result_path.append(entry)
 			result_paths.append(result_path)
 		return result_paths
@@ -96,6 +97,7 @@ class StructureManager(object):
 					entry = entry.split('+')[1]
 					entry = '{%s}' % entry
 					entry = entry.format(**data)
+
 				result_path.append(entry)
 
 			if result_path not in result_paths:
