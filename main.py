@@ -7,6 +7,8 @@ if __name__ == '__main__':
 
 	M = StructureManager()
 	schema = '@+show+@'
+	print pformat(M._register)
+	exit()
 
 	print 'PARSERs:'
 	pareser_results = M.to_parser(schema)
