@@ -16,8 +16,8 @@ if __name__ == '__main__':
 	context = {
 		'show': 'white',
 		'department': 'pipeline',
-		'sequence': 'staging',
-		'shot': 'src',
+		'sequence': 'AA',
+		'shot': 'AA000',
 		'user': 'ennio',
 		'python_version': '2.6.4'
 	}
