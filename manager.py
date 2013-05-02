@@ -119,39 +119,23 @@ class StructureManager(object):
 
 	def _resolve(self, schema, final_path_list, path=None):
 		'''Recursively build the final_path_list from schema.'''
-		path = path or []
-		for schema_name, schema_fragment in schema.items():
-			# Add schema_name to path
-			path.append(schema_name)
+		path = path or [schema.get('name').replace('@', '')]
+		for index, entry in enumerate(schema.get('children', [])):
+			name = entry.get('name')
+			name = name.replace('@', '')
+			path.append(name)
 			current_path = path[:]
-
-			# If the fragment exists and it's a compatible type, resolve it,
-			# otherwise, add the path to the final path list (we reached a leaf)
-			if schema_fragment and isinstance(schema_fragment, dict):
-				self._resolve(schema_fragment, final_path_list, path)
-
+			self._resolve(entry, final_path_list, path)
 			final_path_list.append(current_path)
-
-			# Remove the previously visited path entry
 			path.pop()
 
 	def resolve_schema(self, name):
 		'''Return the built schema fragment of the given variable *name*.'''
 		# Check if the given schema *name* exists
-		root = None
-
-		for item in self.register:
-			if item.get('name', '') == name:
-				root = item
-
-		#root = self.register.get(name)
-		if not root:
-			raise KeyError('{0} not found in register.'.format(name))
-
+		root = self._get_in_register(name)
 		# Remove the reference indicator from the folder *name*
 		# Build the first level of the schema
 		root = copy.deepcopy(root)
-		root['name']  = root['name'].replace(self.__reference_indicator, '')
 
 		# Start the recursive build of the *root* folder, using *entry*
 		self._resolve_schema(
@@ -171,6 +155,11 @@ class StructureManager(object):
 		'''Recursively build the given *schema* schema into *output*.'''
 		for index, entry in enumerate(schema.get('children', [])):
 			item = entry.get('name')
+
+			# Check whether is a reference or a simple name
+			# If it's a reference, search for it, 
+			# and replace the current entry with it
+			# then pass restart searching for matches
 			if item.startswith(self.__reference_indicator):
 				fragment = self._get_in_register(item)
 				schema['children'].pop(index)
@@ -206,28 +195,26 @@ class StructureManager(object):
 			# Collect the content
 			entries = os.listdir(root)
 			for entry in entries:
-				# INFO : Here is where folders and files are found...
-				if entry.startswith('.'):
-					# Skip any hidden file
+				if entry.startswith('.git'):
 					continue
 
-				# Check whether a file or a folder
 				subentry = os.path.join(root, entry)
 
 				# Convert to a common format the file/folder permissions
 				permission = oct(stat.S_IMODE(os.stat(subentry).st_mode))
-
 				if os.path.isdir(subentry):
 					# Add the current entry
 					item = {
 						'name': entry,
 						'children': [],
-						'permission': permission
+						'permission': permission,
 					}
 					mapped.append(item)
+
 					# Continue searching in folder
 					self._parse_templates(subentry, item['children'])
 				else:
+					# We got a file.
 					item = {
 						'name': entry,
 						'permission': permission
