@@ -5,8 +5,8 @@ Provide a convenient class to construct virtual file path mapping
 from a folder containing fragments.
 
 '''
-import os, stat
-from pprint import pformat
+import os
+import stat
 import re
 import copy
 
@@ -81,6 +81,7 @@ class StructureManager(object):
 		result_paths = []
 		for path in paths:
 			result_path = []
+			path = path['path']
 			for entry in path:
 				if '+' in entry:
 					entry = entry.split('+')[1]
@@ -94,6 +95,7 @@ class StructureManager(object):
 		result_paths = []
 		for path in paths:
 			result_path = []
+			path = path['path']
 			for entry in path[:limit]:
 				if '+' in entry:
 					entry = entry.split('+')[1]
@@ -126,7 +128,13 @@ class StructureManager(object):
 			path.append(name)
 			current_path = path[:]
 			self._resolve(entry, final_path_list, path)
-			final_path_list.append(current_path)
+
+			final_path_list.append(
+				{
+				'path': current_path,
+				'permissions': entry.get('permission')
+				}
+			)
 			path.pop()
 
 	def resolve_schema(self, name):

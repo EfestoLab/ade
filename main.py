@@ -11,7 +11,7 @@ if __name__ == '__main__':
 	resolved_schema = M.resolve_schema(schema)
 	resolved = M.resolve(resolved_schema)
 
-	print pformat(resolved_schema)
+	#print pformat(resolved_schema)
 	print pformat(resolved)
 
 	print 'PARSERs:'
