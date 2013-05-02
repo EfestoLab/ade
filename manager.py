@@ -6,7 +6,9 @@ from a folder containing fragments.
 
 '''
 import os, stat
+from pprint import pformat
 import re
+import copy
 
 # DEFAULT REGEX FOR COMMON FOLDER TYPES
 regexp_config = {
@@ -134,56 +136,46 @@ class StructureManager(object):
 			path.pop()
 
 	def resolve_schema(self, name):
-		'''Return the built schema path of the given variable *name*.'''
+		'''Return the built schema fragment of the given variable *name*.'''
 		# Check if the given schema *name* exists
-		root = self.register.get(name)
+		root = None
+
+		for item in self.register:
+			if item.get('name', '') == name:
+				root = item
+
+		#root = self.register.get(name)
 		if not root:
 			raise KeyError('{0} not found in register.'.format(name))
 
 		# Remove the reference indicator from the folder *name*
-		clean_name = name.replace(self.__reference_indicator, '')
 		# Build the first level of the schema
-		entry = {clean_name: {}}
+		root = copy.deepcopy(root)
+		root['name']  = root['name'].replace(self.__reference_indicator, '')
 
 		# Start the recursive build of the *root* folder, using *entry*
 		self._resolve_schema(
 			root,
-			entry[clean_name]
 		)
 
-		return entry
+		return root
 
-	def _resolve_schema(self, schema, output):
+	def _get_in_register(self, name):
+		for item in self.register:
+			if item.get('name') == name:
+				return item
+				break
+		return {}
+
+	def _resolve_schema(self, schema):
 		'''Recursively build the given *schema* schema into *output*.'''
-		if not schema:
-			return
-
-		for item_name, item_value in schema.items():
-			# If the item is a reference to another path fragment,
-			# Resolve it
-			if item_name.startswith(self.__reference_indicator,):
-
-				# Search the given fragment path
-				fragment_path = self.register.get(item_name, {})
-
-				# Build the given fragment into data
-				data = {}
-				self._resolve_schema(fragment_path, data)
-
-				# Insert the resolved path fragment instead of the variable
-				output.setdefault(
-					item_name.replace(self.__reference_indicator, ''),
-					data
-				)
-			else:
-				# Mark with None any file level, and with a dict any folder
-				default = None
-				if isinstance(item_value, dict):
-					default = {}
-
-				# Insert the path fragment name and continue the build
-				output.setdefault(item_name, default)
-				self._resolve_schema(item_value, output[item_name])
+		for index, entry in enumerate(schema.get('children', [])):
+			item = entry.get('name')
+			if item.startswith(self.__reference_indicator):
+				fragment = self._get_in_register(item)
+				schema['children'].pop(index)
+				schema['children'].append(fragment)
+				self._resolve_schema(fragment)
 
 	def parse_templates(self, template_folder=None):
 		'''Parse template path and fill up the register table.'''

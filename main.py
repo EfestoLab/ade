@@ -7,12 +7,14 @@ if __name__ == '__main__':
 
 	M = StructureManager()
 	schema = '@+show+@'
-	print pformat(M._register)
+	#print pformat(M._register)
+	resolved = M.resolve_schema(schema)
+	print pformat(resolved)
 	exit()
 
 	print 'PARSERs:'
 	pareser_results = M.to_parser(schema)
-	print pformat(pareser_results)
+	#print pformat(pareser_results)
 
 	print 'PATHs:'
 	context = {
@@ -25,11 +27,11 @@ if __name__ == '__main__':
 	}
 
 	path_results = M.to_path(schema, context)
-	print pformat(path_results)
+	#print pformat(path_results)
 
 	path = path_results[12]
-	print 'TEST PARSE:', path
+	#print 'TEST PARSE:', path
 
 	results = M.parse(path, schema)
-	print pformat(results[0])
+	#print pformat(results[0])
 	#print pformat(results)
