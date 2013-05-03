@@ -12,7 +12,7 @@ if __name__ == '__main__':
 	resolved = M.resolve(resolved_schema)
 
 	#print pformat(resolved_schema)
-	print pformat(resolved)
+	#print pformat(resolved)
 
 	print 'PARSERs:'
 	pareser_results = M.to_parser(schema)
@@ -31,7 +31,7 @@ if __name__ == '__main__':
 	path_results = M.to_path(schema, context)
 	print pformat(path_results)
 
-	path = path_results[12]
+	path = path_results[11]
 	print 'TEST PARSE:', path
 
 	results = M.parse(path, schema)

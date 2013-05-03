@@ -131,8 +131,8 @@ class StructureManager(object):
 
 			final_path_list.append(
 				{
-				'path': current_path,
-				'permissions': entry.get('permission')
+					'path': current_path,
+					'permissions': entry.get('permission')
 				}
 			)
 			path.pop()
@@ -184,12 +184,20 @@ class StructureManager(object):
 		# For each template root, recursively walk the content,
 		# and register the hierarcy path in form of dictionary
 		for template in templates:
-			current_template_map = {'name': template, 'children': []}
 			current_template_path = os.path.join(template_path, template)
+			permission = oct(stat.S_IMODE(os.stat(current_template_path).st_mode))
+
+			current_template_map = {
+				'name': template,
+				'children': [],
+				'permission': permission
+			}
+
 			self._parse_templates(
 				current_template_path,
 				current_template_map['children']
 			)
+
 			self._register.append(current_template_map)
 
 	def _parse_templates(self, root, mapped):
@@ -207,9 +215,14 @@ class StructureManager(object):
 					continue
 
 				subentry = os.path.join(root, entry)
-
 				# Convert to a common format the file/folder permissions
 				permission = oct(stat.S_IMODE(os.stat(subentry).st_mode))
+				# We got a file.
+				item = {
+					'name': entry,
+					'permission': permission
+				}
+
 				if os.path.isdir(subentry):
 					# Add the current entry
 					item = {
@@ -217,14 +230,8 @@ class StructureManager(object):
 						'children': [],
 						'permission': permission,
 					}
-					mapped.append(item)
 
 					# Continue searching in folder
 					self._parse_templates(subentry, item['children'])
-				else:
-					# We got a file.
-					item = {
-						'name': entry,
-						'permission': permission
-					}
-					mapped.append(item)
+
+				mapped.append(item)
