@@ -9,13 +9,14 @@ import os
 import stat
 import re
 import copy
+from pprint import pformat
 
 # DEFAULT REGEX FOR COMMON FOLDER TYPES
 regexp_config = {
 	'show': '(?P<show>[a-zA-Z0-9_]+)',
 	'sequence': '(?P<sequence>[a-zA-Z0-9_]+)',
 	'shot': '(?P<shot>[a-zA-Z0-9_]+)',
-	'department': '(?P<department>[a-zA-Z0-9_]+)'
+	'department': '(?P<department>[a-z_]+)'
 }
 
 
@@ -41,6 +42,19 @@ class StructureManager(object):
 	def register(self):
 		''' Return the content of the class register.'''
 		return self._register
+
+	def build(self, name, data, level=100):
+		built = self.resolve_schema(name)
+		results = self.resolve(built)
+		#print pformat(results)
+		for result in results:
+			path = os.path.realpath('/'.join(result['path']))
+			#permission = result['permissions']
+			try:
+				print 'creating:', path
+				os.makedirs(path)
+			except:
+				pass
 
 	def parse(self, path, name):
 		parsers = self.to_parser(name)
@@ -85,7 +99,11 @@ class StructureManager(object):
 			for entry in path:
 				if '+' in entry:
 					entry = entry.split('+')[1]
-					parser = regexp_config.get(entry, self.__default_path_regex)
+					# Get the custom regex or use the default one
+					parser = regexp_config.get(
+						entry,
+						self.__default_path_regex
+					)
 					entry = parser.format(entry)
 				result_path.append(entry)
 			result_paths.append(result_path)
@@ -121,10 +139,14 @@ class StructureManager(object):
 
 	def _resolve(self, schema, final_path_list, path=None):
 		'''Recursively build the final_path_list from schema.'''
-		path = path or [schema.get('name').replace('@', '')]
+		path = path or [
+			schema.get('name').replace(
+				self.__reference_indicator, ''
+			)
+		]
 		for index, entry in enumerate(schema.get('children', [])):
 			name = entry.get('name')
-			name = name.replace('@', '')
+			name = name.replace(self.__reference_indicator, '')
 			path.append(name)
 			current_path = path[:]
 			self._resolve(entry, final_path_list, path)
@@ -137,14 +159,21 @@ class StructureManager(object):
 			)
 			path.pop()
 
+
+	def _get_in_register(self, name):
+		for item in self.register:
+			if item.get('name') == name:
+				item = copy.deepcopy(item)
+				self._resolve_schema(
+					item,
+				)
+				return item
+				break
+		return {}
+
 	def resolve_schema(self, name):
 		'''Return the built schema fragment of the given variable *name*.'''
-		# Check if the given schema *name* exists
 		root = self._get_in_register(name)
-		# Remove the reference indicator from the folder *name*
-		# Build the first level of the schema
-		root = copy.deepcopy(root)
-
 		# Start the recursive build of the *root* folder, using *entry*
 		self._resolve_schema(
 			root,
@@ -152,28 +181,24 @@ class StructureManager(object):
 
 		return root
 
-	def _get_in_register(self, name):
-		for item in self.register:
-			if item.get('name') == name:
-				return item
-				break
-		return {}
-
 	def _resolve_schema(self, schema):
 		'''Recursively build the given *schema* schema into *output*.'''
-		for index, entry in enumerate(schema.get('children', [])):
-			item = entry.get('name')
+		old_schema = copy.deepcopy(schema)
+		while old_schema != schema:
+			for index, entry in enumerate(schema.get('children', [])):
+				item = entry.get('name')
+				print 'getting', item
+				if not item.startswith(self.__reference_indicator):
+					continue
 
-			# Check whether is a reference or a simple name
-			# If it's a reference, search for it, 
-			# and replace the current entry with it
-			# then pass restart searching for matches
-			if item.startswith(self.__reference_indicator):
-				fragment = self._get_in_register(item)
-				schema['children'].pop(index)
+				removed = schema['children'].pop(index)
+				fragment = self._get_in_register(removed['name'])
+				#fragment['name'] = fragment['name'].replace('@', '')
+				#print 'replacing with', fragment
 				schema['children'].append(fragment)
 				self._resolve_schema(fragment)
-
+				
+		
 	def parse_templates(self, template_folder=None):
 		'''Parse template path and fill up the register table.'''
 		template_folder = template_folder or self._template_folder
