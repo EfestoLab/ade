@@ -164,9 +164,6 @@ class StructureManager(object):
 		for item in self.register:
 			if item.get('name') == name:
 				item = copy.deepcopy(item)
-				self._resolve_schema(
-					item,
-				)
 				return item
 				break
 		return {}
@@ -178,27 +175,21 @@ class StructureManager(object):
 		self._resolve_schema(
 			root,
 		)
-
 		return root
 
 	def _resolve_schema(self, schema):
 		'''Recursively build the given *schema* schema into *output*.'''
-		old_schema = copy.deepcopy(schema)
-		while old_schema != schema:
-			for index, entry in enumerate(schema.get('children', [])):
-				item = entry.get('name')
-				print 'getting', item
-				if not item.startswith(self.__reference_indicator):
-					continue
-
+		for index, entry in enumerate(schema.get('children', [])):
+			item = entry.get('name', '')
+			if item.startswith(self.__reference_indicator):
 				removed = schema['children'].pop(index)
 				fragment = self._get_in_register(removed['name'])
-				#fragment['name'] = fragment['name'].replace('@', '')
-				#print 'replacing with', fragment
-				schema['children'].append(fragment)
 				self._resolve_schema(fragment)
+				print 'Remplacing: {0} with {1}'.format(item, pformat(fragment))
+				schema['children'].insert(index, fragment)
+			else:
+				self._resolve_schema(entry)
 				
-		
 	def parse_templates(self, template_folder=None):
 		'''Parse template path and fill up the register table.'''
 		template_folder = template_folder or self._template_folder
