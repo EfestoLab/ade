@@ -29,7 +29,7 @@ if __name__ == '__main__':
 	}
 
 	path_results = M.to_path(schema, context)
-	print pformat(path_results)
+	#print pformat(path_results)
 
 	build = M.build(schema, context)
 	# path = path_results[11]
