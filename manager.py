@@ -184,9 +184,8 @@ class StructureManager(object):
 			if item.startswith(self.__reference_indicator):
 				removed = schema['children'].pop(index)
 				fragment = self._get_in_register(removed['name'])
-				self._resolve_schema(fragment)
-				print 'Remplacing: {0} with {1}'.format(item, pformat(fragment))
 				schema['children'].insert(index, fragment)
+				self._resolve_schema(fragment)
 			else:
 				self._resolve_schema(entry)
 				
