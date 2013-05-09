@@ -13,6 +13,8 @@ import logging
 from pprint import pformat
 
 logging.basicConfig(level=logging.DEBUG)
+log = logging.getLogger('TemplateManager')
+
 
 # DEFAULT REGEX FOR COMMON FOLDER TYPES
 regexp_config = {
@@ -23,46 +25,50 @@ regexp_config = {
 }
 
 
-class StructureManager(object):
-	'''Structure manager class,
+class TemplateManager(object):
+	'''Template manager class,
 	Provide standard methods to create virtual file structure
 	from disk fragments.
 
 	'''
 	def __init__(self, template_folder=None):
-		''' Initialization function.'''
+		''' Initialization function.
+
+		'''
 		if not template_folder:
-			logging.warning('Using default ./templates folder')
+			log.warning('Using default ./templates folder')
 
 		self.__default_path_regex = '(?P<{0}>[a-zA-Z0-9_]+)'
-
 		self.__reference_indicator = '@'
 		self.__variable_indicator = '+'
+
 		self._register = []
 		self._template_folder = template_folder or './templates'
 		self.register_templates()
 
 	@property
 	def register(self):
-		''' Return the content of the class register.'''
+		''' Return the content of the class register.
+
+		'''
 		return self._register
 
 	def build(self, name, data, level=100):
 		''' Build the given schema name, and replace data, 
 		level defines the depth of the built paths.
+		
 		'''
 		results = self.to_path(name, data, level)
 
-		#print pformat(results)
 		for path in results:
-			#permission = result['permissions']
-			logging.debug('creating: {0}'.format(path))
+			path = os.path.realpath(path)
+			log.debug('creating: {0}'.format(path))
 
 			try:
 				os.makedirs(path)
 			except:
 				pass
-
+	
 	def parse(self, path, name):
 		''' Parse the provided path against 
 		the given schema name.
@@ -88,7 +94,7 @@ class StructureManager(object):
 		''' Convert a schema name to a set of parser regex.
 
 		'''
-		built = self.resolve_schema(name)
+		built = self.resolve_template(name)
 		results = self.resolve(built)
 		parsers = self._to_parser(results)
 		paths = []
@@ -101,12 +107,14 @@ class StructureManager(object):
 		of paths.
 
 		'''
-		built = self.resolve_schema(name)
+		built = self.resolve_template(name)
 		results = self.resolve(built)
 		paths = self._to_path(results, data, limit)
 		paths_result = []
+		
 		for result in paths:
 			paths_result.append('/'.join(result))
+
 		return paths_result
 
 	def _to_parser(self, paths):
@@ -139,6 +147,7 @@ class StructureManager(object):
 		result_paths = []
 		for path in paths:
 			result_path = []
+			permission = path['permission']
 			path = path['path']
 			for entry in path[:limit]:
 				if '+' in entry:
@@ -151,7 +160,7 @@ class StructureManager(object):
 			if result_path not in result_paths:
 				result_paths.append(result_path)
 
-		return result_paths
+		return result_paths 
 
 	def resolve(self, schema):
 		''' Resolve the given schema name and return all the folders.
@@ -181,12 +190,17 @@ class StructureManager(object):
 			current_path = path[:]
 			self._resolve(entry, final_path_list, path)
 
+			new_entry = {
+				'path': current_path,
+				'permission': entry.get('permission', '777'),
+				'folder': entry.get('folder', True)	
+			}
+			
 			final_path_list.append(
-				{
-					'path': current_path,
-					'permissions': entry.get('permission')
-				}
+				new_entry		
 			)
+
+			log.debug('Adding {0}'.format(new_entry))
 			path.pop()
 
 	def _get_in_register(self, name):
@@ -200,18 +214,18 @@ class StructureManager(object):
 				break
 		return {}
 
-	def resolve_schema(self, name):
+	def resolve_template(self, name):
 		''' Return the built schema fragment of the given variable *name*.
 
 		'''
 		root = self._get_in_register(name)
 		# Start the recursive build of the *root* folder, using *entry*
-		self._resolve_schema(
+		self._resolve_template(
 			root,
 		)
 		return root
 
-	def _resolve_schema(self, schema):
+	def _resolve_template(self, schema):
 		''' Recursively build the given *schema* schema into *output*.
 
 		'''
@@ -221,9 +235,9 @@ class StructureManager(object):
 				removed = schema['children'].pop(index)
 				fragment = self._get_in_register(removed['name'])
 				schema['children'].insert(index, fragment)
-				self._resolve_schema(fragment)
+				self._resolve_template(fragment)
 			else:
-				self._resolve_schema(entry)
+				self._resolve_template(entry)
 				
 	def register_templates(self, template_folder=None):
 		''' Parse template path and fill up the register table.
@@ -243,7 +257,8 @@ class StructureManager(object):
 			current_template_map = {
 				'name': template,
 				'children': [],
-				'permission': permission
+				'permission': permission,
+				'folder': True
 			}
 
 			self._register_templates(
@@ -273,16 +288,14 @@ class StructureManager(object):
 				# We got a file.
 				item = {
 					'name': entry,
-					'permission': permission
+					'permission': permission,
+					'folder': False
 				}
 
 				if os.path.isdir(subentry):
 					# Add the current entry
-					item = {
-						'name': entry,
-						'children': [],
-						'permission': permission,
-					}
+					item['children'] = []
+					item['folder'] = True
 
 					# Continue searching in folder
 					self._register_templates(subentry, item['children'])

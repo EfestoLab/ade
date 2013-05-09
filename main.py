@@ -1,11 +1,11 @@
 from pprint import pformat
-from manager import StructureManager
+from manager import TemplateManager
 
 
 if __name__ == '__main__':
 	'''Function entry point'''
 
-	M = StructureManager()
+	M = TemplateManager()
 	schema = '@+show+@'
 	# #print pformat(M._register)
 	#resolved_schema = M.resolve_schema(schema)
@@ -18,17 +18,16 @@ if __name__ == '__main__':
 	# pareser_results = M.to_parser(schema)
 	# print pformat(pareser_results)
 
-	print 'PATHs:'
 	context = {
 		'show': 'white',
-		'department': 'pipeline',
+		'department': 'show',
 		'sequence': 'AA',
 		'shot': 'AA000',
 		'user': 'ennio',
 		'python_version': '2.6.4'
 	}
 
-	path_results = M.to_path(schema, context)
+	#path_results = M.to_path(schema, context)
 	#print pformat(path_results)
 
 	build = M.build(schema, context)
