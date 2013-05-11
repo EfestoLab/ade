@@ -292,7 +292,7 @@ class TemplateManager(object):
 
 				subentry = os.path.join(root, entry)
 				permission = stat.S_IMODE(os.stat(subentry).st_mode)
-				# We got a file.
+
 				item = {
 					'name': entry,
 					'permission': permission,
@@ -300,13 +300,14 @@ class TemplateManager(object):
 				}
 
 				if os.path.isdir(subentry):
-					# Add the current entry
+					# If it's a folder, mark it with children and type
 					item['children'] = []
 					item['folder'] = True
 
 					# Continue searching in folder
 					self._register_templates(subentry, item['children'])
 				else:
+					# If it's a file store the content
 					item['content'] = open(subentry, 'r').read()
 
 				mapped.append(item)
