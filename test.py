@@ -1,7 +1,7 @@
 import unittest
 
 from pprint import pformat
-from manager import TemplateManager
+from template_manager import TemplateManager
 
 class Test_TemplateManager(unittest.TestCase):
 

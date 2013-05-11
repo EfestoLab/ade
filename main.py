@@ -4,30 +4,36 @@ import sys
 import argparse
 from pprint import pformat
 
-from manager import TemplateManager
+from template_manager import TemplateManager
 
 
 def arguments():
-	parser = argparse.ArgumentParser(description='Description of your program')
-	parser.add_argument('-f','--foo', help='Description for foo argument', required=True)
-	parser.add_argument('-b','--bar', help='Description for bar argument', required=True)
+	parser = argparse.ArgumentParser(description='Command line for template manager')
+	parser.add_argument('-tp','--templates_path', help='Templates folder path')
+	parser.add_argument('-cp','--current_path', help='Path to be checked')
+	parser.add_argument('-bn','--build_path', help='Template name to be used')
+	parser.add_argument('-pp','--parse_path', help='Parse the current path against the given template')
+	
 	args = vars(parser.parse_args())
 	return args
 
 if __name__ == '__main__':
 	args = arguments()
-	print args
-	#print parser
-	# M = TemplateManager()
+	print 'ARGS', args
 
-	# schema = '@+show+@'
-	# context = {
-	# 	'show': 'white',
-	# 	'department': 'show',
-	# 	'sequence': 'AA',
-	# 	'shot': 'AA000',
-	# 	'user': 'ennio',
-	# 	'python_version': '2.6.4'
-	# }
-	# build = M.build(schema, context)
+	M = TemplateManager()
 
+	schema = '@+show+@'
+	context = {
+		'show': 'white',
+		'department': 'show',
+		'sequence': 'AA',
+		'shot': 'AA000',
+		'user': 'ennio',
+		'python_version': '2.6.4'
+	}
+
+	build = M.build(schema, context)
+	path = 'white/show/AA/AA000/sandbox/ennio'
+	results = M.parse(path, schema)
+	print pformat(results[0])

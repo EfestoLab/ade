@@ -62,24 +62,52 @@ class TemplateManager(object):
 		level defines the depth of the built paths.
 		
 		'''
-		results = self.to_path(name, data, level)
 
-		for path in results:
-			path = os.path.realpath(path)
-			log.debug('creating: {0}'.format(path))
+		built = self.resolve_template(name)
+		results = self.resolve(built)
+		path_results = self._to_path(results, data, 1000)
+		
+		# Create folder
+		for result in path_results:
+			path = os.path.realpath(result['path'])
+			if result['folder']:
+				# Create the folder
+				log.info('creating folder: {0}'.format(path))
+				try:
+					os.makedirs(path)
+				except Exception, error:
+					log.debug(error)
+					pass
+			else:
+				# Create file
+				log.info('creating file: {0}'.format(path))
+				file_content = result['content']
+				try:
+					f = open(path, 'w')
+					f.write(file_content)
+					f.close()
+				except IOError, error:
+					log.warning(error)
+					pass
 
+		# Set permissions, using the reversed results
+		for result in reversed(path_results):
+			path = result['path']
+			permission = result['permission']
+			log.info('setting {0} for {1}'.format(oct(permission), path))
 			try:
-				os.makedirs(path)
-			except:
-				pass
-	
+				os.chmod(path, permission)
+			except OSError, error:
+				log.exception(error)
+
 	def parse(self, path, name):
 		''' Parse the provided path against 
 		the given schema name.
 
 		'''
-		parsers = self.to_parser(name)
-		results = []
+		built = self.resolve_template(name)
+		results = self.resolve(built)
+		parsers = self._to_parser(results)
 
 		for parser in parsers:
 			check = re.compile(parser)
@@ -95,33 +123,6 @@ class TemplateManager(object):
 		results.sort()
 		results.reverse()
 		return results
-
-	def to_parser(self, name):
-		''' Convert a schema name to a set of parser regex.
-
-		'''
-		built = self.resolve_template(name)
-		results = self.resolve(built)
-		parsers = self._to_parser(results)
-		paths = []
-		for result in parsers:
-			paths.append('/'.join(result))
-		return paths
-
-	def to_path(self, name, data, limit=100):
-		''' Convert the given schema name, using data, to a list
-		of paths.
-
-		'''
-		built = self.resolve_template(name)
-		results = self.resolve(built)
-		paths = self._to_path(results, data, limit)
-		paths_result = []
-		
-		for result in paths:
-			paths_result.append('/'.join(result))
-
-		return paths_result
 
 	def _to_parser(self, paths):
 		''' Recursively build a parser from the 
@@ -142,6 +143,7 @@ class TemplateManager(object):
 					)
 					entry = parser.format(entry)
 				result_path.append(entry)
+			result_path = (os.sep).join(result_path)
 			result_paths.append(result_path)
 		return result_paths
 
@@ -151,25 +153,24 @@ class TemplateManager(object):
 
 		 '''
 		result_paths = []
-		for path in paths:
+		for entry in paths:
 			result_path = []
-			permission = path['permission']
-			path = path['path']
-			for entry in path[:limit]:
-				if '+' in entry:
-					entry = entry.split('+')[1]
-					entry = '{%s}' % entry
-					entry = entry.format(**data)
-
-				result_path.append(entry)
+			for item in entry['path'][:limit]:
+			 	if '+' in item:
+			 		item = item.split('+')[1]
+			 		item = '{%s}' % item
+			 	result_path.append(item)	
 
 			if result_path not in result_paths:
-				result_paths.append(result_path)
+				final_path = (os.sep).join(result_path)
+				final_path = final_path.format(**data)
+				entry['path'] = final_path
+		 		result_paths.append(entry)
 
 		return result_paths 
 
 	def resolve(self, schema):
-		''' Resolve the given schema name and return all the folders.
+		''' Resolve the given schema name and return all the entries.
 
 		'''
 		paths = []
@@ -198,8 +199,9 @@ class TemplateManager(object):
 
 			new_entry = {
 				'path': current_path,
-				'permission': entry.get('permission', '777'),
-				'folder': entry.get('folder', True)	
+				'permission': entry.get('permission', 777),
+				'folder': entry.get('folder', True),
+				'content': entry.get('content', '')
 			}
 			
 			final_path_list.append(
@@ -258,7 +260,7 @@ class TemplateManager(object):
 		# and register the hierarcy path in form of dictionary
 		for template in templates:
 			current_template_path = os.path.join(template_path, template)
-			permission = oct(stat.S_IMODE(os.stat(current_template_path).st_mode))
+			permission = stat.S_IMODE(os.stat(current_template_path).st_mode)
 
 			current_template_map = {
 				'name': template,
@@ -289,9 +291,8 @@ class TemplateManager(object):
 					continue
 
 				subentry = os.path.join(root, entry)
-				# Convert to a common format the file/folder permissions
-				permission = oct(stat.S_IMODE(os.stat(subentry).st_mode))
-				# We got a file.
+				permission = stat.S_IMODE(os.stat(subentry).st_mode)
+
 				item = {
 					'name': entry,
 					'permission': permission,
@@ -299,11 +300,14 @@ class TemplateManager(object):
 				}
 
 				if os.path.isdir(subentry):
-					# Add the current entry
+					# If it's a folder, mark it with children and type
 					item['children'] = []
 					item['folder'] = True
 
 					# Continue searching in folder
 					self._register_templates(subentry, item['children'])
+				else:
+					# If it's a file store the content
+					item['content'] = open(subentry, 'r').read()
 
 				mapped.append(item)
