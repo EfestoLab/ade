@@ -76,7 +76,7 @@ class TemplateManager(object):
 				try:
 					os.makedirs(path)
 				except Exception, error:
-					log.warning(error)
+					log.debug(error)
 					pass
 			else:
 				# Create file
@@ -98,15 +98,16 @@ class TemplateManager(object):
 			try:
 				os.chmod(path, permission)
 			except OSError, error:
-				log.warning(error)
+				log.exception(error)
 
 	def parse(self, path, name):
 		''' Parse the provided path against 
 		the given schema name.
 
 		'''
-		parsers = self.to_parser(name)
-		results = []
+		built = self.resolve_template(name)
+		results = self.resolve(built)
+		parsers = self._to_parser(results)
 
 		for parser in parsers:
 			check = re.compile(parser)
@@ -122,18 +123,6 @@ class TemplateManager(object):
 		results.sort()
 		results.reverse()
 		return results
-
-	def to_parser(self, name):
-		''' Convert a schema name to a set of parser regex.
-
-		'''
-		built = self.resolve_template(name)
-		results = self.resolve(built)
-		parsers = self._to_parser(results)
-		paths = []
-		for result in parsers:
-			paths.append('/'.join(result))
-		return paths
 
 	def _to_parser(self, paths):
 		''' Recursively build a parser from the 
@@ -154,6 +143,7 @@ class TemplateManager(object):
 					)
 					entry = parser.format(entry)
 				result_path.append(entry)
+			result_path = (os.sep).join(result_path)
 			result_paths.append(result_path)
 		return result_paths
 
