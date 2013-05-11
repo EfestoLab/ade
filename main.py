@@ -1,33 +1,33 @@
-from pprint import pformat
-from manager import StructureManager
+#!/usr/bin/env python
 
+import sys
+import argparse
+from pprint import pformat
+
+from manager import TemplateManager
+
+
+def arguments():
+	parser = argparse.ArgumentParser(description='Description of your program')
+	parser.add_argument('-f','--foo', help='Description for foo argument', required=True)
+	parser.add_argument('-b','--bar', help='Description for bar argument', required=True)
+	args = vars(parser.parse_args())
+	return args
 
 if __name__ == '__main__':
-	'''Function entry point'''
+	args = arguments()
+	print args
+	#print parser
+	# M = TemplateManager()
 
-	M = StructureManager()
-	schema = '@+show+@'
+	# schema = '@+show+@'
+	# context = {
+	# 	'show': 'white',
+	# 	'department': 'show',
+	# 	'sequence': 'AA',
+	# 	'shot': 'AA000',
+	# 	'user': 'ennio',
+	# 	'python_version': '2.6.4'
+	# }
+	# build = M.build(schema, context)
 
-	print 'PARSERs:'
-	pareser_results = M.to_parser(schema)
-	print pformat(pareser_results)
-
-	print 'PATHs:'
-	context = {
-		'show': 'white',
-		'department': 'pipeline',
-		'sequence': 'AA',
-		'shot': 'AA000',
-		'user': 'ennio',
-		'python_version': '2.6.4'
-	}
-
-	path_results = M.to_path(schema, context)
-	print pformat(path_results)
-
-	path = path_results[12]
-	print 'TEST PARSE:', path
-
-	results = M.parse(path, schema)
-	print pformat(results[0])
-	#print pformat(results)
