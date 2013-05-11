@@ -12,7 +12,7 @@ import copy
 import logging
 from pprint import pformat
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 log = logging.getLogger('TemplateManager')
 
 
@@ -26,7 +26,7 @@ regexp_config = {
 
 
 class TemplateManager(object):
-	'''Template manager class,
+	''' Template manager class,
 	Provide standard methods to create virtual file structure
 	from disk fragments.
 
@@ -35,15 +35,19 @@ class TemplateManager(object):
 		''' Initialization function.
 
 		'''
+		self.__default_templates = './templates'
+		
 		if not template_folder:
-			log.warning('Using default ./templates folder')
+			log.warning(
+				'No template folder provided, using : {0}'.format(self.__default_templates)
+			)
 
 		self.__default_path_regex = '(?P<{0}>[a-zA-Z0-9_]+)'
 		self.__reference_indicator = '@'
 		self.__variable_indicator = '+'
 
 		self._register = []
-		self._template_folder = template_folder or './templates'
+		self._template_folder = template_folder or self.__default_templates
 		self.register_templates()
 
 	@property
@@ -80,8 +84,10 @@ class TemplateManager(object):
 		for parser in parsers:
 			check = re.compile(parser)
 			match = check.match(path)
+
 			if not match:
 				continue
+
 			result = match.groupdict()
 			if result and result not in results:
 				results.append(result)
@@ -103,7 +109,7 @@ class TemplateManager(object):
 		return paths
 
 	def to_path(self, name, data, limit=100):
-		'''Convert the given schema name, using data, to a list
+		''' Convert the given schema name, using data, to a list
 		of paths.
 
 		'''
@@ -118,7 +124,7 @@ class TemplateManager(object):
 		return paths_result
 
 	def _to_parser(self, paths):
-		'''Recursively build a parser from the 
+		''' Recursively build a parser from the 
 		given set of schema paths
 
 		'''
@@ -140,7 +146,7 @@ class TemplateManager(object):
 		return result_paths
 
 	def _to_path(self, paths, data, limit=100):
-		'''Recursively build a list of paths from the given
+		''' Recursively build a list of paths from the given
 		 set of schema paths.
 
 		 '''
