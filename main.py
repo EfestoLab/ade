@@ -4,7 +4,7 @@ import sys
 import argparse
 from pprint import pformat
 
-from template_manager import TemplateManager
+from filesystem_manager import FileSystemManager
 
 
 def arguments():
@@ -21,7 +21,7 @@ if __name__ == '__main__':
 	args = arguments()
 	print 'ARGS', args
 
-	M = TemplateManager()
+	M = FileSystemManager()
 
 	schema = '@+show+@'
 	context = {

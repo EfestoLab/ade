@@ -1,6 +1,5 @@
 import unittest
 
-from pprint import pformat
 from template_manager import TemplateManager
 
 class Test_TemplateManager(unittest.TestCase):
@@ -10,7 +9,6 @@ class Test_TemplateManager(unittest.TestCase):
 
     def test_register(self):
     	assert self.manager.register
-
 
 if __name__ == '__main__':
 	unittest.main()
