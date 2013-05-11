@@ -33,7 +33,7 @@ class FileSystemManager(object):
         level defines the depth of the built paths.
 
         '''
-        current_path = path or os.path.realpath('./')
+        current_path = path
         built = self.template_manager.resolve_template(name)
         results = self.template_manager.resolve(built)
         path_results = self._to_path(results, data, 1000)
@@ -42,15 +42,14 @@ class FileSystemManager(object):
             path = os.path.join(current_path, result['path'])
             if result['folder']:
                 # Create the folder
-                log.info('creating folder: {0}'.format(path))
+                log.debug('creating folder: {0}'.format(path))
                 try:
                     os.makedirs(path)
                 except Exception, error:
-                    log.debug(error)
+                    log.warning(error)
                     pass
             else:
-                # Create file
-                log.info('creating file: {0}'.format(path))
+                log.debug('creating file: {0}'.format(path))
                 file_content = result['content']
                 try:
                     f = open(path, 'w')
@@ -64,11 +63,11 @@ class FileSystemManager(object):
         for result in reversed(path_results):
             path = result['path']
             permission = result['permission']
-            log.info('setting {0} for {1}'.format(oct(permission), path))
+            log.info('setting {0} for {1}'.format(oct(permission), os.path.realpath(path)))
             try:
                 os.chmod(path, permission)
             except OSError, error:
-                log.exception(error)
+                log.warning(error)
 
     def parse(self, path, name):
         ''' Parse the provided path against
@@ -133,7 +132,17 @@ class FileSystemManager(object):
 
             if result_path not in result_paths:
                 final_path = (os.sep).join(result_path)
-                final_path = final_path.format(**data)
+                try:
+                    final_path = final_path.format(**data)
+                except Exception, error:
+                    log.warning(
+                        'Skipping {0} : {1} not found'.format(
+                            final_path,
+                            error
+                        )
+                    )
+                    continue
+
                 entry['path'] = final_path
                 result_paths.append(entry)
 
