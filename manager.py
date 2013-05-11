@@ -81,17 +81,19 @@ class TemplateManager(object):
 			else:
 				# Create file
 				log.info('creating file: {0}'.format(path))
+				file_content = result['content']
 				try:
 					f = open(path, 'w')
+					f.write(file_content)
+					f.close()
 				except IOError, error:
 					log.warning(error)
 					pass
-				
+
 		# Set permissions, using the reversed results
 		for result in reversed(path_results):
 			path = result['path']
-			permission = int(result['permission'])
-
+			permission = result['permission']
 			log.info('setting {0} for {1}'.format(permission, path))
 			try:
 				os.chmod(path, permission)
@@ -208,7 +210,8 @@ class TemplateManager(object):
 			new_entry = {
 				'path': current_path,
 				'permission': entry.get('permission', 777),
-				'folder': entry.get('folder', True)
+				'folder': entry.get('folder', True),
+				'content': entry.get('content', '')
 			}
 			
 			final_path_list.append(
@@ -267,7 +270,7 @@ class TemplateManager(object):
 		# and register the hierarcy path in form of dictionary
 		for template in templates:
 			current_template_path = os.path.join(template_path, template)
-			permission = oct(stat.S_IMODE(os.stat(current_template_path).st_mode))
+			permission = stat.S_IMODE(os.stat(current_template_path).st_mode)
 
 			current_template_map = {
 				'name': template,
@@ -298,8 +301,7 @@ class TemplateManager(object):
 					continue
 
 				subentry = os.path.join(root, entry)
-				# Convert to a common format the file/folder permissions
-				permission = oct(stat.S_IMODE(os.stat(subentry).st_mode))
+				permission = stat.S_IMODE(os.stat(subentry).st_mode)
 				# We got a file.
 				item = {
 					'name': entry,
@@ -314,5 +316,7 @@ class TemplateManager(object):
 
 					# Continue searching in folder
 					self._register_templates(subentry, item['children'])
+				else:
+					item['content'] = open(subentry, 'r').read()
 
 				mapped.append(item)
