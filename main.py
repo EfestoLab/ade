@@ -8,9 +8,12 @@ from template_manager import TemplateManager
 
 
 def arguments():
-	parser = argparse.ArgumentParser(description='Description of your program')
-	parser.add_argument('-f','--foo', help='Description for foo argument')
-	parser.add_argument('-b','--bar', help='Description for bar argument')
+	parser = argparse.ArgumentParser(description='Command line for template manager')
+	parser.add_argument('-tp','--templates_path', help='Templates folder path')
+	parser.add_argument('-cp','--current_path', help='Path to be checked')
+	parser.add_argument('-bn','--build_path', help='Template name to be used')
+	parser.add_argument('-pp','--parse_path', help='Parse the current path against the given template')
+	
 	args = vars(parser.parse_args())
 	return args
 
