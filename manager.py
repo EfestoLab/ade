@@ -94,7 +94,7 @@ class TemplateManager(object):
 		for result in reversed(path_results):
 			path = result['path']
 			permission = result['permission']
-			log.info('setting {0} for {1}'.format(permission, path))
+			log.info('setting {0} for {1}'.format(oct(permission), path))
 			try:
 				os.chmod(path, permission)
 			except OSError, error:
