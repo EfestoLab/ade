@@ -10,7 +10,7 @@ import logging
 
 from .template import TemplateManager
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger('FileSystemManager')
 
 # DEFAULT REGEX FOR COMMON FOLDER TYPES
@@ -46,7 +46,7 @@ class FileSystemManager(object):
                 try:
                     os.makedirs(path)
                 except Exception, error:
-                    log.warning(error)
+                    log.debug(error)
                     pass
             else:
                 log.debug('creating file: {0}'.format(path))
@@ -56,18 +56,18 @@ class FileSystemManager(object):
                     f.write(file_content)
                     f.close()
                 except IOError, error:
-                    log.warning(error)
+                    log.debug(error)
                     pass
 
         # Set permissions, using the reversed results
         for result in reversed(path_results):
             path = result['path']
             permission = result['permission']
-            log.info('setting {0} for {1}'.format(oct(permission), os.path.realpath(path)))
+            log.debug('setting {0} for {1}'.format(oct(permission), os.path.realpath(path)))
             try:
                 os.chmod(path, permission)
             except OSError, error:
-                log.warning(error)
+                log.debug(error)
 
     def parse(self, path, name):
         ''' Parse the provided path against
