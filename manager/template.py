@@ -10,7 +10,7 @@ import stat
 import copy
 import logging
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger('TemplateManager')
 
 
@@ -115,6 +115,9 @@ class TemplateManager(object):
             if item.startswith(self.__reference_indicator):
                 removed = schema['children'].pop(index)
                 fragment = self._get_in_register(removed['name'])
+                if removed.get('children'):
+                    fragment['children'].extend(removed['children'])
+
                 schema['children'].insert(index, fragment)
                 self._resolve_template(fragment)
             else:
