@@ -27,14 +27,14 @@ if __name__ == '__main__':
     schema = '@+show+@'
     context = {
         'show': 'white',
-        'department': 'dev',
-        'sequence': 'AB',
-        'shot': 'AB000',
-        'user': 'tommaso-c'
+        'department': 'job',
+        'sequence': 'AF',
+        'shot':'AF001',
+        'user': 'langeli'
     }
 
-    current_path = os.path.realpath('/tmp')
-    build = M.build(schema, context, path=current_path)
+    current_path = os.path.realpath('./_tmp_')
+    build = M.build(schema, context, root=current_path)
     path = 'white/dev/AA/AA000/sandbox/ennio'
     results = M.parse(path, schema)
     print pformat(results[0])

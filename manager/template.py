@@ -10,7 +10,7 @@ import stat
 import copy
 import logging
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 log = logging.getLogger('TemplateManager')
 
 
@@ -81,7 +81,6 @@ class TemplateManager(object):
                 new_entry
             )
 
-            log.debug('Adding {0}'.format(new_entry))
             path.pop()
 
     def _get_in_register(self, name):

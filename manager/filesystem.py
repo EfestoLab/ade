@@ -8,9 +8,9 @@ import os
 import re
 import logging
 
-from .template import TemplateManager
+from template import TemplateManager
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 log = logging.getLogger('FileSystemManager')
 
 # DEFAULT REGEX FOR COMMON FOLDER TYPES
@@ -26,17 +26,20 @@ class FileSystemManager(object):
 
     def __init__(self, template_manager=None):
         self.__default_path_regex = '(?P<{0}>[a-zA-Z0-9_]+)'
+        if (template_manager and not isinstance(template_manager, TemplateManager)):
+            log.exception('{} is not a valid template Namager')
+
         self.template_manager = template_manager or TemplateManager()
 
-    def build(self, name, data, level=100, path=None):
+    def build(self, name, data, root=None):
         ''' Build the given schema name, and replace data,
         level defines the depth of the built paths.
 
         '''
-        current_path = path
+        current_path = root
         built = self.template_manager.resolve_template(name)
         results = self.template_manager.resolve(built)
-        path_results = self._to_path(results, data, 1000)
+        path_results = self._to_path(results, data)
         # Create folder
         for result in path_results:
             path = os.path.join(current_path, result['path'])
@@ -61,9 +64,11 @@ class FileSystemManager(object):
 
         # Set permissions, using the reversed results
         for result in reversed(path_results):
-            path = result['path']
+            path = os.path.join(current_path, result['path'])
             permission = result['permission']
-            log.debug('setting {0} for {1}'.format(oct(permission), os.path.realpath(path)))
+            log.debug('setting {0} for {1}'.format(
+                oct(permission), os.path.realpath(path))
+            )
             try:
                 os.chmod(path, permission)
             except OSError, error:
@@ -116,7 +121,7 @@ class FileSystemManager(object):
             result_paths.append(result_path)
         return result_paths
 
-    def _to_path(self, paths, data, limit=100):
+    def _to_path(self, paths, data):
         ''' Recursively build a list of paths from the given
         set of schema paths.
 
@@ -124,7 +129,7 @@ class FileSystemManager(object):
         result_paths = []
         for entry in paths:
             result_path = []
-            for item in entry['path'][:limit]:
+            for item in entry['path']:
                 if '+' in item:
                     item = item.split('+')[1]
                     item = '{%s}' % item
@@ -136,7 +141,7 @@ class FileSystemManager(object):
                     final_path = final_path.format(**data)
                 except Exception, error:
                     log.warning(
-                        'Skipping {0} : {1} not found'.format(
+                        'PATHSKIP: {1} not found for {0}'.format(
                             final_path,
                             error
                         )
