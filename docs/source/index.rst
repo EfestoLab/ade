@@ -20,3 +20,11 @@ Indices and tables
 * :ref:`modindex`
 * :ref:`search`
 
+Refs
+====
+
+.. autoclass:: ade.manager.template.TemplateManager
+   :members:
+   :private-members:
+   :special-members:
+
