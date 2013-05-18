@@ -7,5 +7,10 @@ setup(version='0.1.0',
       name='ade',
       author_email='lorenzo.angeli@gmail.com',
       packages=find_packages(exclude=["test"]),
-      test_suite="test",                          
+      test_suite="test",    
+      entry_points={
+        'console_scripts': [
+            'run_ade = ade.main:run',
+            ],
+        },                     
 )

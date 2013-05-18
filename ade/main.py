@@ -18,7 +18,7 @@ def arguments():
     args = vars(parser.parse_args())
     return args
 
-if __name__ == '__main__':
+def run():
     args = arguments()
     print 'ARGS', args
 
