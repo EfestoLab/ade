@@ -4,7 +4,7 @@ import os
 import argparse
 from pprint import pformat
 
-from manager.filesystem import FileSystemManager
+from ade.manager.filesystem import FileSystemManager
 
 
 def arguments():

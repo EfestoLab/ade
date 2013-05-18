@@ -40,7 +40,6 @@ class FileSystemManager(object):
         built = self.template_manager.resolve_template(name)
         results = self.template_manager.resolve(built)
         path_results = self._to_path(results, data)
-        # Create folder
         for result in path_results:
             path = os.path.join(current_path, result['path'])
             if result['folder']:

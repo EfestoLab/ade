@@ -1,8 +1,7 @@
 import os
 import unittest
-from pprint import pformat
-from manager.filesystem import FileSystemManager
-from manager.template import TemplateManager
+from ade.manager.filesystem import FileSystemManager
+from ade.manager.template import TemplateManager
 
 
 class Test_FilesystemManager(unittest.TestCase):
@@ -66,3 +65,4 @@ class Test_FilesystemManager(unittest.TestCase):
     	test_path = 'Hello/World/test_C/test_D'
     	results = filesystem_manager.parse(test_path, '@+test_A+@')
     	self.assertEqual(results[0], self.data)
+

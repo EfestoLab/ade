@@ -1,6 +1,6 @@
 import os
 import unittest
-from manager.template import TemplateManager
+from ade.manager.template import TemplateManager
 
 
 class Test_TemplateManager(unittest.TestCase):
@@ -39,6 +39,11 @@ class Test_TemplateManager(unittest.TestCase):
         ]
         self.assertEqual(register, expected_result)
 
+    def test_register_unexisting_template(self):
+        manager = TemplateManager(self.template_paths) 
+        with self.assertRaises(KeyError):
+            manager._get_in_register('@+test_fake+@')
+        
     def test_registered_templates_folder(self):
         manager = TemplateManager(self.template_paths) 
         folder_A = manager._get_in_register('@+test_A+@')
