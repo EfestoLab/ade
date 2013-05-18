@@ -1,8 +1,0 @@
-setup.py
-UNKNOWN.egg-info/PKG-INFO
-UNKNOWN.egg-info/SOURCES.txt
-UNKNOWN.egg-info/dependency_links.txt
-UNKNOWN.egg-info/top_level.txt
-unit_test/__init__.py
-unit_test/test_filesystem_manager.py
-unit_test/test_template_manager.py
