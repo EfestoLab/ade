@@ -40,7 +40,6 @@ class FileSystemManager(object):
         built = self.template_manager.resolve_template(name)
         results = self.template_manager.resolve(built)
         path_results = self._to_path(results, data)
-        # Create folder
         for result in path_results:
             path = os.path.join(current_path, result['path'])
             if result['folder']:
@@ -79,6 +78,7 @@ class FileSystemManager(object):
         the given schema name.
 
         '''
+        matched_results = []
         built = self.template_manager.resolve_template(name)
         results = self.template_manager.resolve(built)
         parsers = self._to_parser(results)
@@ -91,12 +91,12 @@ class FileSystemManager(object):
                 continue
 
             result = match.groupdict()
-            if result and result not in results:
-                results.append(result)
+            if result and result not in matched_results:
+                matched_results.append(result)
 
-        results.sort()
-        results.reverse()
-        return results
+        matched_results.sort()
+        matched_results.reverse()
+        return matched_results
 
     def _to_parser(self, paths):
         ''' Recursively build a parser from the
