@@ -6,6 +6,6 @@ setup(version='0.1.0',
       author='Lorenzo Angeli',
       name='ade',
       author_email='lorenzo.angeli@gmail.com',
-      packages = find_packages(exclude="test"),
+      packages=find_packages(exclude=["test"]),
       test_suite="test",                          
 )
