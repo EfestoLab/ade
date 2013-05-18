@@ -11,7 +11,7 @@ setup(
 	test_suite="test",
 	entry_points={
 		'console_scripts': [
-		'run_ade = ade.main:run',
+		'ade = ade.main:run',
 		]
 	}
 )
