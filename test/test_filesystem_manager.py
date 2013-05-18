@@ -8,7 +8,7 @@ class Test_FilesystemManager(unittest.TestCase):
 
     def setUp(self):
         # Create a new template manager pointing to the test templates folder
-        template_paths = os.path.realpath('unit_test/data/templates')
+        template_paths = os.path.realpath('test/data/templates')
         self.template_manager = TemplateManager(template_paths)
     	self.data = {'test_A': 'Hello', 'test_B': 'World'}
 
