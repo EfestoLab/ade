@@ -40,19 +40,19 @@ class Test_TemplateManager(unittest.TestCase):
         self.assertEqual(register, expected_result)
 
     def test_register_unexisting_template(self):
-        manager = TemplateManager(self.template_paths) 
+        manager = TemplateManager(self.template_paths)
         with self.assertRaises(KeyError):
             manager._get_in_register('@+test_fake+@')
-        
-    def test_registered_templates_folder(self):
-        manager = TemplateManager(self.template_paths) 
+
+    def test_registered_templates_is_folder(self):
+        manager = TemplateManager(self.template_paths)
         folder_A = manager._get_in_register('@+test_A+@')
         self.assertTrue(folder_A.get('folder', False))
         self.assertTrue(folder_A.get('children', False))
         self.assertEqual(folder_A.get('permission', 000), 509)
 
-    def test_registered_templates_file(self):
-        manager = TemplateManager(self.template_paths) 
+    def test_registered_templates_is_file(self):
+        manager = TemplateManager(self.template_paths)
         file_D = manager._get_in_register('@test_D@')['children'][0]
         self.assertFalse(file_D.get('folder', True))
         self.assertFalse(file_D.get('children'))
@@ -62,7 +62,7 @@ class Test_TemplateManager(unittest.TestCase):
         manager = TemplateManager(self.template_paths)
         expected_result = {'folder': True, 'children': [
             {'folder': True, 'children': [
-                {'folder': True, 'permission': 509, 'children': [], 'name': 'test_B1'}, 
+                {'folder': True, 'permission': 509, 'children': [], 'name': 'test_B1'},
                 {'folder': True, 'children': [
                     {'folder': True, 'permission': 509, 'children': [
                         {'folder': True, 'children': [

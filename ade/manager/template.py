@@ -92,7 +92,7 @@ class TemplateManager(object):
                 item = copy.deepcopy(item)
                 return item
                 break
-        return {}
+        raise KeyError('{0} not found in register'.format(name))
 
     def resolve_template(self, name):
         ''' Return the built schema fragment of the given variable *name*.
