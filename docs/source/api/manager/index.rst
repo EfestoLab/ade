@@ -1,5 +1,5 @@
-ade managers
-============
+Manager
+=======
 
 Template Manager
 ----------------

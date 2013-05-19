@@ -1,5 +1,7 @@
-ADE a templated file system manager
-===================================
+WHAT IT IS
+==========
+
+ Ade a templated file system manager
 
 HOW TO BUILD
 ============
