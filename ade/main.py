@@ -8,12 +8,18 @@ from ade.manager.filesystem import FileSystemManager
 
 
 def arguments():
-    parser = argparse.ArgumentParser(
-        description='Command line for file system manager')
-    parser.add_argument('-tp', '--templates_path', help='Templates folder path')
-    parser.add_argument('-cp', '--current_path', help='Path to be checked')
-    parser.add_argument('-bn', '--build_path', help='Template name to be used')
-    parser.add_argument('-pp', '--parse_path', help='Parse the current path against the given template')
+    parser = argparse.ArgumentParser(prog='ade')
+    parser.add_argument('--version', action='store_true')
+    parser.add_argument('--verbose', action='store_true')
+
+    subparsers = parser.add_subparsers()
+    parser_a = subparsers.add_parser('create')
+    parser_a.add_argument('--destination_path', type=str)
+    parser_a.add_argument('--template_name', type=str)
+
+    parser_b = subparsers.add_parser('parse')
+    parser_b.add_argument('--target_path', type=str)
+    parser_b.add_argument('--mount_point', type=str)
 
     args = vars(parser.parse_args())
     return args
@@ -34,7 +40,10 @@ def run():
     }
 
     current_path = os.path.realpath('./_tmp_')
-    build = M.build(schema, context, root=current_path)
+    M.build(schema, context, root=current_path)
     path = 'white/dev/AA/AA000/sandbox/ennio'
     results = M.parse(path, schema)
     print pformat(results[0])
+
+if __name__ == '__main__':
+    run()

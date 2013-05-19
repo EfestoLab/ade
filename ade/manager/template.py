@@ -15,7 +15,6 @@ log = logging.getLogger('TemplateManager')
 
 
 class TemplateManager(object):
-
     ''' Template manager class,
     Provide standard methods to create virtual file structure
     from disk fragments.
@@ -27,12 +26,12 @@ class TemplateManager(object):
         '''
         current_path = os.path.dirname(os.path.abspath(__file__))
         template_path = os.path.join(current_path, '..', 'templates')
-
         self.__reference_indicator = '@'
         self.__variable_indicator = '+'
 
         self._register = []
         self._template_folder = template_folder or template_path
+        log.debug('Using template path: {0}'.format(self._template_folder))
         self.register_templates()
 
     @property
@@ -43,7 +42,20 @@ class TemplateManager(object):
         return self._register
 
     def resolve(self, schema):
-        ''' Resolve the given schema name and return all the entries.
+        ''' Resolve the given *schema* data and return all the entries.
+
+            :param schema: The schema to resolve.
+            :type schema: dict
+            :returns:  list -- the resolved paths.
+            :raises: AttributeError, KeyError
+
+            .. code-block:: python
+
+                from ade.schema.template import TemplateManager
+
+                manager = TemplateManager()
+                schema = manager.resolve_template('@+show+@')
+                resolved_schema = manager.resolve_template(schema)
 
         '''
         paths = []
@@ -56,6 +68,16 @@ class TemplateManager(object):
 
     def _resolve(self, schema, final_path_list, path=None):
         ''' Recursively build the final_path_list from schema.
+
+        :param schema: The *schema* informations
+        :type name: str
+        :param final_path_list: The resolved list of paths
+        :type name: list
+        :param path: An internal memory reference for the recursive function.
+        :type name: list
+
+        .. note::
+            This function is meant to be called only from within the resolve function
 
         '''
         path = path or [
@@ -86,6 +108,18 @@ class TemplateManager(object):
     def _get_in_register(self, name):
         ''' Return a copy of the given schema name in register.
 
+            :param name: The template *name*.
+            :type name: str
+            :returns:  dict -- the found template.
+            :raises: KeyError
+
+            .. code-block:: python
+
+                from ade.schema.template import TemplateManager
+
+                manager = TemplateManager()
+                schema = manager._get_in_register('@+show+@')
+
         '''
         for item in self.register:
             if item.get('name') == name:
@@ -97,6 +131,18 @@ class TemplateManager(object):
     def resolve_template(self, name):
         ''' Return the built schema fragment of the given variable *name*.
 
+            :param name: The template *name*.
+            :type name: str
+            :returns:  dict -- the resolved template.
+            :raises: AttributeError, KeyError
+
+            .. code-block:: python
+
+                from ade.schema.template import TemplateManager
+
+                manager = TemplateManager()
+                schema = manager.resolve_template('@+show+@')
+
         '''
         root = self._get_in_register(name)
         # Start the recursive build of the *root* folder, using *entry*
@@ -106,7 +152,13 @@ class TemplateManager(object):
         return root
 
     def _resolve_template(self, schema):
-        ''' Recursively build the given *schema* schema into *output*.
+        ''' Recursively resolve in place the given *schema* schema.
+
+        :param name: The *schema* template to be resolved.
+        :type name: dict
+
+        .. note::
+            This function is meant to be called only from within the resolve_template function.
 
         '''
         for index, entry in enumerate(schema.get('children', [])):
@@ -125,6 +177,15 @@ class TemplateManager(object):
     def register_templates(self, template_folder=None):
         ''' Parse template path and fill up the register table.
 
+            :param template_folder: The template path.
+            :type template_folder: str
+
+            .. code-block:: python
+
+                from ade.schema.template import TemplateManager
+
+                manager = TemplateManager()
+                manager.register_templates('some/path/to/template')
         '''
         template_folder = template_folder or self._template_folder
         # resolve the and list the content of the template path
@@ -155,6 +216,14 @@ class TemplateManager(object):
         ''' Recursively fill up the given *mapped* object with the
         hierarchical content of *root*.
 
+        :param root: The root path.
+        :type root: str
+
+        :param mapped: The destination mapping.
+        :type mapped: dict
+        
+        .. note::
+            This recursive function is meant to be called only from within the register_template function
         '''
         # If the root is a folder
         if os.path.isdir(root):

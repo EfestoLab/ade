@@ -35,6 +35,13 @@ class FileSystemManager(object):
         ''' Build the given schema name, and replace data,
         level defines the depth of the built paths.
 
+        :param name: The template *name* to build.
+        :type name: str
+        :param data: A set of data to create the template with.
+        :type name: dict
+        :param root: Define the start path of the tree to be build.
+        :type name: str
+        
         '''
         current_path = root
         built = self.template_manager.resolve_template(name)
@@ -76,6 +83,11 @@ class FileSystemManager(object):
     def parse(self, path, name):
         ''' Parse the provided path against
         the given schema name.
+
+        :param path: The *path* to be parsed.
+        :type path: str
+        :param name: The teplate name to parse against.
+        :type name: str
 
         '''
         matched_results = []
