@@ -1,8 +1,8 @@
 ade managers
-========
+============
 
 Template Manager
---------
+----------------
 
 .. autoclass:: ade.manager.template.TemplateManager
    :members:
@@ -11,7 +11,7 @@ Template Manager
 
 
 Filesystem Manager
---------
+------------------
 .. autoclass:: ade.manager.filesystem.FileSystemManager
    :members:
    :private-members:
