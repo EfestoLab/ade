@@ -11,7 +11,7 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
-
+   manager/index.rst
 
 Indices and tables
 ==================
@@ -19,12 +19,3 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
-
-Refs
-====
-
-.. autoclass:: ade.manager.template.TemplateManager
-   :members:
-   :private-members:
-   :special-members:
-
