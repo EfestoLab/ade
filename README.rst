@@ -1,4 +1,4 @@
-WHAT IT IS
+WHAT IS IT
 ==========
 
  Ade a templated file system manager
@@ -11,4 +11,3 @@ HOW TO BUILD
 * docs : python setup.py build_sphinx
 * test : python setup.py test
 * install: python setup.py install
-

@@ -13,6 +13,7 @@ Contents:
 
    api/index.rst
    template/index.rst
+   command/index.rst
 
 Indices and tables
 ==================
