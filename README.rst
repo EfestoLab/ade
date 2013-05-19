@@ -10,4 +10,5 @@ HOW TO BUILD
 * build : python setup.py build
 * docs : python setup.py build_sphinx
 * test : python setup.py test
+* install: python setup.py install
 
