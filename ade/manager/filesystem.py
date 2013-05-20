@@ -10,8 +10,7 @@ import logging
 
 from template import TemplateManager
 
-logging.basicConfig(level=logging.INFO)
-log = logging.getLogger('FileSystemManager')
+log = logging.getLogger('ade')
 
 # DEFAULT REGEX FOR COMMON FOLDER TYPES
 regexp_config = {

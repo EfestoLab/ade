@@ -10,8 +10,7 @@ import stat
 import copy
 import logging
 
-logging.basicConfig(level=logging.INFO)
-log = logging.getLogger('TemplateManager')
+log = logging.getLogger('ade')
 
 
 class TemplateManager(object):

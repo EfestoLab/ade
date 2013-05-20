@@ -3,32 +3,51 @@
 import os
 import argparse
 from pprint import pformat
+import logging
 
-from ade.manager.filesystem import FileSystemManager
+from manager import filesystem
+
+
+def setup_custom_logger(name):
+    formatter = logging.Formatter(fmt='[%(levelname)s][%(module)s] - %(message)s')
+
+    handler = logging.StreamHandler()
+    handler.setFormatter(formatter)
+
+    logger = logging.getLogger(name)
+    logger.setLevel(logging.DEBUG)
+    logger.addHandler(handler)
+    return logger
 
 
 def arguments():
     parser = argparse.ArgumentParser(prog='ade')
-    parser.add_argument('--version', action='store_true')
-    parser.add_argument('--verbose', action='store_true')
 
-    subparsers = parser.add_subparsers()
-    parser_a = subparsers.add_parser('create')
-    parser_a.add_argument('--destination_path', type=str)
-    parser_a.add_argument('--template_name', type=str)
+    parser.add_argument('mode', choices=['build', 'parse'],
+                        help='Mode of the application')
 
-    parser_b = subparsers.add_parser('parse')
-    parser_b.add_argument('--target_path', type=str)
-    parser_b.add_argument('--mount_point', type=str)
+    parser.add_argument('--mount_point',
+                        help='Mount point for build/parse')
+
+    parser.add_argument(
+        '--verbosity',
+        default='info',
+        choices=['debug', 'info', 'warning', 'error', 'critical'],
+        help='Logging output verbosity.'
+    )
 
     args = vars(parser.parse_args())
     return args
 
+
 def run():
     args = arguments()
-    print 'ARGS', args
+    #print 'ARGS', args
+    level = getattr(logging, args.get('verbosity').upper())
+    logger = setup_custom_logger('ade')
+    logger.setLevel(level)
 
-    M = FileSystemManager()
+    M = filesystem.FileSystemManager()
 
     schema = '@+show+@'
     context = {
