@@ -52,7 +52,7 @@ class TemplateManager(object):
 
                 from ade.schema.template import TemplateManager
 
-                manager = TemplateManager()
+                manager = TemplateManager('./templates')
                 schema = manager.resolve_template('@+show+@')
                 resolved_schema = manager.resolve_template(schema)
 

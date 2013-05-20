@@ -23,11 +23,27 @@ def setup_custom_logger(name):
 def arguments():
     parser = argparse.ArgumentParser(prog='ade')
 
-    parser.add_argument('mode', choices=['build', 'parse'],
-                        help='Mode of the application')
+    parser.add_argument(
+        'mode', choices=['build', 'parse'],
+        help='Mode of the application'
+    )
 
-    parser.add_argument('--mount_point',
-                        help='Mount point for build/parse')
+    parser.add_argument(
+        '--mount_point', help='Mount point for build/parse',
+        default='/tmp'
+    )
+
+    parser.add_argument(
+        '--template',
+        help='Specify template to use (has to exist in the template folder)',
+        default='@+show+@',
+        choices=['@+show+@', '@+department+@', '@+sequence+@', '@+shot+@', '@sandbox@'],
+    )
+
+    parser.add_argument(
+        '--template_folder',
+        help='Specify template folder to use'
+    )
 
     parser.add_argument(
         '--verbosity',
@@ -42,14 +58,14 @@ def arguments():
 
 def run():
     args = arguments()
-    #print 'ARGS', args
+    # Setup logging
     level = getattr(logging, args.get('verbosity').upper())
     logger = setup_custom_logger('ade')
     logger.setLevel(level)
 
-    M = filesystem.FileSystemManager()
+    logger.debug('Arguments: {0}'.format(pformat(args)))
 
-    schema = '@+show+@'
+    manager = filesystem.FileSystemManager(args.get('template_folder'))
     context = {
         'show': 'white',
         'department': 'job',
@@ -57,12 +73,18 @@ def run():
         'shot':'AF001',
         'user': 'langeli'
     }
+    
+    mount_point = args.get('mount_point')
+    if args.get('mode') == 'build':
+        template = args.get('template')
+        manager.build(template, context, root=mount_point)
 
-    current_path = os.path.realpath('./_tmp_')
-    M.build(schema, context, root=current_path)
-    path = 'white/dev/AA/AA000/sandbox/ennio'
-    results = M.parse(path, schema)
-    print pformat(results[0])
+    if args.get('mode') == 'parse':
+        pass
+
+    # path = 'white/dev/AA/AA000/sandbox/ennio'
+    # results = M.parse(path, schema)
+    # print pformat(results[0])
 
 if __name__ == '__main__':
     run()
