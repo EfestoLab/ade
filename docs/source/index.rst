@@ -21,7 +21,7 @@ Create a shot folder into the home directory of the user:
 
 .. code-block:: bash
 
- 	$ ade create --data show=white department=dev sequence=AA shot=AA001--template @+shot+@ --verbose debug --mount_point $HOME
+ 	$ ade create --data show=white department=dev sequence=AA shot=AA001 --template @+shot+@ --verbose debug --mount_point $HOME
 
 
 Initialise a new show into a custom path:
@@ -48,8 +48,18 @@ Parse the given path:
 
 .. code-block:: bash
 
- 	$ ade parse --path /tmp/white/job/AF/AF001/sandbox/langeli/maya/ 
-	>> {"department": "job", "show": "white", "shot": "AF001", "user": "langeli", "sequence": "AF"}
+ 	$ ade parse --path /tmp/white/job/AF/AF001/sandbox/username/maya/ 
+	>> {"department": "job", "show": "white", "shot": "AF001", "user": "username", "sequence": "AF"}
+
+
+Parse the current path:
+---------------------
+
+.. code-block:: bash
+	$ cd /tmp/white/job/AF/AF001/sandbox/username/maya/
+ 	$ ade parse
+	>> {"department": "job", "show": "white", "shot": "AF001", "user": "username", "sequence": "AF"}
+
 
 
 

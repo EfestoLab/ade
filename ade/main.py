@@ -92,8 +92,14 @@ def run():
     # Create a dictionary from the user's import data
     input_data = args.get('data', [''])
     input_data = dict([datum.split('=') for datum in input_data if '=' in datum])
+
+    input_data.setdefault('show', os.getenv('SHOW'))
+    input_data.setdefault('department', os.getenv('DEPARTMENT'))
+    input_data.setdefault('sequence', os.getenv('SEQUENCE'))
+    input_data.setdefault('shot', os.getenv('SHOT'))
     input_data.setdefault('user', os.getenv('USER'))
-    
+    logger.debug('Data: {0}'.format(pformat(input_data)))
+
     # Create a new manager
     manager = filesystem.FileSystemManager(args.get('template_folder'))
 
