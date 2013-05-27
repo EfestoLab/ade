@@ -32,6 +32,7 @@ On another hand creating a tree becomes:
 
 	$ ade create
 
+
 Flags
 =====
 
@@ -77,7 +78,11 @@ variable of the templates. Data allowes you to do so.
 
 .. code-block:: bash
 
-	$ ade create --data show=white department=film sequence=AA shot=AA001 user=hdd
+	$ ade create --data show=white department=film sequence=AA shot=AA001
+
+.. note::
+	If not provided data set the variable user to $USER (the current user).
+
 
 
 --template_folder
@@ -114,31 +119,4 @@ The target path for the parse.
 .. code-block:: bash
 
 	$ ade parse --path /tmp/white/AF/AF001/maya/scenes
-
-
-Examples
-========
-Here some simple examples on how use ade:
-
-
-Create a shot folder into the home directory of the user:
-
-.. code-block:: bash
-
- 	$ ade create --data show=white department=dev sequence=AA shot=AA001 user=langeli --template @+shot+@ --verbose debug --mount_point $HOME
-
-
-Initialise a new show into the directory of the user:
-
-.. code-block:: bash
-
- 	$ ade create --data show=white --verbose debug --mount_point $HOME --template @+show+@
-
-
-
-Create a maya folder into the current folder:
-
-.. code-block:: bash
-
- 	$ ade create -mount_point ./ --template @maya@ 
 
