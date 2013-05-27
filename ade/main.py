@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 
 import os
+import json
+import logging
 import argparse
 from pprint import pformat
-import logging
 
 from manager import filesystem
 
@@ -33,7 +34,7 @@ def arguments():
     )
 
     parser.add_argument(
-        '--mount_point', help='Mount point for build/parse',
+        '--mount_point', help='Mount point for build/parse operation',
         default='/tmp'
     )
 
@@ -59,7 +60,13 @@ def arguments():
     parser.add_argument(
         '--path',
         default='./',
-        help='Path to be parsed.'
+        help='Path to be parsed (parse mode only)'
+    )
+
+    parser.add_argument(
+        '--data',
+        nargs='*',
+        help='Fragment variables to fill up the path (build mode only)'
     )
 
     args = vars(parser.parse_args())
@@ -72,26 +79,24 @@ def run():
 
     """
     args = arguments()
+
     # Setup logging
     level = getattr(logging, args.get('verbose').upper())
     logger = setup_custom_logger('ade')
     logger.setLevel(level)
 
+    # Create a dictionary from the user's import data
+    input_data = args.get('data', [])
+    input_data = dict([datum.split('=') for datum in input_data])
     logger.debug('Arguments: {0}'.format(pformat(args)))
 
     manager = filesystem.FileSystemManager(args.get('template_folder'))
-    context = {
-        'show': 'white',
-        'department': 'job',
-        'sequence': 'AF',
-        'shot':'AF001',
-        'user': 'langeli'
-    }
+
     mount_point = args.get('mount_point')
     template = args.get('template')
 
     if args.get('mode') == 'create':
-        manager.build(template, context, root=mount_point)
+        manager.build(template, input_data, root=mount_point)
 
     if args.get('mode') == 'parse':
         path = os.path.realpath(args.get('path'))
@@ -101,7 +106,7 @@ def run():
             relative_path = relative_path[1:]
 
         results = manager.parse(relative_path, template)
-        logger.info('Result: {0}'.format(pformat(results[0])))
+        logger.info(json.dumps(results[0]))
 
 if __name__ == '__main__':
     run()
