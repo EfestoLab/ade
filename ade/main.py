@@ -66,6 +66,7 @@ def arguments():
     parser.add_argument(
         '--data',
         nargs='*',
+        default=[],
         help='Fragment variables (build mode only)'
     )
 
@@ -85,14 +86,23 @@ def run():
     logger = setup_custom_logger('ade')
     logger.setLevel(level)
 
-    # Create a dictionary from the user's import data
-    input_data = args.get('data', [])
-    input_data = dict([datum.split('=') for datum in input_data])
+    # Print the given arguments
     logger.debug('Arguments: {0}'.format(pformat(args)))
 
+    # Create a dictionary from the user's import data
+    input_data = args.get('data', [''])
+    input_data = dict([datum.split('=') for datum in input_data if '=' in datum])
+    input_data.setdefault('user', os.getenv('USER'))
+    
+    # Create a new manager
     manager = filesystem.FileSystemManager(args.get('template_folder'))
 
     mount_point = args.get('mount_point')
+
+    if not os.path.exists(mount_point):
+        logger.warning('{0} does not exist.'.format(mount_point))
+        return
+
     template = args.get('template')
 
     if args.get('mode') == 'create':
@@ -100,13 +110,21 @@ def run():
 
     if args.get('mode') == 'parse':
         path = os.path.realpath(args.get('path'))
+
+        if not os.path.exists(path):
+            logger.warning('{0} does not exist.'.format(path))
+            return
+
         relative_path = path.split(mount_point)[-1]
 
         if relative_path.startswith('/'):
             relative_path = relative_path[1:]
 
         results = manager.parse(relative_path, template)
-        logger.info(json.dumps(results[0]))
+        if results:
+            print json.dumps(results[0])
+        else:
+            logger.info('No data found')
 
 if __name__ == '__main__':
     run()
