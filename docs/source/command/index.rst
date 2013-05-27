@@ -70,6 +70,16 @@ the defined or default template_folder.
 	template definition set.
 
 
+--data
+-----------------
+In order to create a new tree from a template, you need to set some
+variable of the templates. Data allowes you to do so.
+
+.. code-block:: bash
+
+	$ ade create --data show=white department=film sequence=AA shot=AA001 user=hdd
+
+
 --template_folder
 -----------------
 The template folder is where the various template fragments are collected.
@@ -104,3 +114,31 @@ The target path for the parse.
 .. code-block:: bash
 
 	$ ade parse --path /tmp/white/AF/AF001/maya/scenes
+
+
+Examples
+========
+Here some simple examples on how use ade:
+
+
+Create a shot folder into the home directory of the user:
+
+.. code-block:: bash
+
+ 	$ ade create --data show=white department=dev sequence=AA shot=AA001 user=langeli --template @+shot+@ --verbose debug --mount_point $HOME
+
+
+Initialise a new show into the directory of the user:
+
+.. code-block:: bash
+
+ 	$ ade create --data show=white --verbose debug --mount_point $HOME --template @+show+@
+
+
+
+Create a maya folder into the current folder:
+
+.. code-block:: bash
+
+ 	$ ade create -mount_point ./ --template @maya@ 
+

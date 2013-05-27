@@ -66,7 +66,7 @@ def arguments():
     parser.add_argument(
         '--data',
         nargs='*',
-        help='Fragment variables to fill up the path (build mode only)'
+        help='Fragment variables (build mode only)'
     )
 
     args = vars(parser.parse_args())
