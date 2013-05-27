@@ -7,9 +7,9 @@ Construct and parse results of the teplate manager
 import os
 import re
 import logging
+from pprint import pformat
 
 from template import TemplateManager
-
 
 # DEFAULT REGEX FOR COMMON FOLDER TYPES
 regexp_config = {
@@ -92,6 +92,7 @@ class FileSystemManager(object):
         :type name: str
 
         '''
+        self.log.debug('Parsing {0} against {1}'.format(name, path))
         matched_results = []
         built = self.template_manager.resolve_template(name)
         results = self.template_manager.resolve(built)
@@ -110,6 +111,7 @@ class FileSystemManager(object):
 
         matched_results.sort()
         matched_results.reverse()
+        self.log.debug('Parsed Results {0}'.format(pformat(matched_results)))
         return matched_results
 
     def _to_parser(self, paths):

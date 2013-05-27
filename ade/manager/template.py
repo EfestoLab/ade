@@ -24,7 +24,7 @@ class TemplateManager(object):
 
         '''
         current_path = os.path.dirname(os.path.abspath(__file__))
-        template_path = os.path.join(current_path, '..', 'templates')
+        template_path = os.path.realpath(os.path.join(current_path, '..', 'templates'))
         self.__reference_indicator = '@'
         self.__variable_indicator = '+'
 

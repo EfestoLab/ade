@@ -37,6 +37,6 @@ man_pages = [
 
 texinfo_documents = [
   ('index', 'Ade', u'Ade Documentation',
-   u'Lorenzo Angeli', 'Ade', 'One line description of project.',
-   'Miscellaneous'),
+   u'Lorenzo Angeli', 'Ade', 'Templated file system manager.',
+   ''),
 ]

@@ -9,8 +9,10 @@ from manager import filesystem
 
 
 def setup_custom_logger(name):
+    """ Helper logging function.
+    """
     formatter = logging.Formatter(fmt='[%(levelname)s][%(module)s] - %(message)s')
-
+    
     handler = logging.StreamHandler()
     handler.setFormatter(formatter)
 
@@ -21,11 +23,13 @@ def setup_custom_logger(name):
 
 
 def arguments():
+    """ Arguments accepted by the application.
+    """
     parser = argparse.ArgumentParser(prog='ade')
 
     parser.add_argument(
-        'mode', choices=['build', 'parse'],
-        help='Mode of the application'
+        'mode', choices=['create', 'parse'],
+        help='Application mode'
     )
 
     parser.add_argument(
@@ -35,21 +39,27 @@ def arguments():
 
     parser.add_argument(
         '--template',
-        help='Specify template to use (has to exist in the template folder)',
+        help='Specify template to use (has to exist in the template folder).',
         default='@+show+@',
         choices=['@+show+@', '@+department+@', '@+sequence+@', '@+shot+@', '@sandbox@'],
     )
 
     parser.add_argument(
         '--template_folder',
-        help='Specify template folder to use'
+        help='Specify template folder to use, if not provided relies on default.'
     )
 
     parser.add_argument(
-        '--verbosity',
+        '--verbose',
         default='info',
         choices=['debug', 'info', 'warning', 'error', 'critical'],
-        help='Logging output verbosity.'
+        help='Log verbosity level.'
+    )
+
+    parser.add_argument(
+        '--path',
+        default='./',
+        help='Path to be parsed.'
     )
 
     args = vars(parser.parse_args())
@@ -57,9 +67,13 @@ def arguments():
 
 
 def run():
+    """
+    Main entry point of ade command line.
+
+    """
     args = arguments()
     # Setup logging
-    level = getattr(logging, args.get('verbosity').upper())
+    level = getattr(logging, args.get('verbose').upper())
     logger = setup_custom_logger('ade')
     logger.setLevel(level)
 
@@ -73,18 +87,21 @@ def run():
         'shot':'AF001',
         'user': 'langeli'
     }
-    
     mount_point = args.get('mount_point')
-    if args.get('mode') == 'build':
-        template = args.get('template')
+    template = args.get('template')
+
+    if args.get('mode') == 'create':
         manager.build(template, context, root=mount_point)
 
     if args.get('mode') == 'parse':
-        pass
+        path = os.path.realpath(args.get('path'))
+        relative_path = path.split(mount_point)[-1]
 
-    # path = 'white/dev/AA/AA000/sandbox/ennio'
-    # results = M.parse(path, schema)
-    # print pformat(results[0])
+        if relative_path.startswith('/'):
+            relative_path = relative_path[1:]
+
+        results = manager.parse(relative_path, template)
+        logger.info('Result: {0}'.format(pformat(results[0])))
 
 if __name__ == '__main__':
     run()
