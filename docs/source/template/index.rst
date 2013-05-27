@@ -1,148 +1,28 @@
-Default Template Structure
-==========================
+Template system
+===============
 
-Ade contains a default template structure, built to build and handle a vfx
-project structures.
+Ade base all its logic on top of a set of fragment folder, contained into a template path.
+The template folder structure has to follow some simple rules:
 
-
-Context folders
---------------- 
-A collection of high level context folder definition.
-
-show:
-.....
-Usually the root of the poject.
-
-Contains references to:
-
- * config
- * department
- * temp
-
-.. note::
-	The config folder contains an ovewride for a setup.json file
-	where some project related configs are supposed to be stored.
+structure
+---------
+Templates are contained into a top level folder defined by a template_path.
 
 .. code-block:: bash
 
-	├── @+show+@
-	│   ├── @config@
-	│   │   └── setup.json
-	│   ├── @+department+@
-	│   ├── editorial
-	│   ├── references
-	│   ├── @temp@
-	│   └── vault
+	.
+	└── <template_folder>
+		├── @+show+@
+		├── @+department+@
+		├── @+sequence+@
+		├── @+shot+@
+		├── @sandbox@
+		├── etc....
 
-department
-..........
-Define membership of department we are working into.
 
-Contains reference to :
+.. toctree::
+	:maxdepth: 1
 
-* config
-* sequence
-
-.. code-block:: bash
-
-	├── @+department+@
-	│   ├── @config@
-	│   └── @+sequence+@
-
-sequence:
-.........
-Define a sequence in the show 
-
-Contains reference to :
-
-* config
-* shot
-
-.. code-block:: bash
-
-	├── @+sequence+@
-	│   ├── @config@
-	│   └── @+shot+@
-
-shot:
-.....
-Define a shot in the sequence
-
-Contains reference to :
-
-* config
-* maya
-* nuke
-* sandbox
-
-.. code-block:: bash
-
-	├── @+shot+@
-	│   ├── build
-	│   ├── @config@
-	│   ├── @maya@
-	│   ├── @nuke@
-	│   └── @sandbox@
-
-Applications folders:
----------------------
-maya:
-....
-Contains the default maya structure with the workspace.mel file included
-
-.. code-block:: bash
-
-	├── @maya@
-	│   ├── images
-	│   ├── particles
-	│   ├── playblast
-	│   ├── python
-	│   │   └── +python_version+
-	│   ├── scene
-	│   ├── scripts
-	│   ├── textures
-	│   └── workspace.mel
-
-nuke:
-.....
-Contains the simple nuke project folder
-
-.. code-block:: bash
-
-	├── @nuke@
-	│   └── scripts
-
-Common Folders:
-----------------
-Contain a set of common folder used all over the structure.
-
-config:
-.......
-Contains a standard config folder .
-Contain a set of configuration files for environments.
-
-.. code-block:: bash
-
-	├── @config@
-	│   └── envs
-	│       └── software.json
-
-sandbox:
-........
-.. code-block:: bash
-
-	├── @sandbox@
-	│   └── +user+
-	│       ├── @config@
-	│       ├── @maya@
-	│       ├── @nuke@
-	│       └── @temp@
-
-temp:
-.....
-.. code-block:: bash
-
-	└── @temp@
-	    └── cache
+	default/index.rst
 
 

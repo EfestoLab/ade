@@ -7,11 +7,9 @@ Construct and parse results of the teplate manager
 import os
 import re
 import logging
+from pprint import pformat
 
 from template import TemplateManager
-
-logging.basicConfig(level=logging.INFO)
-log = logging.getLogger('FileSystemManager')
 
 # DEFAULT REGEX FOR COMMON FOLDER TYPES
 regexp_config = {
@@ -26,8 +24,11 @@ class FileSystemManager(object):
 
     def __init__(self, template_manager=None):
         self.__default_path_regex = '(?P<{0}>[a-zA-Z0-9_]+)'
+        self.log = logging.getLogger('ade')
+
         if (template_manager and not isinstance(template_manager, TemplateManager)):
-            log.exception('{} is not a valid template Namager')
+            self.log.exception('{} is not a valid template Namager')
+
 
         self.template_manager = template_manager or TemplateManager()
 
@@ -43,6 +44,7 @@ class FileSystemManager(object):
         :type name: str
         
         '''
+        self.log.debug('Building template : {0}'.format(name))
         current_path = root
         built = self.template_manager.resolve_template(name)
         results = self.template_manager.resolve(built)
@@ -51,34 +53,34 @@ class FileSystemManager(object):
             path = os.path.join(current_path, result['path'])
             if result['folder']:
                 # Create the folder
-                log.debug('creating folder: {0}'.format(path))
+                self.log.debug('creating folder: {0}'.format(path))
                 try:
                     os.makedirs(path)
                 except Exception, error:
-                    log.debug(error)
+                    self.log.debug(error)
                     pass
             else:
-                log.debug('creating file: {0}'.format(path))
+                self.log.debug('creating file: {0}'.format(path))
                 file_content = result['content']
                 try:
                     f = open(path, 'w')
                     f.write(file_content)
                     f.close()
                 except IOError, error:
-                    log.debug(error)
+                    self.log.debug(error)
                     pass
 
         # Set permissions, using the reversed results
         for result in reversed(path_results):
             path = os.path.join(current_path, result['path'])
             permission = result['permission']
-            log.debug('setting {0} for {1}'.format(
+            self.log.debug('setting {0} for {1}'.format(
                 oct(permission), os.path.realpath(path))
             )
             try:
                 os.chmod(path, permission)
             except OSError, error:
-                log.debug(error)
+                self.log.debug(error)
 
     def parse(self, path, name):
         ''' Parse the provided path against
@@ -90,6 +92,7 @@ class FileSystemManager(object):
         :type name: str
 
         '''
+        self.log.debug('Parsing {0} against {1}'.format(name, path))
         matched_results = []
         built = self.template_manager.resolve_template(name)
         results = self.template_manager.resolve(built)
@@ -108,6 +111,7 @@ class FileSystemManager(object):
 
         matched_results.sort()
         matched_results.reverse()
+        self.log.debug('Parsed Results {0}'.format(pformat(matched_results)))
         return matched_results
 
     def _to_parser(self, paths):
@@ -152,7 +156,7 @@ class FileSystemManager(object):
                 try:
                     final_path = final_path.format(**data)
                 except Exception, error:
-                    log.warning(
+                    self.log.warning(
                         'PATHSKIP: {1} not found for {0}'.format(
                             final_path,
                             error

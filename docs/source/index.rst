@@ -6,14 +6,20 @@
 Welcome to Ade's documentation!
 ===============================
 
+Ade (ade) is a templated file system tree manager.
+Provides the ability to create and parse a tree file structure,
+from a set of fragment folders, contained in an arbitrary location. 
+
+
+
 Contents:
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
-   api/index.rst
-   template/index.rst
-   command/index.rst
+   api/index
+   template/index
+   command/index
 
 Indices and tables
 ==================

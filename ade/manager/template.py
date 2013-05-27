@@ -10,8 +10,7 @@ import stat
 import copy
 import logging
 
-logging.basicConfig(level=logging.INFO)
-log = logging.getLogger('TemplateManager')
+log = logging.getLogger('ade')
 
 
 class TemplateManager(object):
@@ -25,7 +24,7 @@ class TemplateManager(object):
 
         '''
         current_path = os.path.dirname(os.path.abspath(__file__))
-        template_path = os.path.join(current_path, '..', 'templates')
+        template_path = os.path.realpath(os.path.join(current_path, '..', 'templates'))
         self.__reference_indicator = '@'
         self.__variable_indicator = '+'
 
@@ -53,7 +52,7 @@ class TemplateManager(object):
 
                 from ade.schema.template import TemplateManager
 
-                manager = TemplateManager()
+                manager = TemplateManager('./templates')
                 schema = manager.resolve_template('@+show+@')
                 resolved_schema = manager.resolve_template(schema)
 

@@ -3,34 +3,83 @@
 import os
 import argparse
 from pprint import pformat
+import logging
 
-from ade.manager.filesystem import FileSystemManager
+from manager import filesystem
+
+
+def setup_custom_logger(name):
+    """ Helper logging function.
+    """
+    formatter = logging.Formatter(fmt='[%(levelname)s][%(module)s] - %(message)s')
+    
+    handler = logging.StreamHandler()
+    handler.setFormatter(formatter)
+
+    logger = logging.getLogger(name)
+    logger.setLevel(logging.DEBUG)
+    logger.addHandler(handler)
+    return logger
 
 
 def arguments():
+    """ Arguments accepted by the application.
+    """
     parser = argparse.ArgumentParser(prog='ade')
-    parser.add_argument('--version', action='store_true')
-    parser.add_argument('--verbose', action='store_true')
 
-    subparsers = parser.add_subparsers()
-    parser_a = subparsers.add_parser('create')
-    parser_a.add_argument('--destination_path', type=str)
-    parser_a.add_argument('--template_name', type=str)
+    parser.add_argument(
+        'mode', choices=['create', 'parse'],
+        help='Application mode'
+    )
 
-    parser_b = subparsers.add_parser('parse')
-    parser_b.add_argument('--target_path', type=str)
-    parser_b.add_argument('--mount_point', type=str)
+    parser.add_argument(
+        '--mount_point', help='Mount point for build/parse',
+        default='/tmp'
+    )
+
+    parser.add_argument(
+        '--template',
+        help='Specify template to use (has to exist in the template folder).',
+        default='@+show+@',
+        choices=['@+show+@', '@+department+@', '@+sequence+@', '@+shot+@', '@sandbox@'],
+    )
+
+    parser.add_argument(
+        '--template_folder',
+        help='Specify template folder to use, if not provided relies on default.'
+    )
+
+    parser.add_argument(
+        '--verbose',
+        default='info',
+        choices=['debug', 'info', 'warning', 'error', 'critical'],
+        help='Log verbosity level.'
+    )
+
+    parser.add_argument(
+        '--path',
+        default='./',
+        help='Path to be parsed.'
+    )
 
     args = vars(parser.parse_args())
     return args
 
+
 def run():
+    """
+    Main entry point of ade command line.
+
+    """
     args = arguments()
-    print 'ARGS', args
+    # Setup logging
+    level = getattr(logging, args.get('verbose').upper())
+    logger = setup_custom_logger('ade')
+    logger.setLevel(level)
 
-    M = FileSystemManager()
+    logger.debug('Arguments: {0}'.format(pformat(args)))
 
-    schema = '@+show+@'
+    manager = filesystem.FileSystemManager(args.get('template_folder'))
     context = {
         'show': 'white',
         'department': 'job',
@@ -38,12 +87,21 @@ def run():
         'shot':'AF001',
         'user': 'langeli'
     }
+    mount_point = args.get('mount_point')
+    template = args.get('template')
 
-    current_path = os.path.realpath('./_tmp_')
-    M.build(schema, context, root=current_path)
-    path = 'white/dev/AA/AA000/sandbox/ennio'
-    results = M.parse(path, schema)
-    print pformat(results[0])
+    if args.get('mode') == 'create':
+        manager.build(template, context, root=mount_point)
+
+    if args.get('mode') == 'parse':
+        path = os.path.realpath(args.get('path'))
+        relative_path = path.split(mount_point)[-1]
+
+        if relative_path.startswith('/'):
+            relative_path = relative_path[1:]
+
+        results = manager.parse(relative_path, template)
+        logger.info('Result: {0}'.format(pformat(results[0])))
 
 if __name__ == '__main__':
     run()
