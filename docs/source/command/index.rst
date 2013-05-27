@@ -81,8 +81,13 @@ variable of the templates. Data allowes you to do so.
 	$ ade create --data show=white department=film sequence=AA shot=AA001
 
 .. note::
-	If not provided data set the variable user to $USER (the current user).
+	If not provided , a set of environment variables are used as lookup.
 
+	* show = $SHOW
+	* department = $DEPARTMENT
+	* sequence = $SEQUENCE
+	* shot = $SHOT
+	* user = $USER
 
 
 --template_folder

@@ -93,6 +93,7 @@ def run():
     input_data = args.get('data', [''])
     input_data = dict([datum.split('=') for datum in input_data if '=' in datum])
 
+    # Lookup for common show environment variables
     input_data.setdefault('show', os.getenv('SHOW'))
     input_data.setdefault('department', os.getenv('DEPARTMENT'))
     input_data.setdefault('sequence', os.getenv('SEQUENCE'))
@@ -103,8 +104,8 @@ def run():
     # Create a new manager
     manager = filesystem.FileSystemManager(args.get('template_folder'))
 
+    # Get the mountpoint
     mount_point = args.get('mount_point')
-
     if not os.path.exists(mount_point):
         logger.warning('{0} does not exist.'.format(mount_point))
         return
@@ -130,7 +131,7 @@ def run():
         if results:
             print json.dumps(results[0])
         else:
-            logger.info('No data found')
+            logger.info('No data found to parse from {0}'.format(path))
 
 if __name__ == '__main__':
     run()
