@@ -24,7 +24,9 @@ class TemplateManager(object):
 
         '''
         current_path = os.path.dirname(os.path.abspath(__file__))
-        template_path = os.path.realpath(os.path.join(current_path, '..', 'templates'))
+        template_path = os.path.realpath(
+            os.path.join(current_path, '..', 'templates')
+        )
         self.__reference_indicator = '@'
         self.__variable_indicator = '+'
 
@@ -195,7 +197,7 @@ class TemplateManager(object):
         # and register the hierarcy path in form of dictionary
         for template in templates:
             current_template_path = os.path.join(template_path, template)
-            permission = stat.S_IMODE(os.stat(current_template_path).st_mode)
+            permission = oct(stat.S_IMODE(os.stat(current_template_path).st_mode))
 
             current_template_map = {
                 'name': template,
@@ -220,7 +222,7 @@ class TemplateManager(object):
 
         :param mapped: The destination mapping.
         :type mapped: dict
-        
+
         .. note::
             This recursive function is meant to be called only from within the register_template function
         '''
@@ -234,7 +236,7 @@ class TemplateManager(object):
                     continue
 
                 subentry = os.path.join(root, entry)
-                permission = stat.S_IMODE(os.stat(subentry).st_mode)
+                permission = oct(stat.S_IMODE(os.stat(subentry).st_mode))
 
                 item = {
                     'name': entry,

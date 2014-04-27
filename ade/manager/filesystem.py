@@ -26,9 +26,10 @@ class FileSystemManager(object):
         self.__default_path_regex = '(?P<{0}>[a-zA-Z0-9_]+)'
         self.log = logging.getLogger('ade')
 
-        if (template_manager and not isinstance(template_manager, TemplateManager)):
+        if (template_manager and not isinstance(
+                template_manager, TemplateManager)
+            ):
             self.log.exception('{} is not a valid template Namager')
-
 
         self.template_manager = template_manager or TemplateManager()
 
@@ -42,7 +43,7 @@ class FileSystemManager(object):
         :type name: dict
         :param root: Define the start path of the tree to be build.
         :type name: str
-        
+
         '''
         self.log.debug('Building template : {0}'.format(name))
         current_path = root
@@ -78,7 +79,7 @@ class FileSystemManager(object):
                 oct(permission), os.path.realpath(path))
             )
             try:
-                os.chmod(path, permission)
+                os.chmod(path, int(permission))
             except OSError, error:
                 self.log.debug(error)
 
