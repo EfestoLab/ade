@@ -24,15 +24,15 @@ class FileSystemManager(object):
     ''' Return an instance of FileSystemManager.
     :param template_manager: An instance of the templateManager.
     :type template_manager: TemplateManager
-    :param root: the start position of the build path.
-    :type root: str
+    :param mount_point: the start position of the build path.
+    :type mount_point: str
 
     '''
 
-    def __init__(self, root, template_manager=None):
+    def __init__(self, mount_point, template_manager=None):
         self.__default_path_regex = '(?P<{0}>[a-zA-Z0-9_]+)'
         self.log = logging.getLogger('ade')
-        self.root = root
+        self.mount_point = mount_point
 
         if (template_manager and not isinstance(
                 template_manager, TemplateManager)
@@ -51,7 +51,7 @@ class FileSystemManager(object):
         :type name: dict
         '''
         self.log.debug('Building template : {0}'.format(name))
-        current_path = self.root
+        current_path = self.mount_point
         built = self.template_manager.resolve_template(name)
         results = self.template_manager.resolve(built)
         path_results = self._to_path(results, data)
@@ -98,13 +98,13 @@ class FileSystemManager(object):
         :type name: str
 
         '''
-        if not path.startswith(self.root):
-            print 'The path %s does not seems contained in the given root %s' % (
-                path, self.root
+        if not path.startswith(self.mount_point):
+            print 'The path %s does not seems contained in the given mount_point %s' % (
+                path, self.mount_point
             )
             return
 
-        path = path.split(self.root)[-1]
+        path = path.split(self.mount_point)[-1]
         if path.startswith(os.sep):
             path = path[1:]
 
