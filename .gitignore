@@ -1,7 +1,7 @@
 *.class
 *.pyc
 *.pyo
-ade/docs/build/*
-ade/ade.egg-info/*
-ade/build/*
-ade/dist/*
+docs/build/*
+ade.egg-info/*
+build/*
+dist/*
