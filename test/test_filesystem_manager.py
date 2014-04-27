@@ -11,9 +11,10 @@ class Test_FilesystemManager(unittest.TestCase):
         template_paths = os.path.realpath('test/data/templates')
         self.template_manager = TemplateManager(template_paths)
         self.data = {'test_A': 'Hello', 'test_B': 'World'}
+        self.root_path  = '/tmp'
 
     def test_permissions(self):
-        filesystem_manager = FileSystemManager(self.template_manager)
+        filesystem_manager = FileSystemManager(self.root_path, self.template_manager)
         resolved_template = filesystem_manager.template_manager.resolve_template('@+test_A+@')
         results = filesystem_manager.template_manager.resolve(resolved_template)
         path_results = filesystem_manager._to_path(results, self.data)
@@ -25,7 +26,7 @@ class Test_FilesystemManager(unittest.TestCase):
         self.assertEqual(permission_results, expected_results)
 
     def test_template_to_parser(self):
-        filesystem_manager = FileSystemManager(self.template_manager)
+        filesystem_manager = FileSystemManager(self.root_path, self.template_manager)
         resolved_template = filesystem_manager.template_manager.resolve_template('@+test_A+@')
         results = filesystem_manager.template_manager.resolve(resolved_template)
         parsers_results = filesystem_manager._to_parser(results)
@@ -44,7 +45,7 @@ class Test_FilesystemManager(unittest.TestCase):
         self.assertEqual(parsers_results, expected_path)
 
     def test_template_to_path(self):
-        filesystem_manager = FileSystemManager(self.template_manager)
+        filesystem_manager = FileSystemManager(self.root_path, self.template_manager)
         resolved_template = filesystem_manager.template_manager.resolve_template('@+test_A+@')
         results = filesystem_manager.template_manager.resolve(resolved_template)
         path_results = filesystem_manager._to_path(results, self.data)
@@ -64,8 +65,8 @@ class Test_FilesystemManager(unittest.TestCase):
         self.assertEqual(path_results,expected_path)
 
     def test_parse_complete_path(self):
-        filesystem_manager = FileSystemManager(self.template_manager)
-        test_path = 'Hello/World/test_C/test_D'
+        filesystem_manager = FileSystemManager(self.root_path, self.template_manager)
+        test_path = os.path.join(self.root_path, 'Hello/World/test_C/test_D')
         results = filesystem_manager.parse(test_path, '@+test_A+@')
         self.assertEqual(results[0], self.data)
 

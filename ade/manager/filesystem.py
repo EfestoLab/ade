@@ -103,8 +103,12 @@ class FileSystemManager(object):
                 path, self.root
             )
             return
-        path = path.split(self.root)[-1]
 
+        path = path.split(self.root)[-1]
+        if path.startswith(os.sep):
+            path = path[1:]
+
+        print 'Parsing {0} against {1}'.format(name, path)
         self.log.debug('Parsing {0} against {1}'.format(name, path))
         matched_results = []
         built = self.template_manager.resolve_template(name)
