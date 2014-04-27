@@ -21,10 +21,18 @@ regexp_config = {
 
 
 class FileSystemManager(object):
+    ''' Return an instance of FileSystemManager.
+    :param template_manager: An instance of the templateManager.
+    :type template_manager: TemplateManager
+    :param root: the start position of the build path.
+    :type root: str
 
-    def __init__(self, template_manager=None):
+    '''
+
+    def __init__(self, root, template_manager=None):
         self.__default_path_regex = '(?P<{0}>[a-zA-Z0-9_]+)'
         self.log = logging.getLogger('ade')
+        self.root = root
 
         if (template_manager and not isinstance(
                 template_manager, TemplateManager)
@@ -33,7 +41,7 @@ class FileSystemManager(object):
 
         self.template_manager = template_manager or TemplateManager()
 
-    def build(self, name, data, root=None):
+    def build(self, name, data):
         ''' Build the given schema name, and replace data,
         level defines the depth of the built paths.
 
@@ -41,12 +49,9 @@ class FileSystemManager(object):
         :type name: str
         :param data: A set of data to create the template with.
         :type name: dict
-        :param root: Define the start path of the tree to be build.
-        :type name: str
-
         '''
         self.log.debug('Building template : {0}'.format(name))
-        current_path = root
+        current_path = self.root
         built = self.template_manager.resolve_template(name)
         results = self.template_manager.resolve(built)
         path_results = self._to_path(results, data)
@@ -93,6 +98,13 @@ class FileSystemManager(object):
         :type name: str
 
         '''
+        if not path.startswith(self.root):
+            print 'The path %s does not seems contained in the given root %s' % (
+                path, self.root
+            )
+            return
+        path = path.split(self.root)[-1]
+
         self.log.debug('Parsing {0} against {1}'.format(name, path))
         matched_results = []
         built = self.template_manager.resolve_template(name)
