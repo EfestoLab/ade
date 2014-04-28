@@ -28,6 +28,10 @@ def arguments():
     """
     parser = argparse.ArgumentParser(prog='ade')
 
+    # subparsers = parser.add_subparsers('-bowtie')
+    # subparser = subparsers.add_parser()
+    # subparser.add_argument('new argument')
+
     parser.add_argument(
         'mode', choices=['create', 'parse'],
         help='Application mode'

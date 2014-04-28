@@ -1,7 +1,7 @@
-WHAT IS IT
-==========
+Ade
+===
 
- Ade a templated file system manager
+ A templated file system manager
 
 
 Build options
@@ -19,7 +19,7 @@ Once built use your browser to look into:
 
 .. code-block:: bash
 
-	./docs/build/html/index.html
+	firefox ./docs/build/html/index.html
 
 
 installation
@@ -28,8 +28,12 @@ To install the module, run:
 
 .. code-block::
 
-	python setup.py build_sphinx
+	python setup.py install
 
+.. note::
+
+    is suggested to install the module in a virtualenv environemnt for testing
+    before central installation.
 
 test
 ----
@@ -47,4 +51,4 @@ Documentation
 
 	python setup.py build_sphinx
 
-Once you 
+Once you
