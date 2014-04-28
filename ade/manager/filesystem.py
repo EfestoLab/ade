@@ -26,7 +26,6 @@ class FileSystemManager(object):
     :type template_manager: TemplateManager
     :param mount_point: the start position of the build path.
     :type mount_point: str
-
     '''
 
     def __init__(self, mount_point, template_manager=None):

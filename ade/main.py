@@ -13,7 +13,7 @@ def setup_custom_logger(name):
     """ Helper logging function.
     """
     formatter = logging.Formatter(fmt='[%(levelname)s][%(module)s] - %(message)s')
-    
+
     handler = logging.StreamHandler()
     handler.setFormatter(formatter)
 
