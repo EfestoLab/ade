@@ -91,7 +91,9 @@ def run():
 
     # Create a dictionary from the user's import data
     input_data = args.get('data', [''])
-    input_data = dict([datum.split('=') for datum in input_data if '=' in datum])
+    input_data = dict(
+        [datum.split('=') for datum in input_data if '=' in datum]
+    )
 
     # Lookup for common show environment variables
     input_data.setdefault('show', os.getenv('SHOW'))
@@ -125,12 +127,7 @@ def run():
             logger.warning('{0} does not exist.'.format(path))
             return
 
-        relative_path = path.split(mount_point)[-1]
-
-        if relative_path.startswith('/'):
-            relative_path = relative_path[1:]
-
-        results = manager.parse(relative_path, template)
+        results = manager.parse(path, template)
         if results:
             print json.dumps(results[0])
         else:

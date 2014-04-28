@@ -50,34 +50,30 @@ class FileSystemManager(object):
         path_results = self._to_path(results, data)
         for result in path_results:
             path = os.path.join(current_path, result['path'])
-            if result['folder']:
-                # Create the folder
-                self.log.debug('creating folder: {0}'.format(path))
-                try:
+            try:
+                if result['folder']:
+                    # Create the folder
+                    self.log.debug('creating folder: {0}'.format(path))
                     os.makedirs(path)
-                except Exception, error:
-                    self.log.debug(error)
-                    pass
-            else:
-                self.log.debug('creating file: {0}'.format(path))
-                file_content = result['content']
-                try:
-                    f = open(path, 'w')
-                    f.write(file_content)
-                    f.close()
-                except IOError, error:
-                    self.log.debug(error)
-                    pass
+                else:
+                    self.log.debug('creating file: {0}'.format(path))
+                    file_content = result['content']
+                    with open(path, 'w') as file_data:
+                        file_data.write(file_content)
+            except (IOError, OSError) as error:
+                self.log.debug('{0} already exist'.format(path))
+                pass
 
         # Set permissions, using the reversed results
         for result in reversed(path_results):
             path = os.path.join(current_path, result['path'])
             permission = result['permission']
-            self.log.debug('setting {0} for {1}'.format(
-                int(permission), os.path.realpath(path))
-            )
+            permission = int(permission, 8)
+            self.log.info('Setting {1} as {0}'.format(
+                oct(permission), os.path.realpath(path)
+            ))
             try:
-                os.chmod(path, int(permission))
+                os.chmod(path, permission)
             except OSError, error:
                 self.log.debug(error)
 
@@ -104,7 +100,6 @@ class FileSystemManager(object):
         if path.startswith(os.sep):
             path = path[1:]
 
-        print 'Parsing {0} against {1}'.format(name, path)
         self.log.debug('Parsing {0} against {1}'.format(name, path))
         matched_results = []
         built = self.template_manager.resolve_template(name)
@@ -148,6 +143,7 @@ class FileSystemManager(object):
                 result_path.append(entry)
             result_path = (os.sep).join(result_path)
             result_paths.append(result_path)
+        self.log.debug('building parser %s' % result_paths)
         return result_paths
 
     def _to_path(self, paths, data):
