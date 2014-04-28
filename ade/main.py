@@ -87,7 +87,7 @@ def run():
     logger.setLevel(level)
 
     # Print the given arguments
-    logger.debug('Arguments: {0}'.format(pformat(args)))
+    # logger.debug('Arguments: {0}'.format(pformat(args)))
 
     # Create a dictionary from the user's import data
     input_data = args.get('data', [''])
@@ -96,12 +96,12 @@ def run():
     )
 
     # Lookup for common show environment variables
-    input_data.setdefault('show', os.getenv('SHOW'))
-    input_data.setdefault('department', os.getenv('DEPARTMENT'))
-    input_data.setdefault('sequence', os.getenv('SEQUENCE'))
-    input_data.setdefault('shot', os.getenv('SHOT'))
+    input_data.setdefault('show', os.getenv('SHOW') or 'staging')
+    input_data.setdefault('department', os.getenv('DEPARTMENT') or 'pipeline')
+    input_data.setdefault('sequence', os.getenv('SEQUENCE') or 'rnd')
+    input_data.setdefault('shot', os.getenv('SHOT') or 'test')
     input_data.setdefault('user', os.getenv('USER'))
-    logger.debug('Data: {0}'.format(pformat(input_data)))
+    logger.debug('Using data: {0}'.format(pformat(input_data)))
 
     # Get the mountpoint
     mount_point = args.get('mount_point')

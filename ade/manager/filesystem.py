@@ -109,13 +109,13 @@ class FileSystemManager(object):
         parsers = self._to_parser(results)
         for parser in parsers:
             check = re.compile(parser)
-
-            self.log.debug('Checking {0} with {1}'.format(
-                path, parser
-            ))
             match = check.search(path)
             if not match:
                 continue
+
+            self.log.debug('Match found for {0} with {1}'.format(
+                path, parser
+            ))
             result = match.groupdict()
             if result and result not in matched_results:
                 matched_results.append(result)
@@ -148,7 +148,7 @@ class FileSystemManager(object):
             result_paths.append(result_path)
 
         result_paths.sort(key=len)
-        result_paths.reverse()
+        # result_paths.reverse()
         self.log.debug('building parser %s' % pformat(result_paths))
         return result_paths
 
