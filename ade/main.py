@@ -101,19 +101,22 @@ def run():
     input_data.setdefault('user', os.getenv('USER'))
     logger.debug('Data: {0}'.format(pformat(input_data)))
 
-    # Create a new manager
-    manager = filesystem.FileSystemManager(args.get('template_folder'))
-
     # Get the mountpoint
     mount_point = args.get('mount_point')
     if not os.path.exists(mount_point):
         logger.warning('{0} does not exist.'.format(mount_point))
         return
 
+    # Create a new manager
+    manager = filesystem.FileSystemManager(
+        mount_point,
+        args.get('template_folder'),
+        )
+
     template = args.get('template')
 
     if args.get('mode') == 'create':
-        manager.build(template, input_data, root=mount_point)
+        manager.build(template, input_data)
 
     if args.get('mode') == 'parse':
         path = os.path.realpath(args.get('path'))

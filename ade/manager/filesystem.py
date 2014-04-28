@@ -32,12 +32,6 @@ class FileSystemManager(object):
         self.__default_path_regex = '(?P<{0}>[a-zA-Z0-9_]+)'
         self.log = logging.getLogger('ade')
         self.mount_point = mount_point
-
-        if (template_manager and not isinstance(
-                template_manager, TemplateManager)
-            ):
-            self.log.exception('{} is not a valid template Namager')
-
         self.template_manager = template_manager or TemplateManager()
 
     def build(self, name, data):
@@ -80,7 +74,7 @@ class FileSystemManager(object):
             path = os.path.join(current_path, result['path'])
             permission = result['permission']
             self.log.debug('setting {0} for {1}'.format(
-                oct(permission), os.path.realpath(path))
+                int(permission), os.path.realpath(path))
             )
             try:
                 os.chmod(path, int(permission))
