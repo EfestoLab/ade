@@ -92,8 +92,11 @@ class FileSystemManager(object):
 
         '''
         if not path.startswith(self.mount_point):
-            print 'The path %s does not seems contained in the given mount_point %s' % (
-                path, self.mount_point
+            self.log.exception(
+                ('The path %s does not seems contained'
+                ' in the given mount_point %s') % (
+                    path, self.mount_point
+                )
             )
             return
 
