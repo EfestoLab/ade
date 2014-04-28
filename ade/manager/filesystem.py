@@ -36,7 +36,7 @@ class FileSystemManager(object):
         self.mount_point = mount_point
         self.template_manager = template_manager or TemplateManager()
 
-    def build(self, name, data):
+    def build(self, name, data, path=None):
         ''' Build the given schema name, and replace data,
         level defines the depth of the built paths.
 
@@ -44,9 +44,11 @@ class FileSystemManager(object):
         :type name: str
         :param data: A set of data to create the template with.
         :type name: dict
+        :param path: the path where the structure has to be created.
+        :type name: str
         '''
         self.log.debug('Building template : {0}'.format(name))
-        current_path = self.mount_point
+        current_path = path or self.mount_point
         built = self.template_manager.resolve_template(name)
         results = self.template_manager.resolve(built)
         path_results = self._to_path(results, data)
@@ -171,14 +173,12 @@ class FileSystemManager(object):
                 try:
                     final_path = final_path.format(**data)
                 except Exception, error:
-                    self.log.warning(
-                        'PATHSKIP: {1} not found for {0}'.format(
-                            final_path,
-                            error
+                    self.log.warning('{1} not found for {0}'.format(
+                        final_path,
+                        error
                         )
                     )
                     continue
-
                 entry['path'] = final_path
                 result_paths.append(entry)
 

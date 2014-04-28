@@ -103,6 +103,7 @@ def run():
     input_data.setdefault('user', os.getenv('USER'))
     logger.debug('Using data: {0}'.format(pformat(input_data)))
 
+    path = args.get('path')
     # Get the mountpoint
     mount_point = args.get('mount_point')
     if not os.path.exists(mount_point):
@@ -118,10 +119,10 @@ def run():
     template = args.get('template')
 
     if args.get('mode') == 'create':
-        manager.build(template, input_data)
+        manager.build(template, input_data, path)
 
     if args.get('mode') == 'parse':
-        path = os.path.realpath(args.get('path'))
+        path = os.path.realpath(path)
 
         if not os.path.exists(path):
             logger.warning('{0} does not exist.'.format(path))
