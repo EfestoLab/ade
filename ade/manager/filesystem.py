@@ -12,11 +12,13 @@ from pprint import pformat
 from template import TemplateManager
 
 # DEFAULT REGEX FOR COMMON FOLDER TYPES
+# TODO: This should be moved to config
+
 regexp_config = {
     'show': '(?P<show>[a-zA-Z0-9_]+)',
     'sequence': '(?P<sequence>[a-zA-Z0-9_]+)',
     'shot': '(?P<shot>[a-zA-Z0-9_]+)',
-    'department': '(?P<department>[a-z_]+)'
+    'department': '(?P<department>[a-zA-Z0-9_]+)'
 }
 
 
@@ -105,21 +107,22 @@ class FileSystemManager(object):
         built = self.template_manager.resolve_template(name)
         results = self.template_manager.resolve(built)
         parsers = self._to_parser(results)
-
         for parser in parsers:
             check = re.compile(parser)
-            match = check.match(path)
 
+            self.log.debug('Checking {0} with {1}'.format(
+                path, parser
+            ))
+            match = check.search(path)
             if not match:
                 continue
-
             result = match.groupdict()
             if result and result not in matched_results:
                 matched_results.append(result)
+            break
 
         matched_results.sort()
         matched_results.reverse()
-        self.log.debug('Parsed Results {0}'.format(pformat(matched_results)))
         return matched_results
 
     def _to_parser(self, paths):
@@ -141,9 +144,12 @@ class FileSystemManager(object):
                     )
                     entry = parser.format(entry)
                 result_path.append(entry)
-            result_path = (os.sep).join(result_path)
+            result_path = '^{0}$'.format((os.sep).join(result_path))
             result_paths.append(result_path)
-        self.log.debug('building parser %s' % result_paths)
+
+        result_paths.sort(key=len)
+        result_paths.reverse()
+        self.log.debug('building parser %s' % pformat(result_paths))
         return result_paths
 
     def _to_path(self, paths, data):
