@@ -39,8 +39,8 @@ The code can be downloaded from github with the following command:
 
     $git clone https://langeli@bitbucket.org/langeli/filesystemmanager.git
 
-Build
------
+Build and install
+-----------------
 
 In order to build the package you'll need to get into the ade folder and type:
 
