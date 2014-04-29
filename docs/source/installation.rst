@@ -29,11 +29,9 @@ To exit from the virtual environment type:
 
 For more informations on how to use virtualenv please refer to its documentation.
 
-
-The main repository of the project lives in bitbucket ad `this <https://bitbucket.org/langeli/filesystemmanager>`_ address:
-
 Download
 --------
+The main repository of the project lives in bitbucket ad `this <https://bitbucket.org/langeli/filesystemmanager>`_ address:
 
 The code can be downloaded from github with the following command:
 
