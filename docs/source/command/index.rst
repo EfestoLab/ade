@@ -6,7 +6,7 @@ Command Line
 	$ ade
 
 ade command line provides an easy access to the ade module functionalities.
-Provides two main modes and a set of optional flags, 
+Provides two main modes and a set of optional flags,
 
 Modes
 =====
@@ -38,7 +38,7 @@ Flags
 
 -h
 --
-Provide a quick help for the available options, and modes. 
+Provide a quick help for the available options, and modes.
 
 .. code-block:: bash
 
@@ -59,7 +59,7 @@ The mount point is whatever is before /<show>/..../.../
 --template
 ----------
 Specify which template has to be used to build the tree.
-The available templates are all the top folder names found in 
+The available templates are all the top folder names found in
 the defined or default template_folder.
 
 .. code-block:: bash
@@ -67,7 +67,7 @@ the defined or default template_folder.
 	$ ade --template @+show+@
 
 .. note::
-	If not provided, falls back to the default and included 
+	If not provided, falls back to the default and included
 	template definition set.
 
 
@@ -100,7 +100,7 @@ The template folder is where the various template fragments are collected.
 
 --verbose
 ---------
-Set the verbosity level for the application, to get sensible detail enable 
+Set the verbosity level for the application, to get sensible detail enable
 the debug mode.
 
 Available levels:
@@ -116,10 +116,8 @@ Available levels:
 
 --path
 ------
-.. warning::
-	This options is usful only in parse mode.
 
-The target path for the parse.
+The target path for the parse or create.
 
 .. code-block:: bash
 

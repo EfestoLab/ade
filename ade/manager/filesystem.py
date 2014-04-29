@@ -24,6 +24,7 @@ regexp_config = {
 
 class FileSystemManager(object):
     ''' Return an instance of FileSystemManager.
+
     :param template_manager: An instance of the templateManager.
     :type template_manager: TemplateManager
     :param mount_point: the start position of the build path.

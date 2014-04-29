@@ -1,18 +1,9 @@
 Manager
 =======
 
-Template Manager
-----------------
+.. toctree::
+   :maxdepth: 2
 
-.. autoclass:: ade.manager.template.TemplateManager
-   :members:
-   :private-members:
-   :special-members:
+   template
+   filesystem
 
-
-Filesystem Manager
-------------------
-.. autoclass:: ade.manager.filesystem.FileSystemManager
-   :members:
-   :private-members:
-   :special-members:
