@@ -1,12 +1,11 @@
 Create
 ======
 
+.. note::
+    - mount_point is set to /tmp by default
 
 Initialise a new show into a custom path:
 -------------------------------------------
-
-.. note::
-    mount_point is set to /tmp by default
 
 .. code-block:: bash
 

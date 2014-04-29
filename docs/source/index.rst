@@ -18,6 +18,7 @@ Contents:
 .. toctree::
    :maxdepth: 1
 
+   installation
    examples/index
    api/index
    template/index
