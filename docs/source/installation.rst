@@ -1,7 +1,7 @@
 Installation
 ============
 
-I highly suggest to use for the first test installation to use virtualenv, so you can see if all the dependencies.
+I highly suggest , for the first test installation to use virtualenv, so you can see if all the dependencies.
 
 .. code-block:: bash
 
