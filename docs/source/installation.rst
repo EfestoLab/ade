@@ -5,15 +5,15 @@ I highly suggest , for the first test installation to use virtualenv, so you can
 
 .. code-block:: bash
 
-    $sudo easy_install virtualenv
+    $ sudo easy_install virtualenv
 
 To build and enable a new env just type:
 
 .. code-block:: bash
 
-    $cd some/where/
-    $virtualenv ade_test
-    $source ade_test/bin/activate
+    $ cd some/where/
+    $ virtualenv ade_test
+    $ source ade_test/bin/activate
 
 This should have changed your current shell to something similar to :
 
@@ -25,7 +25,7 @@ To exit from the virtual environment type:
 
 .. code-block:: bash
 
-    (ade)$deactivate
+    (ade)$ deactivate
 
 For more informations on how to use virtualenv please refer to its documentation.
 
@@ -37,7 +37,7 @@ The code can be downloaded from github with the following command:
 
 .. code-block:: bash
 
-    $git clone https://langeli@bitbucket.org/langeli/filesystemmanager.git
+    $ git clone https://langeli@bitbucket.org/langeli/filesystemmanager.git
 
 Build and install
 -----------------
@@ -49,7 +49,7 @@ In order to build the package you'll need to get into the ade folder and type:
 
 .. code-block:: bash
 
-    $python setup.py install
+    $ python setup.py install
 
 
 Test
@@ -59,7 +59,7 @@ If you are unsure if the current version is not stable , run the unittests and c
 
 .. code-block:: bash
 
-    $python setup.py test
+    $ python setup.py test
 
 .. warning::
     If the package is not being installed before running the tests,it will download all the needed packages into the root of the project.
@@ -72,7 +72,7 @@ To build the current documentation please run:
 
 .. code-block:: bash
 
-    $python setup.py build_sphinx
+    $ python setup.py build_sphinx
 
 This will produce a build folder into ade/docs which contains the built type (html).
 
