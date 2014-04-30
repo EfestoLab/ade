@@ -2,21 +2,21 @@ Create
 ======
 
 .. note::
-    - mount_point is set to /tmp by default
+    - path is set to ./ by default
 
 Initialise a new show into a custom path:
 -------------------------------------------
 
 .. code-block:: bash
 
-    $ ade create --data show=white --verbose debug --mount_point /jobs --template @+show+@
+    $ ade create --data show=white --verbose debug --path /jobs --template @+show+@
 
 Create a shot folder into the home directory of the user:
 ---------------------------------------------------------
 
 .. code-block:: bash
 
-    $ ade create --data show=white department=dev sequence=AA shot=AA001 --template @+shot+@ --verbose debug --mount_point $HOME
+    $ ade create --data show=white department=dev sequence=AA shot=AA001 --template @+shot+@ --verbose debug --path $HOME
 
 
 Create a sandbox folder into the current folder:
@@ -24,7 +24,7 @@ Create a sandbox folder into the current folder:
 
 .. code-block:: bash
 
-    $ ade create --mount_point ./ --template @sandbox@  --verbose debug
+    $ ade create --template @sandbox@
 
 
 
