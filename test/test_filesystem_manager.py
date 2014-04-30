@@ -33,14 +33,14 @@ class Test_FilesystemManager(unittest.TestCase):
         expected_path = [
             '^(?P<test_A>[a-zA-Z0-9_]+)/test_A1$',
             '^(?P<test_A>[a-zA-Z0-9_]+)/(?P<test_B>[a-zA-Z0-9_]+)$',
-            '^(?P<test_A>[a-zA-Z0-9_]+)/(?P<test_B>[a-zA-Z0-9_]+)/file_B.txt$',
-            '^(?P<test_A>[a-zA-Z0-9_]+)/(?P<test_B>[a-zA-Z0-9_]+)/test_B2$',
             '^(?P<test_A>[a-zA-Z0-9_]+)/(?P<test_B>[a-zA-Z0-9_]+)/test_C$',
+            '^(?P<test_A>[a-zA-Z0-9_]+)/(?P<test_B>[a-zA-Z0-9_]+)/test_B2$',
+            '^(?P<test_A>[a-zA-Z0-9_]+)/(?P<test_B>[a-zA-Z0-9_]+)/test_B1$',
+            '^(?P<test_A>[a-zA-Z0-9_]+)/(?P<test_B>[a-zA-Z0-9_]+)/file_B.txt$',
             '^(?P<test_A>[a-zA-Z0-9_]+)/(?P<test_B>[a-zA-Z0-9_]+)/test_C/test_C1$',
             '^(?P<test_A>[a-zA-Z0-9_]+)/(?P<test_B>[a-zA-Z0-9_]+)/test_C/test_C1/test_D$',
             '^(?P<test_A>[a-zA-Z0-9_]+)/(?P<test_B>[a-zA-Z0-9_]+)/test_C/test_C1/test_D/test_D1$',
             '^(?P<test_A>[a-zA-Z0-9_]+)/(?P<test_B>[a-zA-Z0-9_]+)/test_C/test_C1/test_D/file_D.txt$',
-            '^(?P<test_A>[a-zA-Z0-9_]+)/(?P<test_B>[a-zA-Z0-9_]+)/test_B1$'
         ]
         self.assertEqual(parsers_results, expected_path)
 
