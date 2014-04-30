@@ -34,11 +34,6 @@ def arguments():
     )
 
     parser.add_argument(
-        '--mount_point', help='Mount point for build/parse operation',
-        default='/tmp'
-    )
-
-    parser.add_argument(
         '--template',
         help='Specify template to use (has to exist in the template folder).',
         default='@+show+@',
@@ -105,14 +100,13 @@ def run():
 
     path = args.get('path')
     # Get the mountpoint
-    mount_point = args.get('mount_point')
-    if not os.path.exists(mount_point):
-        logger.warning('{0} does not exist.'.format(mount_point))
+    if not os.path.exists(path):
+        logger.warning('{0} does not exist.'.format(path))
         return
 
     # Create a new manager
     manager = filesystem.FileSystemManager(
-        mount_point,
+        path,
         args.get('template_folder'),
         )
 

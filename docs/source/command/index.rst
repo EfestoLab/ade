@@ -11,27 +11,49 @@ Provides two main modes and a set of optional flags,
 Modes
 =====
 Each mode defines a different interaction type with the application.
-ade provides 2 main modes, parse and create.
-
-parse
------
-In order to parse a tree structure it's matter to run:
-
-.. code-block:: bash
-
-	$ ade parse
-
-and it will parse the current directory against the default tamplate
-into the deafault path.
+ade provides 2 main modes, create and parse.
 
 create
 ------
-On another hand creating a tree becomes:
+In order to create a new directory structure you'll need to provide some base data.
 
 .. code-block:: bash
 
-	$ ade create
+	$ ade create --data show=foo sequence=bar shot=zoo --path /tmp
 
+which will print some informations about the process:
+
+.. code-block:: bash
+
+	[WARNING][filesystem] - 'python_version' not found for {show}/python/{python_version}
+	[WARNING][filesystem] - 'python_version' not found for {show}/python/{python_version}/modules
+	[INFO][filesystem] - Setting /tmp/foo/vault as 0755
+	[INFO][filesystem] - Setting /tmp/foo/temp as 0755
+	[INFO][filesystem] - Setting /tmp/foo/editorial as 0755
+	[INFO][filesystem] - Setting /tmp/foo/pipeline/config/envs/software.json as 0644
+	[..........]
+	[INFO][filesystem] - Setting /tmp/foo/python as 0755
+
+.. note::
+	In this case the warning are related to a missing variable (python_version=2.6.4) required to build the default template @+show+@
+
+parse
+-----
+Same for parsing them back :
+
+.. code-block:: bash
+
+	$ ade parse --path /tmp/foo/pipeline/rnd/config/envs --template @+show+@
+	{"department": "pipeline", "show": "foo", "sequence": "rnd"}
+
+
+Being the default path set to ./ , and @+show+@ the default schema, you'll be able to simply do from within any of the project folder:
+
+.. code-block:: bash
+
+	$ cd /tmp/foo/pipeline/rnd/config/envs
+	$ ade parse
+	{"department": "pipeline", "show": "foo", "sequence": "rnd"}
 
 Flags
 =====
@@ -43,18 +65,6 @@ Provide a quick help for the available options, and modes.
 .. code-block:: bash
 
 	$ ade -h
-
---mount_point
--------------
-Define which is the mount point of the current project.
-The mount point is whatever is before /<show>/..../.../
-
-.. code-block:: bash
-
-	$ ade --mount_point /jobs
-
-.. note::
-	If not provided, falls back to /tmp.
 
 --template
 ----------

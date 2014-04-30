@@ -19,8 +19,8 @@ Contents:
    :maxdepth: 1
 
    installation
-   examples/index
-   api/index
+   tutorials/index
+   reference/index
    template/index
    command/index
 

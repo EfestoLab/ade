@@ -1,7 +1,8 @@
-Installation
-============
+Setup
+=====
+In here you'll learn on how to build install and test the project.
 
-I highly suggest , for the first test installation to use virtualenv, so you can see if all the dependencies.
+I highly suggest , for the first test installation to use virtualenv, so you can see if all the dependencies are satisfied, before rolling it out in production environments.
 
 .. code-block:: bash
 
@@ -27,7 +28,7 @@ To exit from the virtual environment type:
 
     (ade)$ deactivate
 
-For more informations on how to use virtualenv please refer to its documentation.
+For more informations on how to use `virtualenv <http://www.virtualenv.org/en/latest/>`_ please refer to its documentation.
 
 Download
 --------
@@ -81,7 +82,4 @@ Point your browser to ade/docs/build/html/index.html and you should be able to r
 .. note::
     If there's any problem on building the docs please ensure that the sphinx module is available.
 
-
-
-.. note::
     If any bug is been found please report it to the `issue tracker <https://bitbucket.org/langeli/filesystemmanager/issues?status=new&status=open>`_.
