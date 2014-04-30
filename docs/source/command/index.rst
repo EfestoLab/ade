@@ -19,7 +19,7 @@ In order to create a new directory structure you'll need to provide some base da
 
 .. code-block:: bash
 
-	$ ade create --data show=foo sequence=bar shot=zoo --path /tmp
+	$ ade create --template @+show+@ --data show=foo sequence=bar shot=zoo --path /tmp --mount_point=/tmp
 
 which will print some informations about the process:
 
@@ -35,10 +35,13 @@ which will print some informations about the process:
 	[INFO][filesystem] - Setting /tmp/foo/python as 0755
 
 .. note::
-	In this case the warning are related to a missing variable (python_version=2.6.4) required to build the default template @+show+@
+	In this case the warning are related to a missing variable (--data python_version=2.6.4) required to build the default template @+show+@
 
 parse
 -----
+.. note::
+	This function will return a json encoded string ready to be passed to any other interpreter which is able to accept it.
+
 Same for parsing them back :
 
 .. code-block:: bash
@@ -66,20 +69,28 @@ Provide a quick help for the available options, and modes.
 
 	$ ade -h
 
---template
-----------
-Specify which template has to be used to build the tree.
-The available templates are all the top folder names found in
-the defined or default template_folder.
+--path
+------
+
+The target path for the parse or create.
 
 .. code-block:: bash
 
-	$ ade --template @+show+@
+	$ ade parse --path /tmp/white/AF/AF001/maya/scenes
+
+
+--mount_point
+-------------
+
+The root path of the project, usually the mount point.
 
 .. note::
-	If not provided, falls back to the default and included
-	template definition set.
 
+	This is set to the default value of /tmp
+
+.. code-block:: bash
+
+	$ ade parse --path /tmp/white/AF/AF001/maya/scenes
 
 --data
 -----------------
@@ -99,6 +110,19 @@ variable of the templates. Data allowes you to do so.
 	* shot = $SHOT
 	* user = $USER
 
+--template
+----------
+Specify which template has to be used to build the tree.
+The available templates are all the top folder names found in
+the defined or default template_folder.
+
+.. code-block:: bash
+
+	$ ade --template @+show+@
+
+.. note::
+	If not provided, falls back to the default and included
+	template definition set.
 
 --template_folder
 -----------------
@@ -123,13 +147,3 @@ Available levels:
 .. code-block:: bash
 
 	$ ade create --verbose debug
-
---path
-------
-
-The target path for the parse or create.
-
-.. code-block:: bash
-
-	$ ade parse --path /tmp/white/AF/AF001/maya/scenes
-

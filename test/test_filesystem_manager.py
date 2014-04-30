@@ -1,7 +1,10 @@
 import os
 import unittest
+import logging
 from ade.manager.filesystem import FileSystemManager
 from ade.manager.template import TemplateManager
+
+logging.getLogger('ade')
 
 
 class Test_FilesystemManager(unittest.TestCase):
@@ -62,7 +65,7 @@ class Test_FilesystemManager(unittest.TestCase):
             'Hello/World/test_C/test_C1/test_D/file_D.txt',
             'Hello/World/test_B1'
         ]
-        self.assertEqual(path_results,expected_path)
+        self.assertEqual(path_results, expected_path)
 
     def test_parse_complete_path(self):
         filesystem_manager = FileSystemManager(self.root_path, self.template_manager)

@@ -1,6 +1,8 @@
 import os
 import unittest
+import logging
 from ade.manager.template import TemplateManager
+logging.getLogger('ade')
 
 
 class Test_TemplateManager(unittest.TestCase):
@@ -98,26 +100,3 @@ class Test_TemplateManager(unittest.TestCase):
         result = manager.resolve_template('@+test_A+@')
         resolved = manager.resolve(result)
         self.assertEqual(resolved, expected_result)
-
-    # print 'PARSERs:'
-    # pareser_results = M.to_parser(schema)
-    # print pformat(pareser_results)
-
-    # context = {
-    # 	'show': 'white',
-    # 	'department': 'show',
-    # 	'sequence': 'AA',
-    # 	'shot': 'AA000',
-    # 	'user': 'ennio',
-    # 	'python_version': '2.6.4'
-    # }
-
-    # path_results = M.to_path(schema, context)
-    # print pformat(path_results)
-
-    # build = M.build(schema, context)
-    # path = path_results[11]
-    # print 'TEST PARSE:', path
-
-    # results = M.parse(path, schema)
-    # print pformat(results)

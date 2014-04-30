@@ -46,6 +46,13 @@ def arguments():
     )
 
     parser.add_argument(
+        '--mount_point',
+        help='Specify mount point for the given project',
+        default='/tmp',
+
+    )
+
+    parser.add_argument(
         '--verbose',
         default='info',
         choices=['debug', 'info', 'warning', 'error', 'critical'],
@@ -99,14 +106,16 @@ def run():
     logger.debug('Using data: {0}'.format(pformat(input_data)))
 
     path = args.get('path')
+    mount_point = args.get('mount_point')
+
     # Get the mountpoint
-    if not os.path.exists(path):
+    if not all(map(os.path.exists, [path, mount_point])):
         logger.warning('{0} does not exist.'.format(path))
         return
 
     # Create a new manager
     manager = filesystem.FileSystemManager(
-        path,
+        mount_point,
         args.get('template_folder'),
         )
 
