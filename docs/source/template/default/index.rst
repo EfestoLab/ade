@@ -1,17 +1,18 @@
 Default Template Structure
-==========================
+##########################
 
 .. note::
 	Ade contains a default template structure, built to build and handle a vfx
 	project structures.
 
 
-Context folders
---------------- 
+Context folders:
+================
+
 A collection of high level context folder definition.
 
 show:
-.....
+-----
 Usually the root of the poject.
 
 Contains references to:
@@ -36,7 +37,8 @@ Contains references to:
 	│   └── vault
 
 department
-..........
+----------
+
 Define membership of department we are working into.
 
 Contains reference to :
@@ -51,8 +53,9 @@ Contains reference to :
 	│   └── @+sequence+@
 
 sequence:
-.........
-Define a sequence in the show 
+---------
+
+Define a sequence in the show
 
 Contains reference to :
 
@@ -66,7 +69,8 @@ Contains reference to :
 	│   └── @+shot+@
 
 shot:
-.....
+-----
+
 Define a shot in the sequence
 
 Contains reference to :
@@ -86,9 +90,11 @@ Contains reference to :
 	│   └── @sandbox@
 
 Applications folders:
----------------------
+=====================
+
 maya:
-.....
+-----
+
 Contains the default maya structure with the workspace.mel file included
 
 .. code-block:: bash
@@ -105,7 +111,8 @@ Contains the default maya structure with the workspace.mel file included
 	│   └── workspace.mel
 
 nuke:
-.....
+-----
+
 Contains the simple nuke project folder
 
 .. code-block:: bash
@@ -113,12 +120,14 @@ Contains the simple nuke project folder
 	├── @nuke@
 	│   └── scripts
 
+
 Common Folders:
-----------------
+===============
 Contain a set of common folder used all over the structure.
 
 config:
-.......
+-------
+
 Contains a standard config folder .
 Contain a set of configuration files for environments.
 
@@ -129,7 +138,8 @@ Contain a set of configuration files for environments.
 	│       └── software.json
 
 sandbox:
-........
+--------
+
 .. code-block:: bash
 
 	├── @sandbox@
@@ -140,7 +150,8 @@ sandbox:
 	│       └── @temp@
 
 temp:
-.....
+-----
+
 .. code-block:: bash
 
 	└── @temp@

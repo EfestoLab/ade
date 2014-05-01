@@ -21,7 +21,7 @@ Templates are contained into a top level folder defined by a template_path.
 
 
 .. toctree::
-	:maxdepth: 1
+	:maxdepth: 2
 
 	default/index.rst
 
