@@ -70,8 +70,9 @@ class FileSystemManager(object):
                     file_content = result['content']
                     with open(path, 'w') as file_data:
                         file_data.write(file_content)
+
             except (IOError, OSError) as error:
-                self.log.debug('{0} already exist'.format(path))
+                self.log.debug('{0}'.format(error))
                 pass
 
         # Set permissions, using the reversed results
