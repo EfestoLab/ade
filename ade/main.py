@@ -47,9 +47,11 @@ def arguments():
 
     parser.add_argument(
         '--mount_point',
-        help='Specify mount point for the given project',
-        default='/tmp',
-
+        help=(
+            'Specify mount point for the given project,'
+            ' falls back on $ADE_MOUNTPOINT or /tmp'
+            ),
+        default='/tmp'
     )
 
     parser.add_argument(
@@ -97,12 +99,12 @@ def run():
         [datum.split('=') for datum in input_data if '=' in datum]
     )
 
-    # Lookup for common show environment variables
-    input_data.setdefault('show', os.getenv('SHOW') or 'staging')
-    input_data.setdefault('department', os.getenv('DEPARTMENT') or 'pipeline')
-    input_data.setdefault('sequence', os.getenv('SEQUENCE') or 'rnd')
-    input_data.setdefault('shot', os.getenv('SHOT') or 'test')
-    input_data.setdefault('user', os.getenv('USER'))
+    # Possible Lookup for common show environment variables
+    # input_data.setdefault('show', os.getenv('SHOW'))
+    # input_data.setdefault('department', os.getenv('DEPARTMENT'))
+    # input_data.setdefault('sequence', os.getenv('SEQUENCE'))
+    # input_data.setdefault('shot', os.getenv('SHOT'))
+    # input_data.setdefault('user', os.getenv('USER'))
     logger.debug('Using data: {0}'.format(pformat(input_data)))
 
     path = args.get('path')

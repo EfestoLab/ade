@@ -28,7 +28,7 @@ To install the module, run:
 
 .. code-block::
 
-	python setup.py build_sphinx
+	python setup.py install
 
 
 test
@@ -47,4 +47,4 @@ Documentation
 
 	python setup.py build_sphinx
 
-Once you 
+Once you

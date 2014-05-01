@@ -50,6 +50,11 @@ class FileSystemManager(object):
         '''
         self.log.debug('Building template : {0}'.format(name))
         current_path = path or self.mount_point
+
+        if not self.mount_point in current_path:
+            self.log.error('Structure can not be created outside of mount_point {0}'.format(self.mount_point))
+            return
+
         built = self.template_manager.resolve_template(name)
         results = self.template_manager.resolve(built)
         path_results = self._to_path(results, data)
