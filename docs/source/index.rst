@@ -19,10 +19,9 @@ Contents:
    :maxdepth: 1
 
    installation
+   command/index
    tutorials/index
    reference/index
-   template/index
-   command/index
 
 Indices and tables
 ==================

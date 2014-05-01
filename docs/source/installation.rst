@@ -32,6 +32,7 @@ For more informations on how to use `virtualenv <http://www.virtualenv.org/en/la
 
 Download
 --------
+
 The main repository of the project lives in bitbucket ad `this <https://bitbucket.org/langeli/filesystemmanager>`_ address:
 
 The code can be downloaded from github with the following command:

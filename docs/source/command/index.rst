@@ -1,5 +1,5 @@
-Command Line
-############
+Command Line use
+################
 
 .. code-block:: bash
 
