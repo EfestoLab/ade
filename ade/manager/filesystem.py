@@ -24,6 +24,7 @@ regexp_config = {
 
 class FileSystemManager(object):
     ''' Return an instance of FileSystemManager.
+
     :param template_manager: An instance of the templateManager.
     :type template_manager: TemplateManager
     :param mount_point: the start position of the build path.
@@ -49,6 +50,11 @@ class FileSystemManager(object):
         '''
         self.log.debug('Building template : {0}'.format(name))
         current_path = path or self.mount_point
+
+        if not self.mount_point in current_path:
+            self.log.error('Structure can not be created outside of mount_point {0}'.format(self.mount_point))
+            return
+
         built = self.template_manager.resolve_template(name)
         results = self.template_manager.resolve(built)
         path_results = self._to_path(results, data)
@@ -64,8 +70,9 @@ class FileSystemManager(object):
                     file_content = result['content']
                     with open(path, 'w') as file_data:
                         file_data.write(file_content)
+
             except (IOError, OSError) as error:
-                self.log.debug('{0} already exist'.format(path))
+                self.log.debug('{0}'.format(error))
                 pass
 
         # Set permissions, using the reversed results

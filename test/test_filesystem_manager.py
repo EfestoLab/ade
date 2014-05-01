@@ -1,7 +1,10 @@
 import os
 import unittest
+import logging
 from ade.manager.filesystem import FileSystemManager
 from ade.manager.template import TemplateManager
+
+logging.getLogger('ade')
 
 
 class Test_FilesystemManager(unittest.TestCase):
@@ -31,16 +34,16 @@ class Test_FilesystemManager(unittest.TestCase):
         results = filesystem_manager.template_manager.resolve(resolved_template)
         parsers_results = filesystem_manager._to_parser(results)
         expected_path = [
-            '(?P<test_A>[a-zA-Z0-9_]+)/test_A1',
-            '(?P<test_A>[a-zA-Z0-9_]+)/(?P<test_B>[a-zA-Z0-9_]+)',
-            '(?P<test_A>[a-zA-Z0-9_]+)/(?P<test_B>[a-zA-Z0-9_]+)/file_B.txt',
-            '(?P<test_A>[a-zA-Z0-9_]+)/(?P<test_B>[a-zA-Z0-9_]+)/test_B2',
-            '(?P<test_A>[a-zA-Z0-9_]+)/(?P<test_B>[a-zA-Z0-9_]+)/test_C',
-            '(?P<test_A>[a-zA-Z0-9_]+)/(?P<test_B>[a-zA-Z0-9_]+)/test_C/test_C1',
-            '(?P<test_A>[a-zA-Z0-9_]+)/(?P<test_B>[a-zA-Z0-9_]+)/test_C/test_C1/test_D',
-            '(?P<test_A>[a-zA-Z0-9_]+)/(?P<test_B>[a-zA-Z0-9_]+)/test_C/test_C1/test_D/test_D1',
-            '(?P<test_A>[a-zA-Z0-9_]+)/(?P<test_B>[a-zA-Z0-9_]+)/test_C/test_C1/test_D/file_D.txt',
-            '(?P<test_A>[a-zA-Z0-9_]+)/(?P<test_B>[a-zA-Z0-9_]+)/test_B1'
+            '^(?P<test_A>[a-zA-Z0-9_]+)/test_A1$',
+            '^(?P<test_A>[a-zA-Z0-9_]+)/(?P<test_B>[a-zA-Z0-9_]+)$',
+            '^(?P<test_A>[a-zA-Z0-9_]+)/(?P<test_B>[a-zA-Z0-9_]+)/test_C$',
+            '^(?P<test_A>[a-zA-Z0-9_]+)/(?P<test_B>[a-zA-Z0-9_]+)/test_B2$',
+            '^(?P<test_A>[a-zA-Z0-9_]+)/(?P<test_B>[a-zA-Z0-9_]+)/test_B1$',
+            '^(?P<test_A>[a-zA-Z0-9_]+)/(?P<test_B>[a-zA-Z0-9_]+)/file_B.txt$',
+            '^(?P<test_A>[a-zA-Z0-9_]+)/(?P<test_B>[a-zA-Z0-9_]+)/test_C/test_C1$',
+            '^(?P<test_A>[a-zA-Z0-9_]+)/(?P<test_B>[a-zA-Z0-9_]+)/test_C/test_C1/test_D$',
+            '^(?P<test_A>[a-zA-Z0-9_]+)/(?P<test_B>[a-zA-Z0-9_]+)/test_C/test_C1/test_D/test_D1$',
+            '^(?P<test_A>[a-zA-Z0-9_]+)/(?P<test_B>[a-zA-Z0-9_]+)/test_C/test_C1/test_D/file_D.txt$',
         ]
         self.assertEqual(parsers_results, expected_path)
 
@@ -62,11 +65,11 @@ class Test_FilesystemManager(unittest.TestCase):
             'Hello/World/test_C/test_C1/test_D/file_D.txt',
             'Hello/World/test_B1'
         ]
-        self.assertEqual(path_results,expected_path)
+        self.assertEqual(path_results, expected_path)
 
     def test_parse_complete_path(self):
         filesystem_manager = FileSystemManager(self.root_path, self.template_manager)
-        test_path = os.path.join(self.root_path, 'Hello/World/test_C/test_D')
-        results = filesystem_manager.parse(test_path, '@+test_A+@')
-        self.assertEqual(results[0], self.data)
+        test_path = 'Hello/World/test_C/test_D'
+        result = filesystem_manager.parse(test_path, '@+test_A+@')
+        self.assertEqual(result, self.data)
 
