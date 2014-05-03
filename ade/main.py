@@ -37,13 +37,13 @@ def arguments():
     parser.add_argument(
         '--config_path',
         help='search path for config files',
-        default=os.getenv('ADE_CONFIG_PATH', 'resources/config')
+        default=os.getenv('ADE_CONFIG_PATH')
     )
 
     parser.add_argument(
         '--mode',
         help='one of the mode provided through the config search path',
-        default=os.getenv('ADE_mode', 'default')
+        default=os.getenv('ADE_MODE', 'default')
     )
 
     parser.add_argument(
@@ -65,7 +65,7 @@ def arguments():
 
     parser.add_argument(
         '--path',
-        default='./',
+        default=os.path.realpath('./'),
         help='Path to be parsed or created to'
     )
 
@@ -104,15 +104,15 @@ def run():
     logger.debug('Using data: {0}'.format(pformat(input_data)))
 
     path = args.get('path')
-
     # Get the mountpoint
     if not os.path.exists(path):
-            logger.warning('{0} does not exist.'.format(path))
+            logger.warning('Input path {0} does not exist.'.format(path))
             return
 
+    config_path = args.get('config_path')
     config_mode = args.get('mode')
     logger.info('loading mode {0} '.format(config_mode))
-    config_manager = config.ConfigManager('resources/config')
+    config_manager = config.ConfigManager(config_path)
     config_mode = config_manager.get(config_mode)
 
     template_search_path = os.path.expandvars(

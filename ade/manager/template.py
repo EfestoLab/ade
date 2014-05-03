@@ -28,7 +28,7 @@ class TemplateManager(object):
         self.__variable_indicator = '+'
 
         self._register = []
-        self._template_folder = template_folder
+        self._template_folder = os.path.realpath(template_folder)
         log.debug('Using template path: {0}'.format(self._template_folder))
         self.register_templates()
 

@@ -31,7 +31,7 @@ class FileSystemManager(object):
 
         self.regexp_mapping = config['regexp_mapping']
 
-    def build(self, name, data, path=None):
+    def build(self, name, data, path):
         ''' Build the given schema name, and replace data,
         level defines the depth of the built paths.
 
@@ -42,11 +42,18 @@ class FileSystemManager(object):
         :param path: the path where the structure has to be created.
         :type name: str
         '''
-        self.log.debug('Building template : {0}'.format(name))
         current_path = path or self.mount_point
+        current_path = os.path.realpath(current_path)
+
+        self.log.debug('Building template : {0} in : {1}'.format(
+            name, current_path)
+        )
 
         if not self.mount_point in current_path:
-            self.log.error('Structure can not be created outside of mount_point {0}'.format(self.mount_point))
+            self.log.error(
+                ('Structure can not be created'
+                 ' outside of mount_point {0}').format(self.mount_point)
+            )
             return
 
         if not os.path.exists(current_path):
@@ -99,7 +106,7 @@ class FileSystemManager(object):
         if not path.startswith(self.mount_point):
             self.log.exception(
                 ('The path %s does not seems contained'
-                ' in the given mount_point %s') % (
+                 ' in the given mount_point %s') % (
                     path, self.mount_point
                 )
             )
@@ -159,12 +166,7 @@ class FileSystemManager(object):
         self.log.debug('building parser %s' % pformat(result_paths))
         return result_paths
 
-    def _to_path(self, paths, data):
-        ''' Recursively build a list of paths from the given
-        set of schema paths.
-
-        '''
-        data = data or {}
+    def _validate_data(self, data):
         # validate build folder against regexps
         for name, value in data.items():
             if name in self.regexp_mapping:
@@ -178,6 +180,13 @@ class FileSystemManager(object):
                     )
                     data.pop(name)
 
+    def _to_path(self, paths, data):
+        ''' Recursively build a list of paths from the given
+        set of schema paths.
+
+        '''
+        data = data or {}
+        self._validate_data(data)
         result_paths = []
         for entry in paths:
             result_path = []
