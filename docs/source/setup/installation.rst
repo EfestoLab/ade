@@ -1,5 +1,6 @@
-Setup
-=====
+Installation
+============
+
 In here you'll learn on how to build install and test the project.
 
 I highly suggest , for the first test installation to use virtualenv, so you can see if all the dependencies are satisfied, before rolling it out in production environments.

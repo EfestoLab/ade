@@ -9,28 +9,18 @@ import re
 import logging
 from pprint import pformat
 
-# DEFAULT REGEX FOR COMMON FOLDER TYPES
-# TODO: This should be moved to config
-
-regexp_config = {
-    'show': '(?P<show>[a-zA-Z0-9_]+)',
-    'sequence': '(?P<sequence>[a-zA-Z0-9_]+)',
-    'shot': '(?P<shot>[a-zA-Z0-9_]+)',
-    'department': '(?P<department>[a-zA-Z0-9_]+)'
-}
-
 
 class FileSystemManager(object):
     ''' Return an instance of FileSystemManager.
 
+    :param config: the config for the project.
+    :type config: dict
     :param template_manager: An instance of the templateManager.
     :type template_manager: TemplateManager
-    :param mount_point: the start position of the build path.
-    :type mount_point: str
+
     '''
 
     def __init__(self, config, template_manager):
-        self.__default_path_regex = '(?P<{0}>[a-zA-Z0-9_]+)'
         self.log = logging.getLogger('ade')
 
         self.template_manager = template_manager
@@ -70,7 +60,7 @@ class FileSystemManager(object):
             path = os.path.join(current_path, result['path'])
             try:
                 if result['folder']:
-                    # Create the folder
+                    #: Create the folder
                     self.log.debug('creating folder: {0}'.format(path))
                     os.makedirs(path)
                 else:
@@ -83,7 +73,7 @@ class FileSystemManager(object):
                 self.log.debug('{0}'.format(error))
                 pass
 
-        # Set permissions, using the reversed results
+        #: Set permissions, using the reversed results
         for result in reversed(path_results):
             path = os.path.join(current_path, result['path'])
             permission = result['permission']
@@ -156,8 +146,7 @@ class FileSystemManager(object):
                     entry = entry.split('+')[1]
                     # Get the custom regex or use the default one
                     parser = self.regexp_mapping.get(
-                        entry,
-                        self.__default_path_regex
+                        entry
                     )
                     entry = parser.format(entry)
                 result_path.append(entry)
