@@ -6,6 +6,7 @@
 },
 "regexp_mapping" :
     {
+        "user": "(?P<user>[a-zA-Z0-9_]+)",
         "show": "(?P<show>[a-zA-Z0-9_]+)",
         "sequence": "(?P<sequence>[a-zA-Z0-9_]+)",
         "shot": "(?P<shot>[a-zA-Z0-9_]+)",
