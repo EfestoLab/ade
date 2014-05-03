@@ -23,15 +23,12 @@ class TemplateManager(object):
         ''' Initialization function.
 
         '''
-        current_path = os.path.dirname(os.path.abspath(__file__))
-        template_path = os.path.realpath(
-            os.path.join(current_path, '..', 'templates')
-        )
+        # current_path = os.path.dirname(os.path.abspath(__file__))
         self.__reference_indicator = '@'
         self.__variable_indicator = '+'
 
         self._register = []
-        self._template_folder = template_folder or template_path
+        self._template_folder = template_folder
         log.debug('Using template path: {0}'.format(self._template_folder))
         self.register_templates()
 

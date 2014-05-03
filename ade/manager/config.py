@@ -8,8 +8,9 @@ class ConfigManager(object):
         self.registry = {}
 
         if not os.path.exists(config_search_path):
-            print "{0} doesn't exist".format(config_search_path)
-            return
+            raise IOError(
+                'config_path {0} does not exist'.format(config_search_path)
+            )
 
         for root, folders, files in os.walk(config_search_path):
             for _file in files:
@@ -19,5 +20,13 @@ class ConfigManager(object):
                     result = json.load(open(config_path, 'r'))
                     self.registry.setdefault(config_name, result)
 
-c = ConfigManager('../config')
-print c.registry
+    @property
+    def profiles(self):
+        return self.registry.keys()
+
+    def get(self, profile):
+        if profile not in self.registry:
+            raise KeyError('config profile {0} not found'.format(profile))
+
+        return self.registry[profile]
+

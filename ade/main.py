@@ -7,6 +7,8 @@ import argparse
 from pprint import pformat
 
 from manager import filesystem
+from manager import config
+from manager import template as template
 
 
 def setup_custom_logger(name):
@@ -27,35 +29,31 @@ def arguments():
     """ Arguments accepted by the application.
     """
     parser = argparse.ArgumentParser(prog='ade')
-
-    # subparsers = parser.add_subparsers('-bowtie')
-    # subparser = subparsers.add_parser()
-    # subparser.add_argument('new argument')
+    parser.add_argument(
+        'action', choices=['create', 'parse'],
+        help='Application action'
+    )
 
     parser.add_argument(
-        'mode', choices=['create', 'parse'],
-        help='Application mode'
+        '--config_path',
+        help='search path for config files',
+        default=os.getenv('ADE_CONFIG_PATH', 'resources/config')
+    )
+
+    parser.add_argument(
+        '--mode',
+        help='one of the mode provided through the config search path',
+        default=os.getenv('ADE_mode', 'default')
     )
 
     parser.add_argument(
         '--template',
         help='Specify template to use (has to exist in the template folder).',
         default='@+show+@',
-        choices=['@+show+@', '@+department+@', '@+sequence+@', '@+shot+@', '@sandbox@'],
-    )
-
-    parser.add_argument(
-        '--template_folder',
-        help='Specify template folder to use, if not provided relies on default.'
-    )
-
-    parser.add_argument(
-        '--mount_point',
-        help=(
-            'Specify mount point for the given project,'
-            ' falls back on $ADE_MOUNTPOINT or /tmp'
-            ),
-        default='/tmp'
+        choices=[
+            '@+show+@', '@+department+@', '@+sequence+@',
+            '@+shot+@', '@sandbox@'
+        ],
     )
 
     parser.add_argument(
@@ -68,14 +66,14 @@ def arguments():
     parser.add_argument(
         '--path',
         default='./',
-        help='Path to be parsed (parse mode only)'
+        help='Path to be parsed or created to'
     )
 
     parser.add_argument(
         '--data',
         nargs='*',
         default=[],
-        help='Fragment variables (build mode only)'
+        help='Fragment variables (build action only)'
     )
 
     args = vars(parser.parse_args())
@@ -103,41 +101,45 @@ def run():
         [datum.split('=') for datum in input_data if '=' in datum]
     )
 
-    # Possible Lookup for common show environment variables
-    # input_data.setdefault('show', os.getenv('SHOW'))
-    # input_data.setdefault('department', os.getenv('DEPARTMENT'))
-    # input_data.setdefault('sequence', os.getenv('SEQUENCE'))
-    # input_data.setdefault('shot', os.getenv('SHOT'))
-    # input_data.setdefault('user', os.getenv('USER'))
     logger.debug('Using data: {0}'.format(pformat(input_data)))
 
     path = args.get('path')
-    mount_point = args.get('mount_point')
 
     # Get the mountpoint
-    if not all(map(os.path.exists, [path, mount_point])):
-        logger.warning('{0} does not exist.'.format(path))
-        return
+    if not os.path.exists(path):
+            logger.warning('{0} does not exist.'.format(path))
+            return
+
+    config_mode = args.get('mode')
+    logger.info('loading mode {0} '.format(config_mode))
+    config_manager = config.ConfigManager('resources/config')
+    config_mode = config_manager.get(config_mode)
+
+    template_search_path = os.path.expandvars(
+        config_mode['template_search_path']
+    )
 
     # Create a new manager
+
+    template_manager = template.TemplateManager(template_search_path)
     manager = filesystem.FileSystemManager(
-        mount_point,
-        args.get('template_folder'),
+        config_mode,
+        template_manager
         )
 
-    template = args.get('template')
+    input_template = args.get('template')
 
-    if args.get('mode') == 'create':
-        manager.build(template, input_data, path)
+    if args.get('action') == 'create':
+        manager.build(input_template, input_data, path)
 
-    if args.get('mode') == 'parse':
+    if args.get('action') == 'parse':
         path = os.path.realpath(path)
 
         if not os.path.exists(path):
             logger.warning('{0} does not exist.'.format(path))
             return
 
-        results = manager.parse(path, template)
+        results = manager.parse(path, input_template)
         if results:
             print json.dumps(results[0])
         else:
@@ -145,3 +147,4 @@ def run():
 
 if __name__ == '__main__':
     run()
+

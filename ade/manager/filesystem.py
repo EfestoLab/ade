@@ -9,8 +9,6 @@ import re
 import logging
 from pprint import pformat
 
-from template import TemplateManager
-
 # DEFAULT REGEX FOR COMMON FOLDER TYPES
 # TODO: This should be moved to config
 
@@ -31,11 +29,17 @@ class FileSystemManager(object):
     :type mount_point: str
     '''
 
-    def __init__(self, mount_point, template_manager=None):
+    def __init__(self, config, template_manager):
         self.__default_path_regex = '(?P<{0}>[a-zA-Z0-9_]+)'
         self.log = logging.getLogger('ade')
-        self.mount_point = mount_point
-        self.template_manager = template_manager or TemplateManager()
+
+        self.template_manager = template_manager
+
+        self.mount_point = os.path.expandvars(
+            config['project_mount_point']
+        )
+
+        self.regexp_mapping = config['regexp_mapping']
 
     def build(self, name, data, path=None):
         ''' Build the given schema name, and replace data,
@@ -53,6 +57,10 @@ class FileSystemManager(object):
 
         if not self.mount_point in current_path:
             self.log.error('Structure can not be created outside of mount_point {0}'.format(self.mount_point))
+            return
+
+        if not os.path.exists(current_path):
+            self.log.error('Path {0} does not exist.'.format(self.mount_point))
             return
 
         built = self.template_manager.resolve_template(name)
@@ -118,7 +126,7 @@ class FileSystemManager(object):
         parsers = self._to_parser(results)
         for parser in parsers:
             check = re.compile(parser)
-            match = check.search(path)
+            match = check.match(path)
             if not match:
                 continue
 
@@ -147,17 +155,18 @@ class FileSystemManager(object):
                 if '+' in entry:
                     entry = entry.split('+')[1]
                     # Get the custom regex or use the default one
-                    parser = regexp_config.get(
+                    parser = self.regexp_mapping.get(
                         entry,
                         self.__default_path_regex
                     )
                     entry = parser.format(entry)
                 result_path.append(entry)
+
+            # Enforce checking with ^$
             result_path = '^{0}$'.format((os.sep).join(result_path))
             result_paths.append(result_path)
 
         result_paths.sort(key=len)
-        # result_paths.reverse()
         self.log.debug('building parser %s' % pformat(result_paths))
         return result_paths
 
@@ -166,6 +175,20 @@ class FileSystemManager(object):
         set of schema paths.
 
         '''
+        data = data or {}
+        # validate build folder against regexps
+        for name, value in data.items():
+            if name in self.regexp_mapping:
+                regexp = re.compile(self.regexp_mapping[name])
+                match = regexp.match(value)
+                if not match:
+                    self.log.warning(
+                        'Value {1} for data {0} does not match {2}'.format(
+                            name, value, self.regexp_mapping[name]
+                        )
+                    )
+                    data.pop(name)
+
         result_paths = []
         for entry in paths:
             result_path = []
@@ -179,6 +202,7 @@ class FileSystemManager(object):
                 final_path = (os.sep).join(result_path)
                 try:
                     final_path = final_path.format(**data)
+
                 except Exception, error:
                     self.log.warning('{1} not found for {0}'.format(
                         final_path,
