@@ -8,6 +8,7 @@ import os
 import re
 import logging
 from pprint import pformat
+from ade.exception import ConfigError
 
 
 class FileSystemManager(object):
@@ -155,7 +156,14 @@ class FileSystemManager(object):
                     parser = self.regexp_mapping.get(
                         entry
                     )
-                    entry = parser.format(entry)
+                    try:
+                        entry = parser.format(entry)
+                    except AttributeError:
+                        raise ConfigError(
+                            'Regular expression not found for: {0}'.format(
+                                entry
+                            )
+                        )
                 result_path.append(entry)
 
             # Enforce checking with ^$
