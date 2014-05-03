@@ -171,7 +171,6 @@ class FileSystemManager(object):
             result_paths.append(result_path)
 
         result_paths.sort(key=len)
-        self.log.debug('building parser %s' % pformat(result_paths))
         return result_paths
 
     def _validate_data(self, data):
