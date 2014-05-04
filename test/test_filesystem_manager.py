@@ -1,6 +1,7 @@
 import os
 import unittest
 import logging
+from pprint import pformat
 from ade.manager.filesystem import FileSystemManager
 from ade.manager.template import TemplateManager
 from ade.manager.config import ConfigManager
@@ -12,7 +13,7 @@ class Test_FilesystemManager(unittest.TestCase):
 
     def setUp(self):
         # Create a new template manager pointing to the test templates folder
-        self.maxDiff = None
+        # self.maxDiff = None
         config = 'test/resources/config'
         os.environ['ADE_CONFIG_PATH'] = config
         config_manager = ConfigManager(config)
@@ -80,7 +81,7 @@ class Test_FilesystemManager(unittest.TestCase):
 
     def test_parse_complete_path(self):
         filesystem_manager = FileSystemManager(self.config_mode, self.template_manager)
-        test_path = 'Hello/World/test_C/test_D'
+        test_path = '/tmp/Hello/World/test_C'
         result = filesystem_manager.parse(test_path, '@+test_A+@')
-        self.assertEqual(result, self.data)
+        self.assertEqual(result[0], self.data)
 

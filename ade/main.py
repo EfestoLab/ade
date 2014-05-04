@@ -134,8 +134,7 @@ def run():
     input_template = args.get('template')
 
     if args.get('action') == 'create':
-        current_data = manager.parse(path, root_template)
-        print current_data
+        # current_data = manager.parse(path, root_template)
         manager.build(input_template, input_data, path)
 
     if args.get('action') == 'parse':

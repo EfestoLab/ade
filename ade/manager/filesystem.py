@@ -121,7 +121,6 @@ class FileSystemManager(object):
         matched_results = []
         built = self.template_manager.resolve_template(name)
         results = self.template_manager.resolve(built)
-        print pformat(results)
         parsers = self._to_parser(results)
         for parser in parsers:
             check = re.compile(parser)
@@ -171,7 +170,6 @@ class FileSystemManager(object):
             result_paths.append(result_path)
 
         result_paths.sort(key=len)
-        print pformat(result_paths)
         return result_paths
 
     def _validate_data(self, data):

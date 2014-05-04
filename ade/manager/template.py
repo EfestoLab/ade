@@ -79,11 +79,8 @@ class TemplateManager(object):
             the resolve function
 
         '''
-        path = path or [
-            schema.get('name').replace(
-                self.__reference_indicator, ''
-            )
-        ]
+        root = schema.get('name').replace(self.__reference_indicator, '')
+        path = path or [root]
         for index, entry in enumerate(schema.get('children', [])):
             name = entry.get('name')
             name = name.replace(self.__reference_indicator, '')
