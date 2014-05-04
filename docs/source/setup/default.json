@@ -1,14 +1,17 @@
 {
 "project_mount_point": "/tmp",
 "template_search_path": "$ADE_CONFIG_PATH/../templates",
+"root_template": "@+show+@",
 "defaults": {
     "user" : "$USER"
 },
 "regexp_mapping" :
     {
+        "user": "(?P<user>[a-zA-Z0-9_]+)",
         "show": "(?P<show>[a-zA-Z0-9_]+)",
         "sequence": "(?P<sequence>[a-zA-Z0-9_]+)",
         "shot": "(?P<shot>[a-zA-Z0-9_]+)",
-        "department": "(?P<department>^model$|^rig$|^pipeline$|^animation$)"
+        "python_version": "(?P<python_version>[a-zA-Z0-9_]+)",
+        "department": "(?P<department>[a-zA-Z0-9_]+)"
     }
 }

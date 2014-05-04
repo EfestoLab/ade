@@ -9,7 +9,7 @@ class Test_TemplateManager(unittest.TestCase):
 
     def setUp(self):
         # Create a new template manager pointing to the test templates folder
-        self.template_paths = os.path.realpath('test/data/templates')
+        self.template_paths = os.path.realpath('test/resources/templates')
 
     def test_registered_templates(self):
         manager = TemplateManager(self.template_paths)

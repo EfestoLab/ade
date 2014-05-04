@@ -86,7 +86,10 @@ def run():
 
     """
     args = arguments()
-
+    config_path = args.get('config_path')
+    if not config_path:
+        print 'Please define: $ADE_CONFIG_PATH'
+        return
     # Setup logging
     level = getattr(logging, args.get('verbose').upper())
     logger = setup_custom_logger('ade')
@@ -109,7 +112,6 @@ def run():
             logger.warning('Input path {0} does not exist.'.format(path))
             return
 
-    config_path = args.get('config_path')
     config_mode = args.get('mode')
     logger.info('loading mode {0} '.format(config_mode))
     config_manager = config.ConfigManager(config_path)
@@ -118,6 +120,8 @@ def run():
     template_search_path = os.path.expandvars(
         config_mode['template_search_path']
     )
+
+    root_template = config_mode['root_template']
 
     # Create a new manager
 
@@ -130,6 +134,8 @@ def run():
     input_template = args.get('template')
 
     if args.get('action') == 'create':
+        current_data = manager.parse(path, root_template)
+        print current_data
         manager.build(input_template, input_data, path)
 
     if args.get('action') == 'parse':
@@ -139,7 +145,7 @@ def run():
             logger.warning('{0} does not exist.'.format(path))
             return
 
-        results = manager.parse(path, input_template)
+        results = manager.parse(path, root_template)
         if results:
             print json.dumps(results[0])
         else:

@@ -75,7 +75,8 @@ class TemplateManager(object):
         :type name: list
 
         .. note::
-            This function is meant to be called only from within the resolve function
+            This function is meant to be called only from within
+            the resolve function
 
         '''
         path = path or [
@@ -143,7 +144,7 @@ class TemplateManager(object):
 
         '''
         root = self._get_in_register(name)
-        # Start the recursive build of the *root* folder, using *entry*
+        # Start the recursive build of the *root* folder
         self._resolve_template(
             root,
         )
@@ -186,7 +187,6 @@ class TemplateManager(object):
                 manager.register_templates('some/path/to/template')
         '''
         template_folder = template_folder or self._template_folder
-        # resolve the and list the content of the template path
         template_path = os.path.realpath(template_folder)
         templates = os.listdir(template_path)
 

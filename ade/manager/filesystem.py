@@ -29,7 +29,7 @@ class FileSystemManager(object):
         self.mount_point = os.path.expandvars(
             config['project_mount_point']
         )
-
+        self.default_field_values = config['defaults']
         self.regexp_mapping = config['regexp_mapping']
 
     def build(self, name, data, path):
@@ -121,6 +121,7 @@ class FileSystemManager(object):
         matched_results = []
         built = self.template_manager.resolve_template(name)
         results = self.template_manager.resolve(built)
+        print pformat(results)
         parsers = self._to_parser(results)
         for parser in parsers:
             check = re.compile(parser)
@@ -152,7 +153,6 @@ class FileSystemManager(object):
             for entry in path:
                 if '+' in entry:
                     entry = entry.split('+')[1]
-                    # Get the custom regex or use the default one
                     parser = self.regexp_mapping.get(
                         entry
                     )
@@ -171,6 +171,7 @@ class FileSystemManager(object):
             result_paths.append(result_path)
 
         result_paths.sort(key=len)
+        print pformat(result_paths)
         return result_paths
 
     def _validate_data(self, data):
@@ -187,12 +188,18 @@ class FileSystemManager(object):
                     )
                     data.pop(name)
 
+    def _set_default_values(self, data):
+        for name, value in self.default_field_values.items():
+            if name in data:
+                data[name] = os.getenv(self.default_field_values[name])
+
     def _to_path(self, paths, data):
         ''' Recursively build a list of paths from the given
         set of schema paths.
 
         '''
         data = data or {}
+        self._set_default_values(data)
         self._validate_data(data)
         result_paths = []
         for entry in paths:

@@ -1,0 +1,13 @@
+{
+"project_mount_point": "/tmp",
+"template_search_path": "$ADE_CONFIG_PATH/../templates",
+"root_template": "@+show+@",
+"defaults": {
+    "user" : "$USER"
+},
+"regexp_mapping" :
+    {
+        "test_A": "(?P<test_A>[a-zA-Z0-9_]+)",
+        "test_B": "(?P<test_B>[a-zA-Z0-9_]+)"
+    }
+}

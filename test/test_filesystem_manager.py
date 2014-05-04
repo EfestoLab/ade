@@ -3,6 +3,7 @@ import unittest
 import logging
 from ade.manager.filesystem import FileSystemManager
 from ade.manager.template import TemplateManager
+from ade.manager.config import ConfigManager
 
 logging.getLogger('ade')
 
@@ -11,13 +12,22 @@ class Test_FilesystemManager(unittest.TestCase):
 
     def setUp(self):
         # Create a new template manager pointing to the test templates folder
-        template_paths = os.path.realpath('test/data/templates')
-        self.template_manager = TemplateManager(template_paths)
+        config = 'test/resources/config'
+        os.environ['ADE_CONFIG_PATH'] = config
+        config_manager = ConfigManager(config)
+        self.config_mode = config_manager.get('test')
+        template_search_path = os.path.expandvars(
+            self.config_mode['template_search_path']
+        )
+
+        self.template_manager = TemplateManager(template_search_path)
         self.data = {'test_A': 'Hello', 'test_B': 'World'}
-        self.root_path  = '/tmp'
+        self.root_path = '/tmp'
 
     def test_permissions(self):
-        filesystem_manager = FileSystemManager(self.root_path, self.template_manager)
+        filesystem_manager = FileSystemManager(
+            self.config_mode, self.template_manager
+        )
         resolved_template = filesystem_manager.template_manager.resolve_template('@+test_A+@')
         results = filesystem_manager.template_manager.resolve(resolved_template)
         path_results = filesystem_manager._to_path(results, self.data)
@@ -29,7 +39,7 @@ class Test_FilesystemManager(unittest.TestCase):
         self.assertEqual(permission_results, expected_results)
 
     def test_template_to_parser(self):
-        filesystem_manager = FileSystemManager(self.root_path, self.template_manager)
+        filesystem_manager = FileSystemManager(self.config_mode, self.template_manager)
         resolved_template = filesystem_manager.template_manager.resolve_template('@+test_A+@')
         results = filesystem_manager.template_manager.resolve(resolved_template)
         parsers_results = filesystem_manager._to_parser(results)
@@ -48,7 +58,7 @@ class Test_FilesystemManager(unittest.TestCase):
         self.assertEqual(parsers_results, expected_path)
 
     def test_template_to_path(self):
-        filesystem_manager = FileSystemManager(self.root_path, self.template_manager)
+        filesystem_manager = FileSystemManager(self.config_mode, self.template_manager)
         resolved_template = filesystem_manager.template_manager.resolve_template('@+test_A+@')
         results = filesystem_manager.template_manager.resolve(resolved_template)
         path_results = filesystem_manager._to_path(results, self.data)
@@ -68,7 +78,7 @@ class Test_FilesystemManager(unittest.TestCase):
         self.assertEqual(path_results, expected_path)
 
     def test_parse_complete_path(self):
-        filesystem_manager = FileSystemManager(self.root_path, self.template_manager)
+        filesystem_manager = FileSystemManager(self.config_mode, self.template_manager)
         test_path = 'Hello/World/test_C/test_D'
         result = filesystem_manager.parse(test_path, '@+test_A+@')
         self.assertEqual(result, self.data)
