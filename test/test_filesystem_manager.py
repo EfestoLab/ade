@@ -12,6 +12,7 @@ class Test_FilesystemManager(unittest.TestCase):
 
     def setUp(self):
         # Create a new template manager pointing to the test templates folder
+        self.maxDiff = None
         config = 'test/resources/config'
         os.environ['ADE_CONFIG_PATH'] = config
         config_manager = ConfigManager(config)

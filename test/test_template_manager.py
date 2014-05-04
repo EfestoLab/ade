@@ -8,6 +8,7 @@ logging.getLogger('ade')
 class Test_TemplateManager(unittest.TestCase):
 
     def setUp(self):
+        self.maxDiff = None
         # Create a new template manager pointing to the test templates folder
         self.template_paths = os.path.realpath('test/resources/templates')
 
