@@ -9,7 +9,8 @@ class ConfigManager(object):
 
     This object will let you deal with the ade config files:
 
-
+    :param config_search_path: The path to the config folder.
+    :type config_search_path: str
 
     '''
     def __init__(self, config_search_path):
