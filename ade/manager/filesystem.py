@@ -77,7 +77,7 @@ class FileSystemManager(object):
                         file_data.write(file_content)
 
             except (IOError, OSError) as error:
-                self.log.debug('{0}'.format(error))
+                # self.log.debug('{0}'.format(error))
                 pass
 
         #: Set permissions, using the reversed results
@@ -186,9 +186,11 @@ class FileSystemManager(object):
                     data.pop(name)
 
     def _set_default_values(self, data):
-        for name, value in self.default_field_values.items():
-            if name in data:
-                data[name] = os.getenv(self.default_field_values[name])
+        self.log.debug('Updating data with defaults: {0}'.format(
+            pformat(self.default_field_values)
+            )
+        )
+        data.update(self.default_field_values)
 
     def _to_path(self, paths, data):
         ''' Recursively build a list of paths from the given

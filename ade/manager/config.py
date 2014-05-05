@@ -16,7 +16,11 @@ class ConfigManager(object):
         self.log = logging.getLogger('ade')
 
         self.registry = {}
-        self.log.debug('Using config_search_path:', config_search_path)
+        self.log.debug('Using config_search_path: {0}'.format(
+            config_search_path
+            )
+        )
+
         if not os.path.exists(config_search_path):
             raise IOError(
                 'config_path {0} does not exist'.format(config_search_path)
@@ -31,7 +35,7 @@ class ConfigManager(object):
                     self._resolve_envs(result)
                     self.registry.setdefault(config_name, result)
 
-        self.log.debug('Config found:', self.registry.keys())
+        self.log.debug('Config found: {0}'.format(self.registry.keys()))
 
     def _resolve_envs(self, config):
         for k, v in config.items():
