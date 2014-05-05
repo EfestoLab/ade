@@ -3,6 +3,13 @@ import json
 
 
 class ConfigManager(object):
+    '''Create and return a ConfigManager instance.
+
+    This object will let you deal with the ade config files:
+
+
+
+    '''
     def __init__(self, config_search_path):
 
         self.registry = {}

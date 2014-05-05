@@ -19,6 +19,9 @@ class TemplateManager(object):
     Provide standard methods to create virtual file structure
     from disk fragments.
 
+    :param template_folder: The path to the config folder.
+    :type template_folder: str
+
     '''
     def __init__(self, template_folder=None):
         ''' Initialization function.
@@ -57,12 +60,19 @@ class TemplateManager(object):
                 resolved_schema = manager.resolve_template(schema)
 
         '''
-        paths = []
+        root = {
+            'path': [schema.get('name').replace(self.__reference_indicator, '')],
+            'permission': schema.get('permission', 777),
+            'folder': schema.get('folder', True),
+            'content': schema.get('content', '')}
+        paths =[]
         self._resolve(
             schema,
-            paths
+            paths,
         )
+        paths.append(root)
         paths.reverse()
+        # paths.sort(key=lambda x: len(x['path']))
         return paths
 
     def _resolve(self, schema, final_path_list, path=None):
@@ -80,16 +90,8 @@ class TemplateManager(object):
             the resolve function
 
         '''
-        root = schema.get('name')
-        # final_path_list.append(
-        #     {
-        #         'path': root,
-        #         'permission': schema.get('permission', 777),
-        #         'folder': schema.get('folder', True),
-        #         'content': schema.get('content', '')
-        #     }
-        # )
-        path = path or [root.replace(self.__reference_indicator, '')]
+        root = schema.get('name').replace(self.__reference_indicator, '')
+        path = path or [root]
 
         for index, entry in enumerate(schema.get('children', [])):
             name = entry.get('name')
@@ -123,7 +125,7 @@ class TemplateManager(object):
 
                 from ade.schema.template import TemplateManager
 
-                manager = TemplateManager()
+                manager = TemplateManager(template_search_path)
                 schema = manager._get_in_register('@+show+@')
 
         '''
@@ -147,12 +149,11 @@ class TemplateManager(object):
 
                 from ade.schema.template import TemplateManager
 
-                manager = TemplateManager()
+                manager = TemplateManager(template_search_path)
                 schema = manager.resolve_template('@+show+@')
 
         '''
         root = self._get_in_register(name)
-        # Start the recursive build of the *root* folder
         self._resolve_template(
             root,
         )

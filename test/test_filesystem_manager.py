@@ -35,8 +35,17 @@ class Test_FilesystemManager(unittest.TestCase):
         path_results = filesystem_manager._to_path(results, self.data)
         permission_results = [item['permission'] for item in path_results]
         expected_results = [
-            '0755', '0755', '0644', '0755', '0755',
-            '0755', '0755', '0755', '0644', '0755'
+            '0755',
+            '0755',
+            '0755',
+            '0644',
+            '0755',
+            '0755',
+            '0755',
+            '0755',
+            '0755',
+            '0644',
+            '0755'
         ]
         self.assertEqual(permission_results, expected_results)
 
@@ -46,6 +55,7 @@ class Test_FilesystemManager(unittest.TestCase):
         results = filesystem_manager.template_manager.resolve(resolved_template)
         parsers_results = filesystem_manager._to_parser(results)
         expected_path = [
+            '^(?P<test_A>[a-zA-Z0-9_]+)$',
             '^(?P<test_A>[a-zA-Z0-9_]+)/test_A1$',
             '^(?P<test_A>[a-zA-Z0-9_]+)/(?P<test_B>[a-zA-Z0-9_]+)$',
             '^(?P<test_A>[a-zA-Z0-9_]+)/(?P<test_B>[a-zA-Z0-9_]+)/test_C$',
@@ -66,6 +76,7 @@ class Test_FilesystemManager(unittest.TestCase):
         path_results = filesystem_manager._to_path(results, self.data)
         path_results = [item['path'] for item in path_results]
         expected_path = [
+            'Hello',
             'Hello/test_A1',
             'Hello/World',
             'Hello/World/file_B.txt',
@@ -75,12 +86,14 @@ class Test_FilesystemManager(unittest.TestCase):
             'Hello/World/test_C/test_C1/test_D',
             'Hello/World/test_C/test_C1/test_D/test_D1',
             'Hello/World/test_C/test_C1/test_D/file_D.txt',
-            'Hello/World/test_B1'
+            'Hello/World/test_B1',
         ]
         self.assertEqual(path_results, expected_path)
 
     def test_parse_complete_path(self):
-        filesystem_manager = FileSystemManager(self.config_mode, self.template_manager)
+        filesystem_manager = FileSystemManager(
+            self.config_mode, self.template_manager
+        )
         test_path = '/tmp/Hello/World/test_C'
         result = filesystem_manager.parse(test_path, '@+test_A+@')
         self.assertEqual(result[0], self.data)
@@ -89,7 +102,9 @@ class Test_FilesystemManager(unittest.TestCase):
         '''
         this is a known bug root /tmp/showname can't be parsed
         '''
-        filesystem_manager = FileSystemManager(self.config_mode, self.template_manager)
-        test_path = '/tmp/Hello/'
+        filesystem_manager = FileSystemManager(
+            self.config_mode, self.template_manager
+        )
+        test_path = '/tmp/Hello'
         result = filesystem_manager.parse(test_path, '@+test_A+@')
-        self.assertEqual(result, {'test_A': 'Hello'})
+        self.assertEqual(result[0], {'test_A': 'Hello'})
