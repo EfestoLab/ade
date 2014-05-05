@@ -104,8 +104,6 @@ def run():
         [datum.split('=') for datum in input_data if '=' in datum]
     )
 
-    logger.debug('Using data: {0}'.format(pformat(input_data)))
-
     path = args.get('path')
     # Get the mountpoint
     if not os.path.exists(path):
