@@ -9,6 +9,7 @@ import os
 import stat
 import copy
 import logging
+from pprint import pformat
 
 log = logging.getLogger('ade')
 
@@ -79,21 +80,16 @@ class TemplateManager(object):
             the resolve function
 
         '''
-        root = schema.get('name').replace(self.__reference_indicator, '')
-        path = path or [root]
-
-        # self._resolve(schema, final_path_list, path)
-
-        # root_entry = {
-        #     'path': path[:],
-        #     'permission': schema.get('permission', 777),
-        #     'folder': schema.get('folder', True),
-        #     'content': schema.get('content', '')
-        # }
-
+        root = schema.get('name')
         # final_path_list.append(
-        #     root_entry
+        #     {
+        #         'path': root,
+        #         'permission': schema.get('permission', 777),
+        #         'folder': schema.get('folder', True),
+        #         'content': schema.get('content', '')
+        #     }
         # )
+        path = path or [root.replace(self.__reference_indicator, '')]
 
         for index, entry in enumerate(schema.get('children', [])):
             name = entry.get('name')
