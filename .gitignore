@@ -1,4 +1,5 @@
 *.class
+ade/*.pyc
 *.pyc
 *.pyo
 docs/build/*
