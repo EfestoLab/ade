@@ -79,7 +79,22 @@ class TemplateManager(object):
             the resolve function
 
         '''
-        path = path or []
+        root = schema.get('name').replace(self.__reference_indicator, '')
+        path = path or [root]
+
+        # self._resolve(schema, final_path_list, path)
+
+        # root_entry = {
+        #     'path': path[:],
+        #     'permission': schema.get('permission', 777),
+        #     'folder': schema.get('folder', True),
+        #     'content': schema.get('content', '')
+        # }
+
+        # final_path_list.append(
+        #     root_entry
+        # )
+
         for index, entry in enumerate(schema.get('children', [])):
             name = entry.get('name')
             name = name.replace(self.__reference_indicator, '')

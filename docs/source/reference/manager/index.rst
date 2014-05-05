@@ -4,6 +4,7 @@ Manager
 .. toctree::
    :maxdepth: 2
 
-   filesystem
+   config
    template
+   filesystem
 

@@ -13,7 +13,7 @@ class Test_FilesystemManager(unittest.TestCase):
 
     def setUp(self):
         # Create a new template manager pointing to the test templates folder
-        # self.maxDiff = None
+        self.maxDiff = None
         config = 'test/resources/config'
         os.environ['ADE_CONFIG_PATH'] = config
         config_manager = ConfigManager(config)
@@ -85,3 +85,11 @@ class Test_FilesystemManager(unittest.TestCase):
         result = filesystem_manager.parse(test_path, '@+test_A+@')
         self.assertEqual(result[0], self.data)
 
+    def test_parse_root_path(self):
+        '''
+        this is a known bug root /tmp/showname can't be parsed
+        '''
+        filesystem_manager = FileSystemManager(self.config_mode, self.template_manager)
+        test_path = '/tmp/Hello/'
+        result = filesystem_manager.parse(test_path, '@+test_A+@')
+        self.assertEqual(result, {'test_A': 'Hello'})

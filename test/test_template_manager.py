@@ -8,7 +8,7 @@ logging.getLogger('ade')
 class Test_TemplateManager(unittest.TestCase):
 
     def setUp(self):
-        # self.maxDiff = None
+        self.maxDiff = None
         # Create a new template manager pointing to the test templates folder
         self.template_paths = os.path.realpath('test/resources/templates')
 
@@ -87,6 +87,7 @@ class Test_TemplateManager(unittest.TestCase):
     def test_resolve(self):
         manager = TemplateManager(self.template_paths)
         expected_result = [
+            # {'content': '', 'path': ['+test_A+'], 'folder': True, 'permission': '0755'}, consitency test for bug
             {'content': '', 'path': ['+test_A+', 'test_A1'], 'folder': True, 'permission': '0755'},
             {'content': '', 'path': ['+test_A+', '+test_B+'], 'folder': True, 'permission': '0755'},
             {'content': 'test', 'path': ['+test_A+', '+test_B+', 'file_B.txt'], 'folder': False, 'permission': '0644'},
