@@ -79,8 +79,7 @@ class TemplateManager(object):
             the resolve function
 
         '''
-        root = schema.get('name').replace(self.__reference_indicator, '')
-        path = path or [root]
+        path = path or []
         for index, entry in enumerate(schema.get('children', [])):
             name = entry.get('name')
             name = name.replace(self.__reference_indicator, '')
@@ -118,10 +117,11 @@ class TemplateManager(object):
 
         '''
         for item in self.register:
-            if item.get('name') == name:
-                item = copy.deepcopy(item)
-                return item
-                break
+            if not item.get('name') == name:
+                continue
+            item = copy.deepcopy(item)
+            return item
+
         raise KeyError('{0} not found in register'.format(name))
 
     def resolve_template(self, name):
@@ -218,7 +218,9 @@ class TemplateManager(object):
         :type mapped: dict
 
         .. note::
-            This recursive function is meant to be called only from within the register_template function
+            This recursive function is meant to be called only
+            from within the register_template function
+
         '''
         # If the root is a folder
         if os.path.isdir(root):
