@@ -103,6 +103,10 @@ class FileSystemManager(object):
         :type name: str
 
         '''
+        # remove trailing slash from path
+        if path.endswith('/'):
+            path = path[:-1]
+
         if not path.startswith(self.mount_point):
             self.log.exception(
                 ('The path %s does not seems contained'
