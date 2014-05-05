@@ -8,7 +8,6 @@ setup(
     name='ade',
     author_email='lorenzo.angeli@gmail.com',
     packages=find_packages(exclude=["test"]),
-    include_package_data=True,
     test_suite="test",
     entry_points={
         'console_scripts': [
