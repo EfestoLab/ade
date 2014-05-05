@@ -19,7 +19,7 @@ In order to create a new directory structure you'll need to provide some base da
 
 .. code-block:: bash
 
-	$ ade create --template @+show+@ --data show=foo sequence=bar shot=zoo --path /tmp --mount_point=/tmp
+	$ ade create --template @+show+@ --data show=foo sequence=bar shot=zoo --path /tmp
 
 which will print some informations about the process:
 
@@ -79,19 +79,6 @@ The target path for the parse or create.
 	$ ade parse --path /tmp/white/AF/AF001/maya/scenes
 
 
---mount_point
--------------
-
-The root path of the project, usually the mount point.
-
-.. note::
-
-	This is set to the default value of /tmp
-
-.. code-block:: bash
-
-	$ ade parse --path /tmp/white/AF/AF001/maya/scenes
-
 --data
 -----------------
 In order to create a new tree from a template, you need to set some
@@ -124,13 +111,13 @@ the defined or default template_folder.
 	If not provided, falls back to the default and included
 	template definition set.
 
---template_folder
------------------
-The template folder is where the various template fragments are collected.
+--config_path
+-------------
+The path where ade will be looking for the config files.
+each config file name will define a ade *mode*.
 
-.. code-block:: bash
-
-	$ ade --template_folder /somewhere/on/disk
+.. note::
+	This variable will ovewrite the $ADE_CONFIG_PATH environment variable
 
 --verbose
 ---------

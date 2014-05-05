@@ -44,8 +44,7 @@ class Test_TemplateManager(unittest.TestCase):
 
     def test_register_unexisting_template(self):
         manager = TemplateManager(self.template_paths)
-        with self.assertRaises(KeyError):
-            manager._get_in_register('@+test_fake+@')
+        self.assertRaises(KeyError, manager._get_in_register, '@+test_fake+@')
 
     def test_registered_templates_is_folder(self):
         manager = TemplateManager(self.template_paths)
