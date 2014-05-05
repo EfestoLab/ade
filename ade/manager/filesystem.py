@@ -26,9 +26,8 @@ class FileSystemManager(object):
 
         self.template_manager = template_manager
 
-        self.mount_point = os.path.expandvars(
-            config['project_mount_point']
-        )
+        self.mount_point = config['project_mount_point']
+
         self.default_field_values = config['defaults']
         self.regexp_mapping = config['regexp_mapping']
 

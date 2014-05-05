@@ -1,6 +1,6 @@
 {
 "project_mount_point": "/tmp",
-"template_search_path": "$ADE_CONFIG_PATH/../templates",
+"template_search_path": "$ADE_CONFIG_PATH/../templates/",
 "root_template": "@+show+@",
 "defaults": {
     "user" : "$USER"

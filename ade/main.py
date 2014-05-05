@@ -117,9 +117,7 @@ def run():
     config_manager = config.ConfigManager(config_path)
     config_mode = config_manager.get(config_mode)
 
-    template_search_path = os.path.expandvars(
-        config_mode['template_search_path']
-    )
+    template_search_path = config_mode['template_search_path']
 
     root_template = config_mode['root_template']
 

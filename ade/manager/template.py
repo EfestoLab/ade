@@ -60,20 +60,27 @@ class TemplateManager(object):
                 resolved_schema = manager.resolve_template(schema)
 
         '''
+        root_name = schema.get('name').replace(self.__reference_indicator, '')
+
         root = {
-            'path': [schema.get('name').replace(self.__reference_indicator, '')],
+            'path': [root_name],
             'permission': schema.get('permission', 777),
             'folder': schema.get('folder', True),
-            'content': schema.get('content', '')}
-        paths =[]
+            'content': schema.get('content', '')
+        }
+
+        paths = [root_name]
+
+        result_paths = []
         self._resolve(
             schema,
-            paths,
+            result_paths,
+            paths
         )
-        paths.append(root)
-        paths.reverse()
+        result_paths.append(root)
+        result_paths.reverse()
         # paths.sort(key=lambda x: len(x['path']))
-        return paths
+        return result_paths
 
     def _resolve(self, schema, final_path_list, path=None):
         ''' Recursively build the final_path_list from schema.
@@ -90,9 +97,6 @@ class TemplateManager(object):
             the resolve function
 
         '''
-        root = schema.get('name').replace(self.__reference_indicator, '')
-        path = path or [root]
-
         for index, entry in enumerate(schema.get('children', [])):
             name = entry.get('name')
             name = name.replace(self.__reference_indicator, '')
