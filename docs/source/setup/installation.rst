@@ -85,3 +85,20 @@ Point your browser to ade/docs/build/html/index.html and you should be able to r
     If there's any problem on building the docs please ensure that the sphinx module is available.
 
     If any bug is been found please report it to the `issue tracker <https://bitbucket.org/langeli/filesystemmanager/issues?status=new&status=open>`_.
+
+
+Remove
+------
+
+Sadly there's no easy way to remove a module installed with setuptools.
+but there's a way to track the installed files while installing it and then use the result as removal, let see how :
+
+.. code-block:: bash
+
+    $ python setup.py install --record files.txt
+
+To remove the module and all it's been installed, you can run:
+
+.. code-block:: bash
+
+    $ cat files.txt | xargs rm -rf
