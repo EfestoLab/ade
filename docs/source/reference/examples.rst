@@ -13,8 +13,10 @@ This manager requires only the *config_search_path* to be set, provide access to
     import os
     from ade.manager import config as ade_config
 
+    mode = 'default'
     config_path = os.getenv('ADE_CONFIG_PATH')
-    ade_config.ConfigManager(config_path)
+    config_manager = ade_config.ConfigManager(config_path)
+    config_mode = config_manager.get(mode)
 
 
 Initialize a template manager
@@ -34,7 +36,7 @@ Summing this to the previous step you'll end up having:
     config_manager = ade_config.ConfigManager(config_path)
     config_mode = config_manager.get(mode)
 
-    template_manager = ade_template.TemplateManager(config_manager)
+    template_manager = ade_template.TemplateManager(config_mode)
 
 
 
@@ -55,14 +57,41 @@ The final step is now to create the last manager, which will let you create and 
     config_manager = ade_config.ConfigManager(config_path)
     config_mode = config_manager.get(mode)
 
-    template_manager = ade_template.TemplateManager(config_manager)
+    template_manager = ade_template.TemplateManager(config_mode)
     filesystem_manager = ade_filesystem.FileSystemManager(
-        config_manager, template_manager
+        config_mode, template_manager
     )
 
 Create a new paths
 ------------------
+Creating a new path is
 
+.. code-block:: python
+
+    import os
+    from ade.manager import config as ade_config
+    from ade.manager import template as ade_template
+    from ade.manager import filesystem as ade_filesystem
+
+    mode = 'default'
+    config_path = os.getenv('ADE_CONFIG_PATH')
+
+    config_manager = ade_config.ConfigManager(config_path)
+    config_mode = config_manager.get(mode)
+
+    template_manager = ade_template.TemplateManager(config_mode)
+    filesystem_manager = ade_filesystem.FileSystemManager(
+        config_mode, template_manager
+    )
+
+    data = {'show': 'foo', 'discipline': 'bar', 'sequence':'AA', 'shot':'00'}
+    paths = filesystem_manager.build('@+show+@', data, '/tmp')
+    print paths
+
+
+Parse a new paths
+------------------
+Creating a new path is
 
 .. code-block:: python
 
@@ -82,6 +111,6 @@ Create a new paths
         config_manager, template_manager
     )
 
-    data = {'show': 'foo', 'discipline': 'bar', 'sequence':'AA', 'shot':'00'}
-    filesystem_manager.build('@+show+@', data, '/tmp')
-
+    path = '/tmp/mytest_show/guu/AA/AA000/sandbox/hdd/maya/'
+    paths = filesystem_manager.parse(path, '@+show+@')
+    print paths

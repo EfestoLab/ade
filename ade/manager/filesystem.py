@@ -87,7 +87,7 @@ class FileSystemManager(object):
             path = os.path.join(current_path, result['path'])
             permission = result['permission']
             permission = int(permission, 8)
-            self.log.info('Setting {1} as {0}'.format(
+            self.log.debug('Setting {1} as {0}'.format(
                 oct(permission), os.path.realpath(path)
             ))
             try:
@@ -118,7 +118,7 @@ class FileSystemManager(object):
                     path, self.mount_point
                 )
             )
-            return
+            return []
 
         path = path.split(self.mount_point)[-1]
         if path.startswith(os.sep):
@@ -145,7 +145,7 @@ class FileSystemManager(object):
 
         matched_results.sort()
         matched_results.reverse()
-        return matched_results
+        return matched_results or []
 
     def _to_parser(self, paths):
         ''' Recursively build a parser from the
