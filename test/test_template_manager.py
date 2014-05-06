@@ -4,26 +4,32 @@ import logging
 from pprint import pformat
 
 from ade.manager.template import TemplateManager
+from ade.manager.config import ConfigManager
+
 logging.getLogger('ade')
 
 
 class Test_TemplateManager(unittest.TestCase):
 
     def setUp(self):
-
+        """Setup test session.
+        """
         self.maxDiff = None
-        self.template_paths = os.path.realpath('test/resources/templates')
+        config = 'test/resources/config'
+        os.environ['ADE_CONFIG_PATH'] = config
+        config_manager = ConfigManager(config)
+        self.config_mode = config_manager.get('test')
 
     def test_register_unexisting_template(self):
         '''Check when template doesn't exist
         '''
-        manager = TemplateManager(self.template_paths)
+        manager = TemplateManager(self.config_mode)
         self.assertRaises(KeyError, manager._get_in_register, '@+test_fake+@')
 
     def test_registered_templates_is_folder(self):
         '''Check for template folder attributes.
         '''
-        manager = TemplateManager(self.template_paths)
+        manager = TemplateManager(self.config_mode)
         folder_A = manager._get_in_register('@+test_A+@')
         self.assertTrue(folder_A.get('folder', False))
         self.assertTrue(folder_A.get('children', False))
@@ -32,7 +38,7 @@ class Test_TemplateManager(unittest.TestCase):
     def test_registered_templates_is_file(self):
         '''Check for template file attributes.
         '''
-        manager = TemplateManager(self.template_paths)
+        manager = TemplateManager(self.config_mode)
         file_D = manager._get_in_register('@test_D@')['children'][0]
         self.assertFalse(file_D.get('folder', True))
         self.assertFalse(file_D.get('children'))
@@ -41,7 +47,7 @@ class Test_TemplateManager(unittest.TestCase):
     def test_registered_templates(self):
         ''' Register a new template through the config file.
         '''
-        manager = TemplateManager(self.template_paths)
+        manager = TemplateManager(self.config_mode)
         register = manager.register
         expected_result = [
             {'folder': True, 'permission': '0755', 'name': '@test_C@', 'children': [
@@ -73,7 +79,7 @@ class Test_TemplateManager(unittest.TestCase):
     def test_resolve_template(self):
         '''Resolve the registered template.
         '''
-        manager = TemplateManager(self.template_paths)
+        manager = TemplateManager(self.config_mode)
         expected_result = {'folder': True, 'children': [
             {'folder': True, 'children': [
                 {'folder': True, 'permission': '0755', 'children': [], 'name': 'test_B1'},
@@ -96,7 +102,7 @@ class Test_TemplateManager(unittest.TestCase):
         self.assertEqual(result, expected_result)
 
     def test_resolve_path(self):
-        manager = TemplateManager(self.template_paths)
+        manager = TemplateManager(self.config_mode)
         expected_result = [
             {'content': '', 'path': ['+test_A+'], 'folder': True, 'permission': '0755'},
             {'content': '', 'path': ['+test_A+', 'test_A1'], 'folder': True, 'permission': '0755'},

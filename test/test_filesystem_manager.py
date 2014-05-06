@@ -19,11 +19,7 @@ class Test_FilesystemManager(unittest.TestCase):
         os.environ['ADE_CONFIG_PATH'] = config
         config_manager = ConfigManager(config)
         self.config_mode = config_manager.get('test')
-        template_search_path = os.path.expandvars(
-            self.config_mode['template_search_path']
-        )
-
-        self.template_manager = TemplateManager(template_search_path)
+        self.template_manager = TemplateManager(self.config_mode)
         self.data = {'test_A': 'Hello', 'test_B': 'World'}
 
     def test_permissions(self):

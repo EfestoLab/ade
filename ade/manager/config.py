@@ -51,7 +51,9 @@ class ConfigManager(object):
                 config[k] = path
 
     @property
-    def profiles(self):
+    def modes(self):
+        ''' The available modes of available.
+        '''
         return self.registry.keys()
 
     def get(self, profile):

@@ -9,6 +9,7 @@ from pprint import pformat
 from manager import filesystem
 from manager import config
 from manager import template as template
+from ade.exception import ConfigError
 
 
 def setup_custom_logger(name):
@@ -113,15 +114,16 @@ def run():
     config_mode = args.get('mode')
     logger.info('loading mode {0} '.format(config_mode))
     config_manager = config.ConfigManager(config_path)
-    config_mode = config_manager.get(config_mode)
+    if config_mode not in config_manager.modes:
+        raise ConfigError('Mode {0} is not available'.format(config_mode))
 
-    template_search_path = config_mode['template_search_path']
+    config_mode = config_manager.get(config_mode)
 
     root_template = config_mode['root_template']
 
     # Create a new manager
 
-    template_manager = template.TemplateManager(template_search_path)
+    template_manager = template.TemplateManager(config_mode)
     manager = filesystem.FileSystemManager(
         config_mode,
         template_manager

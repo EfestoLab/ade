@@ -23,7 +23,7 @@ class TemplateManager(object):
     :type template_folder: str
 
     '''
-    def __init__(self, template_folder=None):
+    def __init__(self, config=None):
         ''' Initialization function.
 
         '''
@@ -32,6 +32,7 @@ class TemplateManager(object):
         self.__variable_indicator = '+'
 
         self._register = []
+        template_folder = config['template_search_path']
         self._template_folder = os.path.realpath(template_folder)
         log.debug('Using template path: {0}'.format(self._template_folder))
         self.register_templates()

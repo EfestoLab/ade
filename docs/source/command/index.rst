@@ -24,6 +24,7 @@ In order to create a new directory structure you'll need to provide some base da
 which will print some informations about the process:
 
 .. code-block:: bash
+
 	[INFO][filesystem] - Setting /tmp/foo/vault as 0755
 	[INFO][filesystem] - Setting /tmp/foo/temp as 0755
 	[INFO][filesystem] - Setting /tmp/foo/editorial as 0755
