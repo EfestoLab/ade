@@ -37,13 +37,14 @@ class FileSystemManager(object):
 
         :param name: The template *name* to build.
         :type name: str
-        :param data: A set of data to create the template with.
+        :param data: A set of data to fill the template with.
         :type name: dict
         :param path: the path where the structure has to be created.
         :type name: str
         '''
         current_path = path or self.mount_point
         current_path = os.path.realpath(current_path)
+        paths = []
 
         self.log.debug('Building template : {0} in : {1}'.format(
             name, current_path)
@@ -70,6 +71,7 @@ class FileSystemManager(object):
                     #: Create the folder
                     self.log.debug('creating folder: {0}'.format(path))
                     os.makedirs(path)
+                    paths.append(path)
                 else:
                     self.log.debug('creating file: {0}'.format(path))
                     file_content = result['content']
@@ -92,6 +94,8 @@ class FileSystemManager(object):
                 os.chmod(path, permission)
             except OSError, error:
                 self.log.debug(error)
+
+        return paths
 
     def parse(self, path, name):
         ''' Parse the provided path against
