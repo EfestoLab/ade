@@ -26,17 +26,17 @@ Summing this to the previous step you'll end up having:
 
 .. code-block:: python
 
-import os
-from ade.manager import config as ade_config
-from ade.manager import template as ade_template
+    import os
+    from ade.manager import config as ade_config
+    from ade.manager import template as ade_template
 
-mode = 'default'
-config_path = os.getenv('ADE_CONFIG_PATH')
+    mode = 'default'
+    config_path = os.getenv('ADE_CONFIG_PATH')
 
-config_manager = ade_config.ConfigManager(config_path)
-config_mode = config_manager.get(mode)
+    config_manager = ade_config.ConfigManager(config_path)
+    config_mode = config_manager.get(mode)
 
-template_manager = ade_template.TemplateManager(config_mode)
+    template_manager = ade_template.TemplateManager(config_mode)
 
 
 

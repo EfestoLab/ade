@@ -93,7 +93,7 @@ class FileSystemManager(object):
             except OSError, error:
                 self.log.debug(error)
 
-        return result_paths
+        return path_results
 
     def parse(self, path, name):
         ''' Parse the provided path against
