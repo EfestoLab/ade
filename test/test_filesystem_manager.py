@@ -12,7 +12,8 @@ logging.getLogger('ade')
 class Test_FilesystemManager(unittest.TestCase):
 
     def setUp(self):
-        # Create a new template manager pointing to the test templates folder
+        """Setup test session.
+        """
         self.maxDiff = None
         config = 'test/resources/config'
         os.environ['ADE_CONFIG_PATH'] = config
@@ -24,9 +25,10 @@ class Test_FilesystemManager(unittest.TestCase):
 
         self.template_manager = TemplateManager(template_search_path)
         self.data = {'test_A': 'Hello', 'test_B': 'World'}
-        self.root_path = '/tmp'
 
     def test_permissions(self):
+        """Check whether the permissions are the correct one once rebuilt.
+        """
         filesystem_manager = FileSystemManager(
             self.config_mode, self.template_manager
         )
@@ -50,6 +52,8 @@ class Test_FilesystemManager(unittest.TestCase):
         self.assertEqual(permission_results, expected_results)
 
     def test_template_to_parser(self):
+        """ Build the template structure and convert it to parser
+        """
         filesystem_manager = FileSystemManager(self.config_mode, self.template_manager)
         resolved_template = filesystem_manager.template_manager.resolve_template('@+test_A+@')
         results = filesystem_manager.template_manager.resolve(resolved_template)
@@ -70,6 +74,8 @@ class Test_FilesystemManager(unittest.TestCase):
         self.assertEqual(parsers_results, expected_path)
 
     def test_template_to_path(self):
+        """ Build the template structure and convert it to path
+        """
         filesystem_manager = FileSystemManager(self.config_mode, self.template_manager)
         resolved_template = filesystem_manager.template_manager.resolve_template('@+test_A+@')
         results = filesystem_manager.template_manager.resolve(resolved_template)
@@ -91,6 +97,8 @@ class Test_FilesystemManager(unittest.TestCase):
         self.assertEqual(path_results, expected_path)
 
     def test_parse_complete_path(self):
+        """Check parse of a complete path.
+        """
         filesystem_manager = FileSystemManager(
             self.config_mode, self.template_manager
         )
@@ -99,12 +107,22 @@ class Test_FilesystemManager(unittest.TestCase):
         self.assertEqual(result[0], self.data)
 
     def test_parse_root_path(self):
-        '''
-        this is a known bug root /tmp/showname can't be parsed
+        '''Parse the root path only of the project,
+            This is to check the bug which was affecting it.
         '''
         filesystem_manager = FileSystemManager(
             self.config_mode, self.template_manager
         )
         test_path = '/tmp/Hello'
+        result = filesystem_manager.parse(test_path, '@+test_A+@')
+        self.assertEqual(result[0], {'test_A': 'Hello'})
+
+    def test_parse_trailing_path(self):
+        ''' Check trailing slashes in path to parse
+        '''
+        filesystem_manager = FileSystemManager(
+            self.config_mode, self.template_manager
+        )
+        test_path = '/tmp/Hello/'
         result = filesystem_manager.parse(test_path, '@+test_A+@')
         self.assertEqual(result[0], {'test_A': 'Hello'})

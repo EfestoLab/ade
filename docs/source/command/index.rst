@@ -1,5 +1,5 @@
-Command Line use
-################
+Command Line usage
+##################
 
 .. code-block:: bash
 
@@ -24,9 +24,6 @@ In order to create a new directory structure you'll need to provide some base da
 which will print some informations about the process:
 
 .. code-block:: bash
-
-	[WARNING][filesystem] - 'python_version' not found for {show}/python/{python_version}
-	[WARNING][filesystem] - 'python_version' not found for {show}/python/{python_version}/modules
 	[INFO][filesystem] - Setting /tmp/foo/vault as 0755
 	[INFO][filesystem] - Setting /tmp/foo/temp as 0755
 	[INFO][filesystem] - Setting /tmp/foo/editorial as 0755
@@ -35,7 +32,7 @@ which will print some informations about the process:
 	[INFO][filesystem] - Setting /tmp/foo/python as 0755
 
 .. note::
-	In this case the warning are related to a missing variable (--data python_version=2.6.4) required to build the default template @+show+@
+	Any variable which is not been passed thorugh --data or config file defaults, will be communicated thorugh warning and skipped.
 
 parse
 -----

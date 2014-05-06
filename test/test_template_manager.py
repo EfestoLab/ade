@@ -10,11 +10,37 @@ logging.getLogger('ade')
 class Test_TemplateManager(unittest.TestCase):
 
     def setUp(self):
+
         self.maxDiff = None
-        # Create a new template manager pointing to the test templates folder
         self.template_paths = os.path.realpath('test/resources/templates')
 
+    def test_register_unexisting_template(self):
+        '''Check when template doesn't exist
+        '''
+        manager = TemplateManager(self.template_paths)
+        self.assertRaises(KeyError, manager._get_in_register, '@+test_fake+@')
+
+    def test_registered_templates_is_folder(self):
+        '''Check for template folder attributes.
+        '''
+        manager = TemplateManager(self.template_paths)
+        folder_A = manager._get_in_register('@+test_A+@')
+        self.assertTrue(folder_A.get('folder', False))
+        self.assertTrue(folder_A.get('children', False))
+        self.assertEqual(folder_A.get('permission', 000), '0755')
+
+    def test_registered_templates_is_file(self):
+        '''Check for template file attributes.
+        '''
+        manager = TemplateManager(self.template_paths)
+        file_D = manager._get_in_register('@test_D@')['children'][0]
+        self.assertFalse(file_D.get('folder', True))
+        self.assertFalse(file_D.get('children'))
+        self.assertEqual(file_D.get('permission', 000), '0644')
+
     def test_registered_templates(self):
+        ''' Register a new template through the config file.
+        '''
         manager = TemplateManager(self.template_paths)
         register = manager.register
         expected_result = [
@@ -44,25 +70,9 @@ class Test_TemplateManager(unittest.TestCase):
         ]
         self.assertEqual(register, expected_result)
 
-    def test_register_unexisting_template(self):
-        manager = TemplateManager(self.template_paths)
-        self.assertRaises(KeyError, manager._get_in_register, '@+test_fake+@')
-
-    def test_registered_templates_is_folder(self):
-        manager = TemplateManager(self.template_paths)
-        folder_A = manager._get_in_register('@+test_A+@')
-        self.assertTrue(folder_A.get('folder', False))
-        self.assertTrue(folder_A.get('children', False))
-        self.assertEqual(folder_A.get('permission', 000), '0755')
-
-    def test_registered_templates_is_file(self):
-        manager = TemplateManager(self.template_paths)
-        file_D = manager._get_in_register('@test_D@')['children'][0]
-        self.assertFalse(file_D.get('folder', True))
-        self.assertFalse(file_D.get('children'))
-        self.assertEqual(file_D.get('permission', 000), '0644')
-
     def test_resolve_template(self):
+        '''Resolve the registered template.
+        '''
         manager = TemplateManager(self.template_paths)
         expected_result = {'folder': True, 'children': [
             {'folder': True, 'children': [
@@ -85,7 +95,7 @@ class Test_TemplateManager(unittest.TestCase):
         result = manager.resolve_template('@+test_A+@')
         self.assertEqual(result, expected_result)
 
-    def test_resolve(self):
+    def test_resolve_path(self):
         manager = TemplateManager(self.template_paths)
         expected_result = [
             {'content': '', 'path': ['+test_A+'], 'folder': True, 'permission': '0755'},
