@@ -129,8 +129,10 @@ class TemplateManager(object):
             .. code-block:: python
 
                 from ade.schema.template import TemplateManager
+                from ade.schema.config import ConfigManager
 
-                manager = TemplateManager(template_search_path)
+                config_manager = ConfigManager('path/to/config')
+                manager = TemplateManager(config_manager)
                 schema = manager._get_in_register('@+show+@')
 
         '''
@@ -153,8 +155,10 @@ class TemplateManager(object):
             .. code-block:: python
 
                 from ade.schema.template import TemplateManager
+                from ade.schema.config import ConfigManager
 
-                manager = TemplateManager(template_search_path)
+                config_manager = ConfigManager('path/to/config')
+                manager = TemplateManager(config_manager)
                 schema = manager.resolve_template('@+show+@')
 
         '''

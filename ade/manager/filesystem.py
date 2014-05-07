@@ -106,7 +106,7 @@ class FileSystemManager(object):
 
         '''
         # remove trailing slash from path
-        if path.endswith('/'):
+        if path.endswith(os.sep):
             path = path[:-1]
 
         if not path.startswith(self.mount_point):
@@ -128,6 +128,7 @@ class FileSystemManager(object):
         results = self.template_manager.resolve(built)
         parsers = self._to_parser(results)
         for parser in parsers:
+            self.log.debug('Preating parser : {0}'.format(parser))
             check = re.compile(parser)
             match = check.match(path)
             if not match:
