@@ -128,7 +128,7 @@ class FileSystemManager(object):
         results = self.template_manager.resolve(built)
         parsers = self._to_parser(results)
         for parser in parsers:
-            self.log.debug('Preating parser : {0}'.format(parser))
+            self.log.debug('Creating parser : {0}'.format(parser))
             check = re.compile(parser)
             match = check.match(path)
             if not match:
