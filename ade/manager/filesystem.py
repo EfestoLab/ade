@@ -127,6 +127,7 @@ class FileSystemManager(object):
         built = self.template_manager.resolve_template(name)
         results = self.template_manager.resolve(built)
         parsers = self._to_parser(results)
+
         for parser in parsers:
             self.log.debug('Creating parser : {0}'.format(parser))
             check = re.compile(parser)
@@ -172,7 +173,7 @@ class FileSystemManager(object):
                 result_path.append(entry)
 
             # Enforce checking with ^$
-            result_path = '^{0}$'.format((os.sep).join(result_path))
+            result_path = '^{0}$'.format((os.sep*2).join(result_path))
             result_paths.append(result_path)
 
         result_paths.sort(key=len)
