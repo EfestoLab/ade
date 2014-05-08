@@ -6,7 +6,6 @@ In here you'll be able to find the application program interface reference funct
 .. toctree::
    :maxdepth: 3
 
-   exception
    examples
    template/index
    manager/index
