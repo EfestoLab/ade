@@ -22,7 +22,8 @@ Once built use your browser to look into:
 	firefox ./docs/build/html/index.html
 
 
-installation
+
+Installation
 -------------
 To install the module, run:
 
@@ -35,7 +36,8 @@ To install the module, run:
     is suggested to install the module in a virtualenv environemnt for testing
     before central installation.
 
-test
+
+Test
 ----
 To perform the set of unittest for the module.
 
@@ -43,12 +45,6 @@ To perform the set of unittest for the module.
 
 	python setup.py test
 
+.. warning::
 
-Documentation
--------------
-
-.. code-block:: python
-
-	python setup.py build_sphinx
-
-Once you
+    The code is not fully tested under windows and it's expecting to break in some cases. If any issue is found please report it to the issue tracker.
