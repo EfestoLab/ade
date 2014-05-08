@@ -2,7 +2,7 @@
 from setuptools import setup, find_packages
 
 setup(
-    version='0.2.0',
+    version='0.2.2',
     description='Ade, a templated file system manager',
     author='Lorenzo Angeli',
     name='ade',
