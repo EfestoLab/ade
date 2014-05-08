@@ -8,7 +8,7 @@ import os
 import re
 import logging
 from pprint import pformat
-from ade.exception import ConfigError
+from ade.manager.exceptions import ConfigError
 
 
 class FileSystemManager(object):

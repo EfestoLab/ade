@@ -2,6 +2,7 @@ import os
 import json
 import logging
 from pprint import pformat
+from ade.manager.exceptions import ConfigError
 
 
 class ConfigManager(object):
@@ -23,7 +24,7 @@ class ConfigManager(object):
         )
 
         if not os.path.exists(config_search_path):
-            raise IOError(
+            raise ConfigError(
                 'config_path {0} does not exist'.format(config_search_path)
             )
 
@@ -58,7 +59,7 @@ class ConfigManager(object):
 
     def get(self, profile):
         if profile not in self.registry:
-            raise KeyError('config profile {0} not found'.format(profile))
+            raise ConfigError('config profile {0} not found'.format(profile))
 
         return self.registry[profile]
 
