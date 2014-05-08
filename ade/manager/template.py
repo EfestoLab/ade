@@ -39,8 +39,7 @@ class TemplateManager(object):
 
     @property
     def register(self):
-        ''' Return the content of the class register.
-
+        ''' Return the templates registered.
         '''
         return self._register
 

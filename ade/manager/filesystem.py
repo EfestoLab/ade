@@ -173,9 +173,10 @@ class FileSystemManager(object):
                 result_path.append(entry)
 
             # Enforce checking with ^$
-            # TODO: Protect slashes with backslashes in (os.sep*2)
+            # TODO: Protect slashes with backslashes in (os.sep*2).join...
             formatted_path = (os.sep).join(result_path)
-            result_path = '^{0}$'.format(formatted_path)
+            self.log.debug('Building regex : {0}'.format(formatted_path))
+            result_path = r'^{0}$'.format(formatted_path)
             result_paths.append(result_path)
 
         result_paths.sort(key=len)

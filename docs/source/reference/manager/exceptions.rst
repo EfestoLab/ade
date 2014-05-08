@@ -1,7 +1,6 @@
-exceptions
+Exceptions
 ----------
 
 .. automodule:: ade.manager.exceptions
    :members:
-   :private-members:
    :undoc-members:
