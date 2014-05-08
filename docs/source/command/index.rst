@@ -8,6 +8,10 @@ Command Line usage
 ade command line provides an easy access to the ade module functionalities.
 Provides two main modes and a set of optional flags,
 
+
+..	note::
+	In both create and parse actions, the given input data are going to be validated against the regular expressions expressed in the config file.
+
 Modes
 =====
 Each mode defines a different interaction type with the application.
@@ -85,15 +89,6 @@ variable of the templates. Data allowes you to do so.
 .. code-block:: bash
 
 	$ ade create --data show=white department=film sequence=AA shot=AA001
-
-.. note::
-	If not provided , a set of environment variables are used as lookup.
-
-	* show = $SHOW
-	* department = $DEPARTMENT
-	* sequence = $SEQUENCE
-	* shot = $SHOT
-	* user = $USER
 
 --template
 ----------
