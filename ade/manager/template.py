@@ -32,7 +32,7 @@ class TemplateManager(object):
         self.__variable_indicator = '+'
 
         self._register = []
-        template_folder = config['template_search_path']
+        template_folder = config.get('template_search_path')
         self._template_folder = os.path.realpath(template_folder)
         log.debug('Using template path: {0}'.format(self._template_folder))
         self.register_templates()
@@ -175,7 +175,8 @@ class TemplateManager(object):
         :type name: dict
 
         .. note::
-            This function is meant to be called only from within the resolve_template function.
+            This function is meant to be called only from within
+            the resolve_template function.
 
         '''
         for index, entry in enumerate(schema.get('children', [])):
@@ -212,7 +213,9 @@ class TemplateManager(object):
         # and register the hierarcy path in form of dictionary
         for template in templates:
             current_template_path = os.path.join(template_path, template)
-            permission = oct(stat.S_IMODE(os.stat(current_template_path).st_mode))
+            permission = oct(stat.S_IMODE(
+                os.stat(current_template_path).st_mode
+            ))
 
             current_template_map = {
                 'name': template,
