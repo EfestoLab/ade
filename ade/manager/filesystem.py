@@ -173,7 +173,9 @@ class FileSystemManager(object):
                 result_path.append(entry)
 
             # Enforce checking with ^$
-            result_path = '^{0}$'.format((os.sep*2).join(result_path))
+            # TODO: Protect slashes with backslashes in (os.sep*2)
+            formatted_path = (os.sep).join(result_path)
+            result_path = '^{0}$'.format(formatted_path)
             result_paths.append(result_path)
 
         result_paths.sort(key=len)
