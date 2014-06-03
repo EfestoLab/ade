@@ -9,7 +9,7 @@ from pprint import pformat
 from manager import filesystem
 from manager import config
 from manager import template as template
-from ade.exception import ConfigError
+from ade.manager.exceptions import ConfigError
 
 
 def setup_custom_logger(name):
