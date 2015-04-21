@@ -173,5 +173,4 @@ class Test_TemplateManager(unittest.TestCase):
         {'content': '', 'folder': True, 'path': [u'+test_A+', u'test_A1'], 'permission': '0755'}]
         result = manager.resolve_template('@+test_A+@')
         resolved = manager.resolve(result)
-        print resolved
         self.assertEqual(resolved, expected_result)
