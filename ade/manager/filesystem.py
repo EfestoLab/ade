@@ -30,6 +30,7 @@ class FileSystemManager(object):
 
         self.default_field_values = config['defaults']
         self.regexp_mapping = config['regexp_mapping']
+        self.regexp_extractor = re.compile('(?P<prefix>.+)?(\+)(?P<variable>.+)(\+)(?P<suffix>.+)?')
 
     def build(self, name, data, path):
         ''' Build the given schema name, and replace data,
@@ -157,19 +158,32 @@ class FileSystemManager(object):
             result_path = []
             path = path['path']
             for entry in path:
-                if '+' in entry:
-                    entry = entry.split('+')[1]
+                matches = self.regexp_extractor.match(entry)
+                if matches:
+                    data = matches.groupdict()
+                    prefix = data.get('prefix')
+                    entry = data.get('variable')
+                    suffix = data.get('suffix')
                     parser = self.regexp_mapping.get(
                         entry
                     )
+
+                    if prefix:
+                        entry = prefix+entry
+
+                    if suffix:
+                        entry = entry+suffix
+
                     try:
                         entry = parser.format(entry)
+
                     except AttributeError:
                         raise ConfigError(
                             'Regular expression not found for: {0}'.format(
                                 entry
                             )
                         )
+                print 'ENTRY', entry
                 result_path.append(entry)
 
             # Enforce checking with ^$
@@ -215,9 +229,21 @@ class FileSystemManager(object):
         for entry in paths:
             result_path = []
             for item in entry['path']:
-                if '+' in item:
-                    item = item.split('+')[1]
+                matches = self.regexp_extractor.match(entry)
+                if matches:
+                    data = matches.groupdict()
+                    prefix = data.get('prefix')
+                    item = data.get('variable')
+                    suffix = data.get('suffix')
+
                     item = '{%s}' % item
+
+                    if prefix:
+                        item = prefix + item
+
+                    if suffix:
+                        item = item + suffix
+
                 result_path.append(item)
 
             if result_path not in result_paths:
