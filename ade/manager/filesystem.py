@@ -30,7 +30,10 @@ class FileSystemManager(object):
 
         self.default_field_values = config['defaults']
         self.regexp_mapping = config['regexp_mapping']
-        self.regexp_extractor = re.compile('(?P<prefix>.+)?(\+)(?P<variable>.+)(\+)(?P<suffix>.+)?')
+
+        self.regexp_extractor = re.compile(
+            '(?P<prefix>.+)?(\+)(?P<variable>.+)(\+)(?P<suffix>.+)?'
+        )
 
     def build(self, name, data, path):
         ''' Build the given schema name, and replace data,
@@ -168,12 +171,6 @@ class FileSystemManager(object):
                         entry
                     )
 
-                    if prefix:
-                        entry = prefix+entry
-
-                    if suffix:
-                        entry = entry+suffix
-
                     try:
                         entry = parser.format(entry)
 
@@ -183,7 +180,13 @@ class FileSystemManager(object):
                                 entry
                             )
                         )
-                print 'ENTRY', entry
+
+                    if prefix:
+                        entry = prefix+entry
+
+                    if suffix:
+                        entry = entry+suffix
+
                 result_path.append(entry)
 
             # Enforce checking with ^$
@@ -229,12 +232,12 @@ class FileSystemManager(object):
         for entry in paths:
             result_path = []
             for item in entry['path']:
-                matches = self.regexp_extractor.match(entry)
+                matches = self.regexp_extractor.match(item)
                 if matches:
-                    data = matches.groupdict()
-                    prefix = data.get('prefix')
-                    item = data.get('variable')
-                    suffix = data.get('suffix')
+                    match = matches.groupdict()
+                    prefix = match.get('prefix')
+                    item = match.get('variable')
+                    suffix = match.get('suffix')
 
                     item = '{%s}' % item
 
@@ -245,12 +248,11 @@ class FileSystemManager(object):
                         item = item + suffix
 
                 result_path.append(item)
-
-            if result_path not in result_paths:
+            isnotinresults = result_path not in result_paths
+            if isnotinresults:
                 final_path = (os.sep).join(result_path)
                 try:
                     final_path = final_path.format(**data)
-
                 except Exception, error:
                     self.log.warning('{1} not found for {0}'.format(
                         final_path,
