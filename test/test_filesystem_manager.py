@@ -22,30 +22,23 @@ class Test_FilesystemManager(unittest.TestCase):
         self.template_manager = TemplateManager(self.config_mode)
         self.data = {'test_A': 'Hello', 'test_B': 'World'}
 
-    # def test_permissions(self):
-    #     """Check whether the permissions are the correct one once rebuilt.
-    #     """
-    #     filesystem_manager = FileSystemManager(
-    #         self.config_mode, self.template_manager
-    #     )
-    #     resolved_template = filesystem_manager.template_manager.resolve_template('@+test_A+@')
-    #     results = filesystem_manager.template_manager.resolve(resolved_template)
-    #     path_results = filesystem_manager._to_path(results, self.data)
-    #     permission_results = [item['permission'] for item in path_results]
-    #     expected_results = [
-    #         '0755',
-    #         '0755',
-    #         '0755',
-    #         '0644',
-    #         '0755',
-    #         '0755',
-    #         '0755',
-    #         '0755',
-    #         '0755',
-    #         '0644',
-    #         '0755'
-    #     ]
-    #     self.assertEqual(permission_results, expected_results)
+    def test_permissions(self):
+        """Check whether the permissions are the correct one once rebuilt.
+        """
+        filesystem_manager = FileSystemManager(
+            self.config_mode, self.template_manager
+        )
+        resolved_template = filesystem_manager.template_manager.resolve_template('@+test_A+@')
+        results = filesystem_manager.template_manager.resolve(resolved_template)
+        path_results = filesystem_manager._to_path(results, self.data)
+        permission_results = [item['permission'] for item in path_results]
+        expected_results = [
+            '0755', '0755', '0644',
+            '0755', '0755', '0755',
+            '0644', '0755', '0755',
+            '0755', '0755'
+        ]
+        self.assertEqual(permission_results, expected_results)
 
     def test_template_to_parser(self):
         """ Build the template structure and convert it to parser
@@ -79,17 +72,16 @@ class Test_FilesystemManager(unittest.TestCase):
         path_results = [item['path'] for item in path_results]
         expected_path = [
             'Hello',
-            'Hello/test_A1',
             'Hello/World',
             'Hello/World/file_B.txt',
-            'Hello/World/test_B2',
             'Hello/World/test_C',
             'Hello/World/test_C/test_C1',
             'Hello/World/test_C/test_C1/test_D',
-            'Hello/World/test_C/test_C1/test_D/test_D1',
             'Hello/World/test_C/test_C1/test_D/file_D.txt',
+            'Hello/World/test_C/test_C1/test_D/test_D1',
+            'Hello/World/test_B2',
             'Hello/World/test_B1',
-        ]
+            'Hello/test_A1']
         self.assertEqual(path_results, expected_path)
 
     def test_parse_complete_path(self):
@@ -133,6 +125,9 @@ class Test_FilesystemManager(unittest.TestCase):
         parsers_results = filesystem_manager._to_parser(results)
         expected_path = [
             '^pfx_(?P<test_E>[a-zA-Z0-9_]+)_sfx$',
+            '^pfx_(?P<test_E>[a-zA-Z0-9_]+)_sfx/test_D$',
+            '^pfx_(?P<test_E>[a-zA-Z0-9_]+)_sfx/test_D/test_D1$',
+            '^pfx_(?P<test_E>[a-zA-Z0-9_]+)_sfx/test_D/file_D.txt$'
         ]
         self.assertEqual(parsers_results, expected_path)
 
@@ -147,5 +142,8 @@ class Test_FilesystemManager(unittest.TestCase):
         path_results = [item['path'] for item in path_results]
         expected_path = [
             'pfx_ZOOO_sfx',
-        ]
+            'pfx_ZOOO_sfx/test_D',
+            'pfx_ZOOO_sfx/test_D/file_D.txt',
+            'pfx_ZOOO_sfx/test_D/test_D1'
+         ]
         self.assertEqual(path_results, expected_path)
