@@ -1,8 +1,12 @@
 import logging
 import tempfile
 
+tmp_log = tempfile.NamedTemporaryFile(
+    prefix='efestolab.uk.ade.', suffix='.log', delete=False
+)
 
-def setup_custom_logger(name, level=logging.INFO):
+
+def setup_custom_logger(name, level=logging.DEBUG, tmp_file=None):
     """ Helper logging function.
     """
 
@@ -12,10 +16,8 @@ def setup_custom_logger(name, level=logging.INFO):
     )
     handler = logging.StreamHandler()
     handler.setFormatter(formatter)
-    tmp_log = tempfile.NamedTemporaryFile(
-        prefix='efestolab.uk.ade.', suffix='.log', delete=False
-    )
-    fhandler = logging.FileHandler(tmp_log.name)
+    tmp = tmp_file or tmp_log.name
+    fhandler = logging.FileHandler(tmp)
     fhandler.setFormatter(formatter)
     logger = logging.getLogger(name)
     logger.setLevel(level)
