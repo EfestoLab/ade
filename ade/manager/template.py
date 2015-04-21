@@ -10,8 +10,9 @@ import stat
 import copy
 import logging
 from pprint import pformat
+from ade.helper import setup_custom_logger
 
-log = logging.getLogger('ade')
+log = setup_custom_logger('ade')
 
 
 class TemplateManager(object):
@@ -137,6 +138,7 @@ class TemplateManager(object):
         '''
         for item in self.register:
             if not item.get('name') == name:
+                log.debug('folder %s not found in register' % name)
                 continue
             item = copy.deepcopy(item)
             return item

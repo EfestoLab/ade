@@ -3,6 +3,7 @@ import json
 import logging
 from pprint import pformat
 from ade.manager.exceptions import ConfigError
+from ade.helper import setup_custom_logger
 
 
 class ConfigManager(object):
@@ -15,7 +16,7 @@ class ConfigManager(object):
 
     '''
     def __init__(self, config_search_path):
-        self.log = logging.getLogger('ade')
+        self.log = setup_custom_logger('ade')
 
         self.registry = {}
         self.log.debug('Using config_search_path: {0}'.format(

@@ -9,6 +9,7 @@ import re
 import logging
 from pprint import pformat
 from ade.manager.exceptions import ConfigError
+from ade.helper import setup_custom_logger
 
 
 class FileSystemManager(object):
@@ -22,7 +23,7 @@ class FileSystemManager(object):
     '''
 
     def __init__(self, config, template_manager):
-        self.log = logging.getLogger('ade')
+        self.log = setup_custom_logger('ade')
 
         self.template_manager = template_manager
 
@@ -53,7 +54,7 @@ class FileSystemManager(object):
             name, current_path)
         )
 
-        if not self.mount_point in current_path:
+        if self.mount_point not in current_path:
             self.log.error(
                 ('Structure can not be created'
                  ' outside of mount_point {0}').format(self.mount_point)
@@ -81,7 +82,7 @@ class FileSystemManager(object):
                         file_data.write(file_content)
 
             except (IOError, OSError) as error:
-                # self.log.debug('{0}'.format(error))
+                self.log.debug('{0}'.format(error))
                 pass
 
         #: Set permissions, using the reversed results
@@ -137,6 +138,9 @@ class FileSystemManager(object):
             check = re.compile(parser)
             match = check.match(path)
             if not match:
+                self.log.debug('no match found for {0} with {1}'.format(
+                    path, parser
+                ))
                 continue
 
             self.log.debug('Match found for {0} with {1}'.format(
@@ -212,6 +216,8 @@ class FileSystemManager(object):
                         )
                     )
                     data.pop(name)
+            else:
+                self.log.debug('Value %s not in %s' % (name, self.regexp_mapping))
 
     def _set_default_values(self, data):
         self.log.debug('Updating data with defaults: {0}'.format(
@@ -248,6 +254,7 @@ class FileSystemManager(object):
                         item = item + suffix
 
                 result_path.append(item)
+
             isnotinresults = result_path not in result_paths
             if isnotinresults:
                 final_path = (os.sep).join(result_path)
@@ -262,5 +269,9 @@ class FileSystemManager(object):
                     continue
                 entry['path'] = final_path
                 result_paths.append(entry)
+            else:
+                self.log.warning('{0} already in {1}'.format(
+                    result_path, result_paths
+                    ))
 
         return result_paths

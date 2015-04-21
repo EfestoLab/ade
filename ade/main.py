@@ -4,26 +4,12 @@ import os
 import json
 import logging
 import argparse
-from pprint import pformat
 
 from manager import filesystem
 from manager import config
 from manager import template as template
 from ade.manager.exceptions import ConfigError
-
-
-def setup_custom_logger(name):
-    """ Helper logging function.
-    """
-    formatter = logging.Formatter(fmt='[%(levelname)s][%(module)s] - %(message)s')
-
-    handler = logging.StreamHandler()
-    handler.setFormatter(formatter)
-
-    logger = logging.getLogger(name)
-    logger.setLevel(logging.DEBUG)
-    logger.addHandler(handler)
-    return logger
+from helper import setup_custom_logger
 
 
 def arguments():
