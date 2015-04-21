@@ -8,11 +8,9 @@ from a folder containing fragments.
 import os
 import stat
 import copy
-import logging
-from pprint import pformat
 from ade.helper import setup_custom_logger
 
-log = setup_custom_logger('ade')
+log = setup_custom_logger(__name__)
 
 
 class TemplateManager(object):
@@ -28,6 +26,7 @@ class TemplateManager(object):
         ''' Initialization function.
 
         '''
+        self.log = log
         # current_path = os.path.dirname(os.path.abspath(__file__))
         self.__reference_indicator = '@'
         self.__variable_indicator = '+'
@@ -35,7 +34,9 @@ class TemplateManager(object):
         self._register = []
         template_folder = config.get('template_search_path')
         self._template_folder = os.path.realpath(template_folder)
-        log.debug('Using template path: {0}'.format(self._template_folder))
+        self.log.debug(
+            'Using template path: {0}'.format(self._template_folder)
+        )
         self.register_templates()
 
     @property
@@ -136,14 +137,19 @@ class TemplateManager(object):
                 schema = manager._get_in_register('@+show+@')
 
         '''
+        msg = 'template %s not found in register'
+
         for item in self.register:
             if not item.get('name') == name:
-                log.debug('folder %s not found in register' % name)
+                self.log.debug((msg % name) + '... keep looking')
                 continue
+
+            self.log.debug('found template %s ' % name)
             item = copy.deepcopy(item)
             return item
 
-        raise KeyError('{0} not found in register'.format(name))
+        self.log.error(msg % name)
+        raise KeyError(msg % name)
 
     def resolve_template(self, name):
         ''' Return the built schema fragment of the given variable *name*.

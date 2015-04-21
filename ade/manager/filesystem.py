@@ -6,10 +6,11 @@ Construct and parse results of the teplate manager
 '''
 import os
 import re
-import logging
 from pprint import pformat
 from ade.manager.exceptions import ConfigError
 from ade.helper import setup_custom_logger
+
+log = setup_custom_logger(__name__)
 
 
 class FileSystemManager(object):
@@ -23,8 +24,7 @@ class FileSystemManager(object):
     '''
 
     def __init__(self, config, template_manager):
-        self.log = setup_custom_logger('ade')
-
+        self.log = log
         self.template_manager = template_manager
 
         self.mount_point = config['project_mount_point']
@@ -165,6 +165,7 @@ class FileSystemManager(object):
             result_path = []
             path = path['path']
             for entry in path:
+                self.log.debug('building parser for %s' % entry)
                 matches = self.regexp_extractor.match(entry)
                 if matches:
                     data = matches.groupdict()
@@ -238,6 +239,7 @@ class FileSystemManager(object):
         for entry in paths:
             result_path = []
             for item in entry['path']:
+                self.log.debug('Building path for %s' % item)
                 matches = self.regexp_extractor.match(item)
                 if matches:
                     match = matches.groupdict()

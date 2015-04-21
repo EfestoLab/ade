@@ -1,12 +1,13 @@
 import os
 import unittest
+import tempfile
 import logging
 from pprint import pformat
 
 from ade.manager.template import TemplateManager
 from ade.manager.config import ConfigManager
 
-logging.getLogger('ade')
+logging.getLogger(__name__)
 
 
 class Test_TemplateManager(unittest.TestCase):
@@ -18,7 +19,9 @@ class Test_TemplateManager(unittest.TestCase):
         config = 'test/resources/config'
         os.environ['ADE_CONFIG_PATH'] = config
         config_manager = ConfigManager(config)
-        self.config_mode = config_manager.get('test')
+        config_mode = config_manager.get('test')
+        config_mode['project_mount_point'] = tempfile.mkdtemp()
+        self.config_mode = config_mode
 
     def test_register_unexisting_template(self):
         '''Check when template doesn't exist

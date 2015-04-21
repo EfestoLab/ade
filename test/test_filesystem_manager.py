@@ -1,12 +1,12 @@
 import os
 import unittest
 import logging
-from pprint import pformat
+import tempfile
 from ade.manager.filesystem import FileSystemManager
 from ade.manager.template import TemplateManager
 from ade.manager.config import ConfigManager
 
-logging.getLogger('ade')
+logging.getLogger(__name__)
 
 
 class Test_FilesystemManager(unittest.TestCase):
@@ -18,7 +18,11 @@ class Test_FilesystemManager(unittest.TestCase):
         config = 'test/resources/config'
         os.environ['ADE_CONFIG_PATH'] = config
         config_manager = ConfigManager(config)
-        self.config_mode = config_manager.get('test')
+        config_mode = config_manager.get('test')
+        self.tmp = tempfile.mkdtemp()
+        config_mode['project_mount_point'] = self.tmp
+        self.config_mode = config_mode
+
         self.template_manager = TemplateManager(self.config_mode)
         self.data = {'test_A': 'Hello', 'test_B': 'World'}
 
@@ -90,8 +94,9 @@ class Test_FilesystemManager(unittest.TestCase):
         filesystem_manager = FileSystemManager(
             self.config_mode, self.template_manager
         )
-        test_path = '/tmp/Hello/World/test_C'
+        test_path = self.tmp
         result = filesystem_manager.parse(test_path, '@+test_A+@')
+        print 'YO', result, test_path
         self.assertEqual(result[0], self.data)
 
     def test_parse_root_path(self):
@@ -101,7 +106,7 @@ class Test_FilesystemManager(unittest.TestCase):
         filesystem_manager = FileSystemManager(
             self.config_mode, self.template_manager
         )
-        test_path = '/tmp/Hello'
+        test_path = self.tmp
         result = filesystem_manager.parse(test_path, '@+test_A+@')
         self.assertEqual(result[0], {'test_A': 'Hello'})
 
@@ -111,10 +116,10 @@ class Test_FilesystemManager(unittest.TestCase):
         filesystem_manager = FileSystemManager(
             self.config_mode, self.template_manager
         )
-        test_path = '/tmp/Hello/'
+        test_path = self.tmp+'/'
         result = filesystem_manager.parse(test_path, '@+test_A+@')
+        print result, test_path
         self.assertEqual(result[0], {'test_A': 'Hello'})
-
 
     def test_template_to_parser_prefix(self):
         """ Build the template structure and convert it to parser

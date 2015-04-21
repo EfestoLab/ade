@@ -1,9 +1,9 @@
 import os
 import json
-import logging
-from pprint import pformat
 from ade.manager.exceptions import ConfigError
 from ade.helper import setup_custom_logger
+
+log = setup_custom_logger(__name__)
 
 
 class ConfigManager(object):
@@ -16,7 +16,7 @@ class ConfigManager(object):
 
     '''
     def __init__(self, config_search_path):
-        self.log = setup_custom_logger('ade')
+        self.log = log
 
         self.registry = {}
         self.log.debug('Using config_search_path: {0}'.format(
@@ -25,9 +25,9 @@ class ConfigManager(object):
         )
 
         if not os.path.exists(config_search_path):
-            raise ConfigError(
-                'config_path {0} does not exist'.format(config_search_path)
-            )
+            msg = 'config_path {0} does not exist'.format(config_search_path)
+            self.log.warning(msg)
+            raise ConfigError(msg)
 
         for root, folders, files in os.walk(config_search_path):
             for _file in files:
