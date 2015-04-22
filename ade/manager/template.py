@@ -104,6 +104,7 @@ class TemplateManager(object):
             name = name.replace(self.__reference_indicator, '')
             path.append(name)
             current_path = path[:]
+            self.log.debug('resolving %s' % (path))
             self._resolve(entry, final_path_list, path)
 
             new_entry = {
@@ -141,7 +142,7 @@ class TemplateManager(object):
 
         for item in self.register:
             if not item.get('name') == name:
-                self.log.debug((msg % name) + '... keep looking')
+                # self.log.debug((msg % name) + '... keep looking')
                 continue
 
             self.log.debug('found template %s ' % name)
