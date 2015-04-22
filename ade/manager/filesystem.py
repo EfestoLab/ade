@@ -211,13 +211,15 @@ class FileSystemManager(object):
                 match = regexp.match(value)
                 if not match:
                     self.log.warning(
-                        'Value {1} for data {0} does not match {2}'.format(
+                        'Key {1} for data {0} does not match {2}'.format(
                             name, value, self.regexp_mapping[name].keys()
                         )
                     )
                     data.pop(name)
             else:
-                self.log.debug('Value %s not in %s' % (name, self.regexp_mapping))
+                self.log.debug('Key %s not in %s' % (
+                    name, self.regexp_mapping.keys())
+                )
 
     def _set_default_values(self, data):
         self.log.debug('Updating data with defaults: {0}'.format(
@@ -245,10 +247,6 @@ class FileSystemManager(object):
                     item = match.get('variable')
                     suffix = match.get('suffix')
 
-                    self.log.debug(
-                        'Template Item  %s : %s : %s' % (prefix, item, suffix)
-                    )
-
                     item = '{%s}' % item
 
                     if prefix:
@@ -257,13 +255,12 @@ class FileSystemManager(object):
                     if suffix:
                         item = item + suffix
 
-                self.log.debug('Final Item %s' % (item))
                 result_path.append(item)
 
             isnotinresults = result_path not in result_paths
             if isnotinresults:
                 final_path = (os.sep).join(result_path)
-                self.log.debug('Building path for %s' % final_path)
+                self.log.debug('Building path for %s and data %s' % (final_path, data.keys()))
                 try:
                     final_path = final_path.format(**data)
 
