@@ -36,7 +36,7 @@ class Test_TemplateManager(unittest.TestCase):
         folder_A = manager._get_in_register('@+test_A+@')
         self.assertTrue(folder_A.get('folder', False))
         self.assertTrue(folder_A.get('children', False))
-        self.assertEqual(folder_A.get('permission', 000), '0777')
+        self.assertEqual(folder_A.get('permission', 000), '0775')
 
     def test_registered_templates_is_file(self):
         '''Check for template file attributes.
@@ -45,7 +45,7 @@ class Test_TemplateManager(unittest.TestCase):
         file_D = manager._get_in_register('@test_D@')['children'][-1]
         self.assertFalse(file_D.get('folder'))
         self.assertFalse(file_D.get('children'))
-        self.assertEqual(file_D.get('permission', 000), '0777')
+        self.assertEqual(file_D.get('permission', 000), '0775')
 
     def test_registered_templates(self):
         ''' Register a new template through the config file.
@@ -56,60 +56,60 @@ class Test_TemplateManager(unittest.TestCase):
          {'children': [{'children': [],
                         'folder': True,
                         'name': u'@test_D@',
-                        'permission': '0777'}],
+                        'permission': '0775'}],
           'folder': True,
           'name': u'pfx_@+test_E+@_sfx',
-          'permission': '0777'},
+          'permission': '0775'},
          {'children': [{'children': [],
                         'folder': True,
                         'name': u'test_D1',
-                        'permission': '0777'},
+                        'permission': '0775'},
                        {'content': '',
                         'folder': False,
                         'name': u'file_D.txt',
-                        'permission': '0777'}],
+                        'permission': '0775'}],
           'folder': True,
           'name': u'@test_D@',
-          'permission': '0777'},
+          'permission': '0775'},
          {'children': [{'children': [{'children': [],
                                       'folder': True,
                                       'name': u'@test_D@',
-                                      'permission': '0777'}],
+                                      'permission': '0775'}],
                         'folder': True,
                         'name': u'test_C1',
-                        'permission': '0777'}],
+                        'permission': '0775'}],
           'folder': True,
           'name': u'@test_C@',
-          'permission': '0777'},
+          'permission': '0775'},
          {'children': [{'children': [],
                         'folder': True,
                         'name': u'test_A1',
-                        'permission': '0777'},
+                        'permission': '0775'},
                        {'children': [{'content': 'test',
                                       'folder': False,
                                       'name': u'file_B.txt',
-                                      'permission': '0777'}],
+                                      'permission': '0775'}],
                         'folder': True,
                         'name': u'@+test_B+@',
-                        'permission': '0777'}],
+                        'permission': '0775'}],
           'folder': True,
           'name': u'@+test_A+@',
-          'permission': '0777'},
+          'permission': '0775'},
          {'children': [{'children': [],
                         'folder': True,
                         'name': u'test_B1',
-                        'permission': '0777'},
+                        'permission': '0775'},
                        {'children': [],
                         'folder': True,
                         'name': u'test_B2',
-                        'permission': '0777'},
+                        'permission': '0775'},
                        {'children': [],
                         'folder': True,
                         'name': u'@test_C@',
-                        'permission': '0777'}],
+                        'permission': '0775'}],
           'folder': True,
           'name': u'@+test_B+@',
-          'permission': '0777'}]
+          'permission': '0775'}]
         self.assertEqual(register, expected_result)
 
     def test_resolve_template(self):
@@ -120,42 +120,42 @@ class Test_TemplateManager(unittest.TestCase):
           {'children': [],
            'folder': True,
            'name': u'test_A1',
-           'permission': '0777'},
+           'permission': '0775'},
           {'children': [{'children': [],
                          'folder': True,
                          'name': u'test_B1',
-                         'permission': '0777'},
+                         'permission': '0775'},
                         {'children': [],
                          'folder': True,
                          'name': u'test_B2',
-                         'permission': '0777'},
+                         'permission': '0775'},
                         {'children': [{'children': [{'children': [{'children': [],
                                                                    'folder': True,
                                                                    'name': u'test_D1',
-                                                                   'permission': '0777'},
+                                                                   'permission': '0775'},
                                                                   {'content': '',
                                                                    'folder': False,
                                                                    'name': u'file_D.txt',
-                                                                   'permission': '0777'}],
+                                                                   'permission': '0775'}],
                                                      'folder': True,
                                                      'name': u'@test_D@',
-                                                     'permission': '0777'}],
+                                                     'permission': '0775'}],
                                        'folder': True,
                                        'name': u'test_C1',
-                                       'permission': '0777'}],
+                                       'permission': '0775'}],
                          'folder': True,
                          'name': u'@test_C@',
-                         'permission': '0777'},
+                         'permission': '0775'},
                         {'content': 'test',
                          'folder': False,
                          'name': u'file_B.txt',
-                         'permission': '0777'}],
+                         'permission': '0775'}],
            'folder': True,
            'name': u'@+test_B+@',
-           'permission': '0777'}],
+           'permission': '0775'}],
          'folder': True,
          'name': u'@+test_A+@',
-         'permission': '0777'}
+         'permission': '0775'}
 
         result = manager.resolve_template('@+test_A+@')
         self.assertEqual(result, expected_result)
@@ -163,17 +163,17 @@ class Test_TemplateManager(unittest.TestCase):
     def test_resolve_path(self):
         manager = TemplateManager(self.config_mode)
         expected_result = [
-        {'content': '', 'folder': True, 'path': [u'+test_A+'], 'permission': '0777'},
-        {'content': '', 'folder': True, 'path': [u'+test_A+', u'+test_B+'], 'permission': '0777'},
-        {'content': 'test', 'folder': False, 'path': [u'+test_A+', u'+test_B+', u'file_B.txt'], 'permission': '0777'},
-        {'content': '', 'folder': True, 'path': [u'+test_A+', u'+test_B+', u'test_C'], 'permission': '0777'},
-        {'content': '', 'folder': True, 'path': [u'+test_A+', u'+test_B+', u'test_C', u'test_C1'], 'permission': '0777'},
-        {'content': '', 'folder': True, 'path': [u'+test_A+', u'+test_B+', u'test_C', u'test_C1', u'test_D'], 'permission': '0777'},
-        {'content': '', 'folder': False, 'path': [u'+test_A+', u'+test_B+', u'test_C', u'test_C1', u'test_D', u'file_D.txt'], 'permission': '0777'},
-        {'content': '', 'folder': True, 'path': [u'+test_A+', u'+test_B+', u'test_C', u'test_C1', u'test_D', u'test_D1'], 'permission': '0777'},
-        {'content': '', 'folder': True, 'path': [u'+test_A+', u'+test_B+', u'test_B2'], 'permission': '0777'},
-        {'content': '', 'folder': True, 'path': [u'+test_A+', u'+test_B+', u'test_B1'], 'permission': '0777'},
-        {'content': '', 'folder': True, 'path': [u'+test_A+', u'test_A1'], 'permission': '0777'}]
+        {'content': '', 'folder': True, 'path': [u'+test_A+'], 'permission': '0775'},
+        {'content': '', 'folder': True, 'path': [u'+test_A+', u'+test_B+'], 'permission': '0775'},
+        {'content': 'test', 'folder': False, 'path': [u'+test_A+', u'+test_B+', u'file_B.txt'], 'permission': '0775'},
+        {'content': '', 'folder': True, 'path': [u'+test_A+', u'+test_B+', u'test_C'], 'permission': '0775'},
+        {'content': '', 'folder': True, 'path': [u'+test_A+', u'+test_B+', u'test_C', u'test_C1'], 'permission': '0775'},
+        {'content': '', 'folder': True, 'path': [u'+test_A+', u'+test_B+', u'test_C', u'test_C1', u'test_D'], 'permission': '0775'},
+        {'content': '', 'folder': False, 'path': [u'+test_A+', u'+test_B+', u'test_C', u'test_C1', u'test_D', u'file_D.txt'], 'permission': '0775'},
+        {'content': '', 'folder': True, 'path': [u'+test_A+', u'+test_B+', u'test_C', u'test_C1', u'test_D', u'test_D1'], 'permission': '0775'},
+        {'content': '', 'folder': True, 'path': [u'+test_A+', u'+test_B+', u'test_B2'], 'permission': '0775'},
+        {'content': '', 'folder': True, 'path': [u'+test_A+', u'+test_B+', u'test_B1'], 'permission': '0775'},
+        {'content': '', 'folder': True, 'path': [u'+test_A+', u'test_A1'], 'permission': '0775'}]
         result = manager.resolve_template('@+test_A+@')
         resolved = manager.resolve(result)
         self.assertEqual(resolved, expected_result)
