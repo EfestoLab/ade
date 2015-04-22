@@ -165,7 +165,6 @@ class FileSystemManager(object):
             result_path = []
             path = path['path']
             for entry in path:
-                self.log.debug('building parser for %s' % entry)
                 matches = self.regexp_extractor.match(entry)
                 if matches:
                     data = matches.groupdict()
@@ -197,8 +196,8 @@ class FileSystemManager(object):
             # Enforce checking with ^$
             # TODO: Protect slashes with backslashes in (os.sep*2).join...
             formatted_path = (os.sep).join(result_path)
-            self.log.debug('Building regex : {0}'.format(formatted_path))
             result_path = r'^{0}$'.format(formatted_path)
+            self.log.debug('Building regex : {0}'.format(result_path))
             result_paths.append(result_path)
 
         result_paths.sort(key=len)
@@ -213,7 +212,7 @@ class FileSystemManager(object):
                 if not match:
                     self.log.warning(
                         'Value {1} for data {0} does not match {2}'.format(
-                            name, value, self.regexp_mapping[name]
+                            name, value, self.regexp_mapping[name].keys()
                         )
                     )
                     data.pop(name)
@@ -239,13 +238,16 @@ class FileSystemManager(object):
         for entry in paths:
             result_path = []
             for item in entry['path']:
-                self.log.debug('Building path for %s' % item)
                 matches = self.regexp_extractor.match(item)
                 if matches:
                     match = matches.groupdict()
                     prefix = match.get('prefix')
                     item = match.get('variable')
                     suffix = match.get('suffix')
+
+                    self.log.debug(
+                        'Template Item  %s : %s : %s' % (prefix, item, suffix)
+                    )
 
                     item = '{%s}' % item
 
@@ -255,13 +257,16 @@ class FileSystemManager(object):
                     if suffix:
                         item = item + suffix
 
+                self.log.debug('Final Item %s' % (item))
                 result_path.append(item)
 
             isnotinresults = result_path not in result_paths
             if isnotinresults:
                 final_path = (os.sep).join(result_path)
+                self.log.debug('Building path for %s' % final_path)
                 try:
                     final_path = final_path.format(**data)
+
                 except Exception, error:
                     self.log.warning('{1} not found for {0}'.format(
                         final_path,
