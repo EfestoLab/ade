@@ -128,14 +128,15 @@ class Test_FilesystemManager(unittest.TestCase):
         """ Build the template structure and convert it to parser
         """
         filesystem_manager = FileSystemManager(self.config_mode, self.template_manager)
-        resolved_template = filesystem_manager.template_manager.resolve_template('pfx_@+test_E+@_sfx')
+        resolved_template = filesystem_manager.template_manager.resolve_template('@+test_F+@')
         results = filesystem_manager.template_manager.resolve(resolved_template)
         parsers_results = filesystem_manager._to_parser(results)
         expected_path = [
-            '^pfx_(?P<test_E>[a-zA-Z0-9_]+)_sfx$',
-            '^pfx_(?P<test_E>[a-zA-Z0-9_]+)_sfx/test_D$',
-            '^pfx_(?P<test_E>[a-zA-Z0-9_]+)_sfx/test_D/test_D1$',
-            '^pfx_(?P<test_E>[a-zA-Z0-9_]+)_sfx/test_D/file_D.txt$'
+            '^(?P<test_E>[a-zA-Z0-9_]+)$',
+            '^(?P<test_E>[a-zA-Z0-9_]+)/pfx_(?P<test_E>[a-zA-Z0-9_]+)_sfx$',
+            '^(?P<test_E>[a-zA-Z0-9_]+)/pfx_(?P<test_E>[a-zA-Z0-9_]+)_sfx/test_D$',
+            '^(?P<test_E>[a-zA-Z0-9_]+)/pfx_(?P<test_E>[a-zA-Z0-9_]+)_sfx/test_D/test_D1$',
+            '^(?P<test_E>[a-zA-Z0-9_]+)/pfx_(?P<test_E>[a-zA-Z0-9_]+)_sfx/test_D/file_D.txt$'
         ]
         self.assertEqual(parsers_results, expected_path)
 
@@ -143,15 +144,16 @@ class Test_FilesystemManager(unittest.TestCase):
         """ Build the template structure and convert it to path
         """
         filesystem_manager = FileSystemManager(self.config_mode, self.template_manager)
-        resolved_template = filesystem_manager.template_manager.resolve_template('pfx_@+test_E+@_sfx')
+        resolved_template = filesystem_manager.template_manager.resolve_template('@+test_F+@')
         results = filesystem_manager.template_manager.resolve(resolved_template)
-        data = {'test_E': 'ZOOO'}
+        data = {'test_E': 'ZOOO', 'test_F': 'BOOO'}
         path_results = filesystem_manager._to_path(results, data)
         path_results = [item['path'] for item in path_results]
         expected_path = [
-            'pfx_ZOOO_sfx',
-            'pfx_ZOOO_sfx/test_D',
-            'pfx_ZOOO_sfx/test_D/file_D.txt',
-            'pfx_ZOOO_sfx/test_D/test_D1'
-         ]
+            'BOOO',
+            'BOOO/pfx_ZOOO_sfx',
+            'BOOO/pfx_ZOOO_sfx/test_D',
+            'BOOO/pfx_ZOOO_sfx/test_D/file_D.txt',
+            'BOOO/pfx_ZOOO_sfx/test_D/test_D1'
+        ]
         self.assertEqual(path_results, expected_path)

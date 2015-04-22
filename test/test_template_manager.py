@@ -52,8 +52,7 @@ class Test_TemplateManager(unittest.TestCase):
         '''
         manager = TemplateManager(self.config_mode)
         register = manager.register
-        expected_result = [
-         {'children': [{'children': [],
+        expected_result =  [{'children': [{'children': [],
                         'folder': True,
                         'name': u'@test_D@',
                         'permission': '0775'}],
@@ -94,6 +93,13 @@ class Test_TemplateManager(unittest.TestCase):
                         'permission': '0775'}],
           'folder': True,
           'name': u'@+test_A+@',
+          'permission': '0775'},
+         {'children': [{'children': [],
+                        'folder': True,
+                        'name': u'pfx_@+test_E+@_sfx',
+                        'permission': '0775'}],
+          'folder': True,
+          'name': u'@+test_F+@',
           'permission': '0775'},
          {'children': [{'children': [],
                         'folder': True,

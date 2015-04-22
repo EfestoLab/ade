@@ -9,6 +9,7 @@
     {
         "test_A": "(?P<test_A>[a-zA-Z0-9_]+)",
         "test_B": "(?P<test_B>[a-zA-Z0-9_]+)",
-        "test_E": "(?P<test_E>[a-zA-Z0-9_]+)"
+        "test_E": "(?P<test_E>[a-zA-Z0-9_]+)",
+        "test_F": "(?P<test_E>[a-zA-Z0-9_]+)"
     }
 }
