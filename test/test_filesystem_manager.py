@@ -37,10 +37,10 @@ class Test_FilesystemManager(unittest.TestCase):
         path_results = filesystem_manager._to_path(results, self.data)
         permission_results = [item['permission'] for item in path_results]
         expected_results = [
-            '0755', '0755', '0644',
-            '0755', '0755', '0755',
-            '0644', '0755', '0755',
-            '0755', '0755'
+            '0777', '0777', '0777',
+            '0777', '0777', '0777',
+            '0777', '0777', '0777',
+            '0777', '0777'
         ]
         self.assertEqual(permission_results, expected_results)
 
