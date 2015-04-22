@@ -63,7 +63,6 @@ class TemplateManager(object):
 
         '''
         root_name = schema.get('name').replace(self.__reference_indicator, '')
-
         root = {
             'path': [root_name],
             'permission': schema.get('permission', 777),
@@ -81,6 +80,7 @@ class TemplateManager(object):
         )
         result_paths.append(root)
         result_paths.reverse()
+
         # paths.sort(key=lambda x: len(x['path']))
         return result_paths
 
@@ -189,7 +189,8 @@ class TemplateManager(object):
         '''
         for index, entry in enumerate(schema.get('children', [])):
             item = entry.get('name', '')
-            if item.startswith(self.__reference_indicator):
+            self.log.debug('resolving item %s' % item)
+            if self.__reference_indicator in item:
                 removed = schema['children'].pop(index)
                 fragment = self._get_in_register(removed['name'])
                 if removed.get('children'):
