@@ -1,3 +1,4 @@
+import os
 import logging
 import tempfile
 
@@ -9,6 +10,10 @@ tmp_log = tempfile.NamedTemporaryFile(
 def setup_custom_logger(name, level=logging.INFO, tmp_file=None):
     """ Helper logging function.
     """
+
+    is_debug = os.getenv('EFESTO_DEBUG', '0')
+    if is_debug != '0':
+        level = logging.DEBUG
 
     formatter = logging.Formatter(
         fmt='[%(levelname)s] '
