@@ -86,17 +86,19 @@ class FileSystemManager(object):
                 pass
 
         #: Set permissions, using the reversed results
-        for result in reversed(path_results):
-            path = os.path.join(current_path, result['path'])
-            permission = result['permission']
-            permission = int(permission, 8)
-            self.log.debug('Setting {1} as {0}'.format(
-                oct(permission), os.path.realpath(path)
-            ))
-            try:
-                os.chmod(path, permission)
-            except OSError, error:
-                self.log.debug(error)
+        # only if on posix , windows permissions are not handled
+        if os.name == 'posix':
+            for result in reversed(path_results):
+                path = os.path.join(current_path, result['path'])
+                permission = result['permission']
+                permission = int(permission, 8)
+                self.log.debug('Setting {1} as {0}'.format(
+                    oct(permission), os.path.realpath(path)
+                ))
+                try:
+                    os.chmod(path, permission)
+                except OSError, error:
+                    self.log.debug(error)
 
         return path_results
 
