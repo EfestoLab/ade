@@ -6,7 +6,7 @@ tmp_log = tempfile.NamedTemporaryFile(
 )
 
 
-def setup_custom_logger(name, level=logging.DEBUG, tmp_file=None):
+def setup_custom_logger(name, level=logging.INFO, tmp_file=None):
     """ Helper logging function.
     """
 
@@ -24,4 +24,5 @@ def setup_custom_logger(name, level=logging.DEBUG, tmp_file=None):
     logger.addHandler(handler)
     logger.addHandler(fhandler)
     logger.info('ADE Log file : %s' % tmp_log.name)
+    logger.info('Registering log for %s' % name)
     return logger
