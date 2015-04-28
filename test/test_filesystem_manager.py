@@ -69,23 +69,30 @@ class Test_FilesystemManager(unittest.TestCase):
     def test_template_to_path(self):
         """ Build the template structure and convert it to path
         """
-        filesystem_manager = FileSystemManager(self.config_mode, self.template_manager)
+        filesystem_manager = FileSystemManager(
+            self.config_mode,
+            self.template_manager
+        )
         resolved_template = filesystem_manager.template_manager.resolve_template('@+test_A+@')
-        results = filesystem_manager.template_manager.resolve(resolved_template)
+        results = filesystem_manager.template_manager.resolve(
+            resolved_template
+        )
         path_results = filesystem_manager._to_path(results, self.data)
         path_results = [item['path'] for item in path_results]
         expected_path = [
-            'Hello',
-            'Hello/World',
-            'Hello/World/file_B.txt',
-            'Hello/World/test_C',
-            'Hello/World/test_C/test_C1',
-            'Hello/World/test_C/test_C1/test_D',
-            'Hello/World/test_C/test_C1/test_D/file_D.txt',
-            'Hello/World/test_C/test_C1/test_D/test_D1',
-            'Hello/World/test_B2',
-            'Hello/World/test_B1',
-            'Hello/test_A1']
+            u'Hello',
+            u'Hello/test_A1',
+            u'Hello/World',
+            u'Hello/World/file_B.txt',
+            u'Hello/World/test_B2',
+            u'Hello/World/test_B1',
+            u'Hello/World/test_C',
+            u'Hello/World/test_C/test_C1',
+            u'Hello/World/test_C/test_C1/test_D',
+            u'Hello/World/test_C/test_C1/test_D/file_D.txt',
+            u'Hello/World/test_C/test_C1/test_D/test_D1'
+        ]
+
         self.assertEqual(path_results, expected_path)
 
     def test_parse_complete_path(self):

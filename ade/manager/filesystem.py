@@ -9,6 +9,7 @@ import re
 from pprint import pformat
 from ade.manager.exceptions import ConfigError
 from ade.helper import setup_custom_logger
+from collections import OrderedDict
 
 log = setup_custom_logger(__name__)
 
@@ -235,7 +236,7 @@ class FileSystemManager(object):
         set of schema paths.
 
         '''
-        data = data or {}
+        data = data or OrderedDict()
         self._set_default_values(data)
         self._validate_data(data)
         result_paths = []

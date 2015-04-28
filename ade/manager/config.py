@@ -2,6 +2,7 @@ import os
 import json
 from ade.manager.exceptions import ConfigError
 from ade.helper import setup_custom_logger
+from collections import OrderedDict
 
 log = setup_custom_logger(__name__)
 
@@ -18,7 +19,7 @@ class ConfigManager(object):
     def __init__(self, config_search_path):
         self.log = log
 
-        self.registry = {}
+        self.registry = OrderedDict()
         self.log.debug('Using config_search_path: {0}'.format(
             config_search_path
             )

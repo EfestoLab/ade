@@ -9,6 +9,7 @@ import os
 import stat
 import copy
 from ade.helper import setup_custom_logger
+from collections import OrderedDict
 
 log = setup_custom_logger(__name__)
 
@@ -63,12 +64,12 @@ class TemplateManager(object):
 
         '''
         root_name = schema.get('name').replace(self.__reference_indicator, '')
-        root = {
-            'path': [root_name],
-            'permission': schema.get('permission', 777),
-            'folder': schema.get('folder', True),
-            'content': schema.get('content', '')
-        }
+        root = OrderedDict(
+            path=[root_name],
+            permission=schema.get('permission', 777),
+            folder=schema.get('folder', True),
+            content=schema.get('content', '')
+        )
 
         paths = [root_name]
 
@@ -107,12 +108,12 @@ class TemplateManager(object):
             self.log.debug('resolving %s' % (path))
             self._resolve(entry, final_path_list, path)
 
-            new_entry = {
-                'path': current_path,
-                'permission': entry.get('permission', 777),
-                'folder': entry.get('folder', True),
-                'content': entry.get('content', '')
-            }
+            new_entry = OrderedDict(
+                path=current_path,
+                permission=entry.get('permission', 777),
+                folder=entry.get('folder', True),
+                content=entry.get('content', '')
+            )
 
             final_path_list.append(
                 new_entry
@@ -226,12 +227,12 @@ class TemplateManager(object):
                 os.stat(current_template_path).st_mode
             ))
 
-            current_template_map = {
-                'name': template,
-                'children': [],
-                'permission': permission,
-                'folder': True
-            }
+            current_template_map = OrderedDict(
+                name=template,
+                children=[],
+                permission=permission,
+                folder=True
+            )
 
             self._register_templates(
                 current_template_path,
@@ -267,11 +268,11 @@ class TemplateManager(object):
                 subentry = os.path.join(root, entry)
                 permission = oct(stat.S_IMODE(os.stat(subentry).st_mode))
 
-                item = {
-                    'name': entry,
-                    'permission': permission,
-                    'folder': False
-                }
+                item = OrderedDict(
+                    name=entry,
+                    permission=permission,
+                    folder=False
+                )
 
                 if os.path.isdir(subentry):
                     # If it's a folder, mark it with children and type
