@@ -230,8 +230,7 @@ class FileSystemManager(object):
             )
         )
         for key, val in self.default_field_values.items():
-            if key not in data:
-                data[key] = val
+            data.setdefault(key, val)
 
     def _to_path(self, paths, data):
         ''' Recursively build a list of paths from the given
