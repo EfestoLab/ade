@@ -2,9 +2,17 @@ import os
 import logging
 import tempfile
 
-tmp_log = tempfile.NamedTemporaryFile(
-    prefix='efestolab.uk.ade.', suffix='.log', delete=False
+tmpfile_args = dict(
+    prefix='efestolab.uk.ade.',
+    suffix='.log',
+    delete=False
 )
+
+logs_env = os.getenv('EFESTO_LOGS')
+if logs_env:
+    tmpfile_args['dir'] = logs_env
+
+tmp_log = tempfile.NamedTemporaryFile(**tmpfile_args)
 
 
 def setup_custom_logger(name, level=logging.INFO, tmp_file=None):
