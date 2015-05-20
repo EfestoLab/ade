@@ -229,7 +229,8 @@ class FileSystemManager(object):
             pformat(self.default_field_values)
             )
         )
-        data.update(self.default_field_values)
+        for key, val in self.default_field_values.items():
+            data.setdefault(key, val)
 
     def _to_path(self, paths, data):
         ''' Recursively build a list of paths from the given
