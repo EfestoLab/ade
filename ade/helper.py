@@ -36,6 +36,6 @@ def setup_custom_logger(name, level=logging.INFO, tmp_file=None):
     logger.setLevel(level)
     logger.addHandler(handler)
     logger.addHandler(fhandler)
-    logger.info('ADE Log file : %s' % tmp_log.name)
-    logger.info('Registering log for %s' % name)
+    logger.debug('ADE Log file : %s' % tmp_log.name)
+    logger.debug('Registering log for %s' % name)
     return logger
