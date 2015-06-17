@@ -55,7 +55,7 @@ class FileSystemManager(object):
             name, current_path)
         )
 
-        if self.mount_point not in current_path:
+        if os.path.abspath(self.mount_point) not in os.path.abspath(current_path):
             self.log.error(
                 ('Structure can not be created'
                  ' outside of mount_point {0}').format(self.mount_point)
