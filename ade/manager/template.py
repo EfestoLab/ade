@@ -8,10 +8,10 @@ from a folder containing fragments.
 import os
 import stat
 import copy
-from ade.helper import setup_custom_logger
 from collections import OrderedDict
+import logging
 
-log = setup_custom_logger(__name__)
+log = logging.getLogger(__name__)
 
 
 class TemplateManager(object):
@@ -105,7 +105,6 @@ class TemplateManager(object):
             name = name.replace(self.__reference_indicator, '')
             path.append(name)
             current_path = path[:]
-            self.log.debug('resolving %s' % (path))
             self._resolve(entry, final_path_list, path)
 
             new_entry = OrderedDict(

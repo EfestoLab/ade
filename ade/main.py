@@ -9,7 +9,6 @@ from manager import filesystem
 from manager import config
 from manager import template as template
 from ade.manager.exceptions import ConfigError
-from helper import setup_custom_logger
 
 
 def arguments():
@@ -77,9 +76,10 @@ def run():
     if not config_path:
         print 'Please define: $ADE_CONFIG_PATH'
         return
+
     # Setup logging
     level = getattr(logging, args.get('verbose').upper())
-    logger = setup_custom_logger('ade')
+    logger = logging.getLogger(__file__)
     logger.setLevel(level)
 
     # Print the given arguments

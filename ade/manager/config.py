@@ -1,10 +1,10 @@
 import os
 import json
 from ade.manager.exceptions import ConfigError
-from ade.helper import setup_custom_logger
 from collections import OrderedDict
+import logging
 
-log = setup_custom_logger(__name__)
+log = logging.getLogger(__name__)
 
 
 class ConfigManager(object):

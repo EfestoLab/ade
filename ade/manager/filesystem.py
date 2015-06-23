@@ -8,10 +8,10 @@ import os
 import re
 from pprint import pformat
 from ade.manager.exceptions import ConfigError
-from ade.helper import setup_custom_logger
 from collections import OrderedDict
+import logging
 
-log = setup_custom_logger(__name__)
+log = logging.getLogger(__name__)
 
 
 class FileSystemManager(object):
@@ -93,7 +93,7 @@ class FileSystemManager(object):
                 path = os.path.join(current_path, result['path'])
                 permission = result['permission']
                 permission = int(permission, 8)
-                self.log.debug('Setting {1} as {0}'.format(
+                self.log.debug('Setting permission of {1} as {0}'.format(
                     oct(permission), os.path.realpath(path)
                 ))
                 try:
