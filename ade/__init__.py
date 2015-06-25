@@ -1,6 +1,6 @@
 try:
-    import efesto_logging as logging
+    import efesto_logger as logging
 except:
     import logging
 
-logging.getLogger('ade')
+logging.getLogger(__name__)

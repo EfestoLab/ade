@@ -2,7 +2,12 @@
 
 import os
 import json
-import logging
+
+try:
+    import efesto_logger as logging
+except:
+    import logging
+
 import argparse
 
 from manager import filesystem
@@ -79,7 +84,7 @@ def run():
 
     # Setup logging
     level = getattr(logging, args.get('verbose').upper())
-    logger = logging.getLogger(__file__)
+    logger = logging.getLogger('efestolab.' + __name__)
     logger.setLevel(level)
 
     # Print the given arguments

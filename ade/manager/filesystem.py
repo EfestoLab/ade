@@ -9,7 +9,12 @@ import re
 from pprint import pformat
 from ade.manager.exceptions import ConfigError
 from collections import OrderedDict
-import logging
+
+try:
+    import efesto_logger as logging
+except:
+    import logging
+
 
 log = logging.getLogger(__name__)
 
