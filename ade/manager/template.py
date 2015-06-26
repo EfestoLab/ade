@@ -9,7 +9,10 @@ import os
 import stat
 import copy
 from collections import OrderedDict
-import logging
+try:
+    import efesto_logger as logging
+except:
+    import logging
 
 log = logging.getLogger(__name__)
 

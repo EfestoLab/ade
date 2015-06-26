@@ -84,7 +84,7 @@ def run():
 
     # Setup logging
     level = getattr(logging, args.get('verbose').upper())
-    logger = logging.getLogger('efestolab.' + __name__)
+    logger = logging.getLogger(__name__)
     logger.setLevel(level)
 
     # Print the given arguments
