@@ -11,7 +11,7 @@ Parse the given path:
 
 
 Parse the current path:
----------------------
+-----------------------
 
 .. code-block:: bash
 

@@ -8,4 +8,5 @@ Hi , in here you will find some examples on how to use ade from command line. I 
 
    create
    parse
+   example
 

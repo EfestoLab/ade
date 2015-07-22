@@ -19,6 +19,7 @@ Contents:
 .. toctree::
    :maxdepth: 1
 
+   introduction
    setup/index
    command/index
    tutorials/index
