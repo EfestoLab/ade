@@ -274,7 +274,7 @@ class FileSystemManager(object):
                     final_path = final_path.format(**data)
 
                 except Exception, error:
-                    self.log.warning('{1} not found for {0}'.format(
+                    self.log.debug('{1} not found for {0}'.format(
                         final_path,
                         error
                         )
@@ -283,7 +283,7 @@ class FileSystemManager(object):
                 entry['path'] = final_path
                 result_paths.append(entry)
             else:
-                self.log.warning('{0} already in {1}'.format(
+                self.log.debug('{0} already in {1}'.format(
                     result_path, result_paths
                     ))
 
