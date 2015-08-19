@@ -21,7 +21,7 @@ def arguments():
     """
     parser = argparse.ArgumentParser(prog='ade')
     parser.add_argument(
-        'action', choices=['create', 'parse'],
+        'action', choices=['create', 'parse', 'preview'],
         help='Application action'
     )
 
@@ -121,6 +121,15 @@ def run():
         )
 
     input_template = args.get('template')
+
+    if args.get('action') == 'preview':
+        from ui import main
+        main.main(
+            build_root=input_template,
+            config=config_mode,
+            initial_data=input_data
+        )
+        raise SystemExit(0)
 
     if args.get('action') == 'create':
         # current_data = manager.parse(path, root_template)

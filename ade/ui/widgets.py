@@ -24,7 +24,7 @@ class AdeItem(object):
         elif container_result:
             self.is_container = True
 
-        self.permissions = self._data.get('permissions')
+        self.permission = self._data.get('permission')
 
         for child in self._data.get('children', []):
             self._children.append(AdeItem(data=child, parent=self))
@@ -53,7 +53,7 @@ class AdeTreeModel(QtCore.QAbstractItemModel):
         self.dataChanged.emit(QtCore.QModelIndex(), QtCore.QModelIndex())
 
     def columnCount(self, parent=None):
-        return 1
+        return 2
 
     def rowCount(self, parent=None):
         if parent.isValid():
@@ -65,7 +65,10 @@ class AdeTreeModel(QtCore.QAbstractItemModel):
 
     def headerData(self, section, orientation, role):
         if role == QtCore.Qt.DisplayRole:
-            return 'Name'
+            if section == 0:
+                return 'Name'
+            else:
+                return 'Permissions'
 
     def index(self, row, column, parent):
         '''Return index for *row* and *column* under *parent*.'''
@@ -108,12 +111,16 @@ class AdeTreeModel(QtCore.QAbstractItemModel):
 
         node = index.internalPointer()
         if role == QtCore.Qt.DisplayRole:
+            if index.column() == 1:
+                return node.permission
             mapped_name = self._name_map.get(node._name)
             if mapped_name:
                 return mapped_name
             return node.name
 
         elif role == QtCore.Qt.DecorationRole:
+            if index.column() == 1:
+                return
             qApp = QtGui.QApplication.instance()
             style = qApp.style()
             if node.is_folder:
