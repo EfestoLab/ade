@@ -1,33 +1,33 @@
 from PySide import QtCore, QtGui
+import re
+
+VARIABLE_REGEX = re.compile('@\+(.+)\+@')
+CONTAINER_REGEX = re.compile('@(.+)@')
 
 
 class AdeItem(object):
-    def __init__(self, data, parent=None, signal=None):
+    def __init__(self, data, parent=None):
         self._data = data
         self._parent = parent
         self._children = []
-        self._signal = signal
 
         self.is_folder = self._data.get('folder')
         self._name = self._data.get('name')
         self.name = self._name
+        self.is_variable = False
+        self.is_container = False
+        variable_result = VARIABLE_REGEX.match(self.name)
+        container_result = CONTAINER_REGEX.match(self.name)
+
+        if variable_result:
+            self.is_variable = True
+        elif container_result:
+            self.is_container = True
+
         self.permissions = self._data.get('permissions')
 
         for child in self._data.get('children', []):
-            self._children.append(
-                AdeItem(
-                    data=child,
-                    parent=self,
-                    signal=signal
-                    )
-                )
-
-        if signal:
-            signal.connect(self.on_name_change)
-
-    def on_name_change(self, data):
-        if data.keys()[0] == self._name:
-            self.name = data.values()[0]
+            self._children.append(AdeItem(data=child, parent=self))
 
     def addChild(self, data):
         child = AdeItem(data=data, parent=self)
@@ -46,6 +46,11 @@ class AdeTreeModel(QtCore.QAbstractItemModel):
         super(AdeTreeModel, self).__init__(parent=parent)
         self._parent = parent
         self._root = root
+        self._name_map = {}
+
+    def update_mapping(self, key, val):
+        self._name_map[key] = val
+        self.dataChanged.emit(QtCore.QModelIndex(), QtCore.QModelIndex())
 
     def columnCount(self, parent=None):
         return 1
@@ -103,6 +108,9 @@ class AdeTreeModel(QtCore.QAbstractItemModel):
 
         node = index.internalPointer()
         if role == QtCore.Qt.DisplayRole:
+            mapped_name = self._name_map.get(node._name)
+            if mapped_name:
+                return mapped_name
             return node.name
 
         elif role == QtCore.Qt.DecorationRole:

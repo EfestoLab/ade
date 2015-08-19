@@ -1,4 +1,4 @@
-from PySide import QtGui
+from PySide import QtGui, QtCore
 import sys
 import widgets
 import os
@@ -8,6 +8,7 @@ from ade.manager.config import ConfigManager
 
 
 class AdePrevisWindow(QtGui.QMainWindow):
+
     def __init__(self, parent=None):
         super(AdePrevisWindow, self).__init__(parent=parent)
 
@@ -33,7 +34,7 @@ class AdePrevisWindow(QtGui.QMainWindow):
                         )
                     ),
                 'children': [data]
-            }
+            },
         )
         return root
 
@@ -43,20 +44,59 @@ class AdePrevisWindow(QtGui.QMainWindow):
         self.central_widget.setLayout(self.central_layout)
         self.setCentralWidget(self.central_widget)
 
+        # Names
+        self.format_container = QtGui.QFrame(self.central_widget)
+        self.format_layout = QtGui.QVBoxLayout()
+        self.format_container.setLayout(self.format_layout)
+
+        self.format_label = QtGui.QLabel('Format Variables:')
+        self.format_layout.addWidget(self.format_label)
+
+        self.format_list = QtGui.QFrame(self.format_container)
+        self.format_list_layout = QtGui.QVBoxLayout()
+        self.format_list.setLayout(self.format_list_layout)
+
+        self.format_layout.addWidget(self.format_list)
+
+        # Tree
         self.tree_container = QtGui.QFrame(self.central_widget)
         self.tree_layout = QtGui.QVBoxLayout()
         self.tree_container.setLayout(self.tree_layout)
-
-        self.central_layout.addWidget(self.tree_container)
 
         self.tree_view = QtGui.QTreeView(self.tree_container)
         self.tree_layout.addWidget(self.tree_view)
 
         self.tree_model = widgets.AdeTreeModel(
             self.get_root(),
-            parent=self.tree_view
+            parent=self.tree_view,
         )
         self.tree_view.setModel(self.tree_model)
+
+        self.central_layout.addWidget(self.tree_container)
+        self.central_layout.addWidget(self.format_container)
+        for i in self.manager._register:
+            name = i['name']
+            if name.startswith('@+'):
+                self.create_format_widget(name)
+
+    def create_format_widget(self, key):
+        container = QtGui.QFrame(self.format_list)
+        layout = QtGui.QHBoxLayout()
+        container.setLayout(layout)
+
+        label = QtGui.QLabel(key)
+        text = QtGui.QLineEdit()
+
+        layout.addWidget(label)
+        layout.addWidget(text)
+
+        self.format_list_layout.addWidget(container)
+
+        text.textChanged.connect(self.on_name_changed)
+
+    def on_name_changed(self, name):
+        key = self.sender().parent().layout().itemAt(0).widget().text()
+        self.tree_model.update_mapping(key, name)
 
 
 def main():
