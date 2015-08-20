@@ -191,7 +191,7 @@ class AdePrevisWindow(QtGui.QMainWindow):
 
     def on_omit_empty(self, state):
         self.tree_model.omit_empty = bool(state)
-        self.tree_view.collapseAll()
+        self.update_stylesheet()
 
     def on_export(self, file_type):
         destination = QtGui.QFileDialog.getSaveFileName(
