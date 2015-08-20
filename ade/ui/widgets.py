@@ -151,33 +151,37 @@ class AdeTreeModel(QtCore.QAbstractItemModel):
         elif role == QtCore.Qt.DecorationRole:
             if index.column() == 1:
                 return
-            if node.is_folder:
-                icon = self.icon_map['folder']
-                if self._parent.isExpanded(index):
-                    icon = icon['expanded']
-                else:
-                    icon = icon['normal']
-                if node.is_container or node.is_variable:
-                    icon = icon[:-2]
+            is_expanded = self._parent.isExpanded(index)
+            return self.get_icon(node, is_expanded)
+
+    def get_icon(self, node, is_expanded=False):
+        if node.is_folder:
+            icon = self.icon_map['folder']
+            if is_expanded:
+                icon = icon['expanded']
             else:
-                icon = self.icon_map['file']
-                ext = node.name.split('.')
-                if len(ext) == 1:
+                icon = icon['normal']
+            if node.is_container or node.is_variable:
+                icon = icon[:-2]
+        else:
+            icon = self.icon_map['file']
+            ext = node.name.split('.')
+            if len(ext) == 1:
+                icon = icon['default']
+            else:
+                ext = ext[-1]
+                found = False
+                for key, val in self.file_map.items():
+                    if ext in val:
+                        icon = icon[key]
+                        found = True
+                        break
+
+                if not found:
                     icon = icon['default']
-                else:
-                    ext = ext[-1]
-                    found = False
-                    for key, val in self.file_map.items():
-                        if ext in val:
-                            icon = icon[key]
-                            found = True
-                            break
 
-                    if not found:
-                        icon = icon['default']
-
-            icon = icon.format(theme=self.theme)
-            return QtGui.QIcon(QtGui.QPixmap(icon))
+        icon = icon.format(theme=self.theme)
+        return QtGui.QIcon(QtGui.QPixmap(icon))
 
 
 class AdeValidator(QtGui.QRegExpValidator):

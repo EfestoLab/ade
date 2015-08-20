@@ -1,20 +1,30 @@
 import os
 import sys
 import stat
-from PySide import QtGui, QtCore
+from PySide import QtGui
 from ade.manager.template import TemplateManager
 from ade.manager.config import ConfigManager
 import widgets
+import time
 
 
 style_white = ''
+TXT_HEADER = '''
+# @Copyright(c) 2015 EfestoLab
+# Created using Efesto Ade Preview tools on {date}
+# Settings:
+#   * Template path: {template_search_path}
+#   * Root template: {root_template}
+#   * Data:
+{data}
+'''
 
 
 class AdePrevisWindow(QtGui.QMainWindow):
 
     def __init__(
-            self, build_root=None, config=None, initial_data=None,
-            theme='white', parent=None):
+            self, build_root=None, theme='white', initial_data=None,
+            parent=None, config_path=None, config_mode=None):
         super(AdePrevisWindow, self).__init__(parent=parent)
 
         self.themes = {
@@ -23,11 +33,13 @@ class AdePrevisWindow(QtGui.QMainWindow):
         self.theme = theme
         self.icon_theme = 'black' if self.theme == 'white' else 'white'
 
-        self.build_root = build_root
+        self.build_root = build_root or '@+show+@'
 
-        config_manager = ConfigManager(os.getenv('ADE_CONFIG_PATH'))
-        self.config_mode = config or config_manager.get('default')
-        self.manager = TemplateManager(self.config_mode)
+        self.config_path = config_path or os.getenv('ADE_CONFIG_PATH')
+        self.config_mode = config_mode or 'default'
+        config_manager = ConfigManager(self.config_path)
+        self.config_dict = config_manager.get(self.config_mode)
+        self.manager = TemplateManager(self.config_dict)
 
         self.setupUi()
         if initial_data:
@@ -35,18 +47,17 @@ class AdePrevisWindow(QtGui.QMainWindow):
         self.setWindowTitle('Ade Template Preview')
         self.setWindowIcon(QtGui.QIcon(QtGui.QPixmap(':/icons/hades')))
 
-    def get_root(self, build_root):
-        build_root = build_root or '@+show+@'
-        data = self.manager.resolve_template(build_root)
+    def get_root(self):
+        data = self.manager.resolve_template(self.build_root)
         root = widgets.AdeItem(
             data={
-                'name': build_root,
+                'name': self.build_root,
                 'folder': True,
                 'permissions': str(
                     oct(
                         stat.S_IMODE(
                             os.stat(
-                                self.config_mode['template_search_path']
+                                self.config_dict['template_search_path']
                             ).st_mode
                         )
                     )
@@ -58,19 +69,42 @@ class AdePrevisWindow(QtGui.QMainWindow):
 
     def setupUi(self):
         self.resize(900, 500)
+
         self.central_widget = QtGui.QFrame(self)
         self.central_layout = QtGui.QVBoxLayout()
         self.central_widget.setLayout(self.central_layout)
         self.setCentralWidget(self.central_widget)
 
+        # Menu
+        self.menu_bar = QtGui.QMenuBar(self.central_widget)
+        self.file_menu = QtGui.QMenu('&File')
+        self.export_txt = QtGui.QAction('Export as &TXT', self.file_menu)
+        self.export_txt.triggered.connect(lambda: self.on_export('txt'))
+        self.export_pdf = QtGui.QAction('Export as &PDF', self.file_menu)
+        self.export_pdf.triggered.connect(lambda: self.on_export('pdf'))
+        self.file_menu.addAction(self.export_txt)
+        self.file_menu.addAction(self.export_pdf)
+
+        self.menu_bar.addMenu(self.file_menu)
+        self.setMenuBar(self.menu_bar)
+
+        # Mount Point
         self.mount_layout = QtGui.QHBoxLayout()
         self.mount_label = QtGui.QLabel('Current Mount Point:')
         self.mount_text = QtGui.QLineEdit(
-            self.config_mode.get('project_mount_point', 'Undefined'),
+            self.config_dict.get('project_mount_point', 'Undefined'),
         )
         self.mount_text.setEnabled(False)
+
+        self.config_label = QtGui.QLabel('Current Config:')
+        self.config_text = QtGui.QLineEdit(
+            os.path.join(self.config_path, self.config_mode+'.json'),
+        )
+        self.config_text.setEnabled(False)
         self.mount_layout.addWidget(self.mount_label)
         self.mount_layout.addWidget(self.mount_text)
+        self.mount_layout.addWidget(self.config_label)
+        self.mount_layout.addWidget(self.config_text)
         self.central_layout.addLayout(self.mount_layout)
 
         self.main_layout = QtGui.QHBoxLayout()
@@ -102,7 +136,7 @@ class AdePrevisWindow(QtGui.QMainWindow):
         self.tree_layout.addWidget(self.tree_view)
 
         self.tree_model = widgets.AdeTreeModel(
-            self.get_root(self.build_root),
+            self.get_root(),
             parent=self.tree_view,
             theme=self.icon_theme
         )
@@ -125,20 +159,78 @@ class AdePrevisWindow(QtGui.QMainWindow):
 
         self.create_button = QtGui.QPushButton('Create Folder Structure')
         self.central_layout.addWidget(self.create_button)
-        self.create_button.clicked.connect(self.on_print_to_pdf)
-        self.update_fields(self.config_mode.get('defaults', {}))
+        # self.create_button.clicked.connect(self.on_print_to_pdf)
+        self.update_fields(self.config_dict.get('defaults', {}))
 
         self.update_stylesheet()
 
-    def on_print_to_pdf(self):
-        printer = QtGui.QPrinter(QtGui.QPrinter.HighResolution)
-        printer.setOutputFormat(QtGui.QPrinter.PdfFormat)
-        printer.setOutputFileName('/home/salva/Desktop/print.pdf')
+    def on_export(self, file_type):
+        destination = QtGui.QFileDialog.getSaveFileName(
+            self,
+            'Select Destination',
+            os.path.expanduser('~'),
+            'Tree File (*.%s)' % file_type
+        )
+        destination = destination[0]
+        if not destination.endswith(file_type):
+            destination += '.%s' % file_type
 
-        painter = QtGui.QPainter()
-        painter.begin(printer)
-        self.tree_view.render(painter, QtCore.QPoint(0, 0))
-        painter.end()
+        items = self.extract_tree_data(self.tree_model._root)
+        items.pop(0)
+
+        if file_type == 'txt':
+            data = self.data_to_txt(items)
+            with file(destination, 'w') as f:
+                f.write(data)
+
+    def extract_tree_data(self, item, indent=0):
+        items = [
+            {
+                'name': self.tree_model._name_map.get(item._name) or item.name,
+                'indent': indent,
+                'folder': item.is_folder,
+                'icon': self.tree_model.get_icon(item, True)
+            }
+        ]
+
+        for child in item._children:
+            items += self.extract_tree_data(child, indent+1)
+
+        return items
+
+    def get_txt_header(self):
+        header = TXT_HEADER
+        data = {}
+        for key, val in self.tree_model._name_map.items():
+            if val:
+                data[key] = val
+
+        formated_data = []
+        for key, val in data.items():
+            formated_data.append('#          - %s: %s' % (key, val))
+
+        header = header.format(
+            date=time.strftime("%c"),
+            template_search_path=self.config_dict.get(
+                'template_search_path', 'Unknown'
+            ),
+            root_template=self.build_root,
+            data='\n'.join(formated_data)
+        )
+        return header
+
+    def data_to_txt(self, data):
+        txt_file = [self.get_txt_header()]
+        for item in data:
+            line = '    ' * (item['indent'] - 1)
+            line += '+ ' if item['folder'] else '* '
+            line += item['name']
+            txt_file.append(line)
+
+        return '\n'.join(txt_file)
+
+    def data_to_pdf(self, data):
+        pass
 
     def update_stylesheet(self):
         self.setStyleSheet(self.themes[self.theme])
@@ -154,7 +246,7 @@ class AdePrevisWindow(QtGui.QMainWindow):
 
         text.textChanged.connect(self.on_name_changed)
         text.textChanged.connect(self.update_stylesheet)
-        mapping = self.config_mode.get('regexp_mapping', {})
+        mapping = self.config_dict.get('regexp_mapping', {})
 
         text.setProperty('valid', True)
         for variable, regex in mapping.items():
@@ -181,12 +273,15 @@ class AdePrevisWindow(QtGui.QMainWindow):
                     text.setText(os.path.expandvars(val))
 
 
-def main(build_root=None, config=None, initial_data=None):
+def main(
+        build_root=None, config_path=None, config_mode=None,
+        initial_data=None):
     app = QtGui.QApplication('efesto-ade-previs')
     app.setStyle('plastique')
     window = AdePrevisWindow(
         build_root=build_root,
-        config=config,
+        config_path=config_path,
+        config_mode=config_mode,
         initial_data=initial_data
     )
     window.show()

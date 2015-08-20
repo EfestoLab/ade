@@ -126,7 +126,8 @@ def run():
         from ui import main
         main.main(
             build_root=input_template,
-            config=config_mode,
+            config_path=config_path,
+            config_mode=config_mode,
             initial_data=input_data
         )
         raise SystemExit(0)
