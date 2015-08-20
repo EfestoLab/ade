@@ -31,6 +31,9 @@ class AdeItem(object):
         for child in self._data.get('children', []):
             self._children.append(AdeItem(data=child, parent=self))
 
+    def children(self):
+        return self._children
+
     def addChild(self, data):
         child = AdeItem(data=data, parent=self)
         self._children.append(child)
@@ -46,6 +49,7 @@ class AdeItem(object):
 class AdeTreeModel(QtCore.QAbstractItemModel):
     def __init__(self, root, parent=None, theme='black'):
         super(AdeTreeModel, self).__init__(parent=parent)
+        self.omit_empty = False
         self._parent = parent
         self._root = root
         self._name_map = {}
@@ -76,6 +80,9 @@ class AdeTreeModel(QtCore.QAbstractItemModel):
 
     def update_mapping(self, key, val):
         self._name_map[key] = val
+        self.refresh_view()
+
+    def refresh_view(self):
         self.dataChanged.emit(QtCore.QModelIndex(), QtCore.QModelIndex())
 
     def columnCount(self, parent=None):
@@ -87,7 +94,10 @@ class AdeTreeModel(QtCore.QAbstractItemModel):
         else:
             item = self._root
 
-        return len(item._children)
+        if self.omit_empty and not item._name == self._root._name:
+            if item.is_variable and not self._name_map.get(item._name):
+                return 0
+        return len(item.children())
 
     def headerData(self, section, orientation, role):
         if role == QtCore.Qt.DisplayRole:
@@ -152,12 +162,12 @@ class AdeTreeModel(QtCore.QAbstractItemModel):
             if index.column() == 1:
                 return
             is_expanded = self._parent.isExpanded(index)
-            return self.get_icon(node, is_expanded)
+            return QtGui.QIcon(self.get_pixmap(node, is_expanded))
 
-    def get_icon(self, node, is_expanded=False):
+    def get_pixmap(self, node, is_expanded=False, theme=None):
         if node.is_folder:
             icon = self.icon_map['folder']
-            if is_expanded:
+            if is_expanded and node.children():
                 icon = icon['expanded']
             else:
                 icon = icon['normal']
@@ -180,8 +190,8 @@ class AdeTreeModel(QtCore.QAbstractItemModel):
                 if not found:
                     icon = icon['default']
 
-        icon = icon.format(theme=self.theme)
-        return QtGui.QIcon(QtGui.QPixmap(icon))
+        icon = icon.format(theme=theme or self.theme)
+        return QtGui.QPixmap(icon)
 
 
 class AdeValidator(QtGui.QRegExpValidator):
@@ -208,3 +218,36 @@ class AdeValidator(QtGui.QRegExpValidator):
         is_valid = False if state == _invalid else True
         self.parent().setProperty('valid', is_valid)
         return _valid, string, pos
+
+
+class NotificationArea(QtGui.QFrame):
+    def __init__(self, parent=None):
+        super(NotificationArea, self).__init__(parent=parent)
+        self.main_layout = QtGui.QHBoxLayout()
+        self.setLayout(self.main_layout)
+        self.notification_frame = QtGui.QFrame(self)
+        self.notification_frame.setObjectName('notification-area')
+
+        self.notification_frame_layout = QtGui.QHBoxLayout()
+        self.notification_frame.setLayout(self.notification_frame_layout)
+        self.main_layout.addWidget(self.notification_frame)
+
+        self.main_layout.setContentsMargins(0, 0, 0, 0)
+        self.main_layout.setSpacing(0)
+
+        self.text_area = QtGui.QLabel('Welcome', self.notification_frame)
+        self.close_button = QtGui.QPushButton('x')
+        self.close_button.setMaximumSize(20, 20)
+
+        self.notification_frame_layout.addWidget(self.text_area)
+        self.notification_frame_layout.addWidget(self.close_button)
+        self.close_button.clicked.connect(self.dismiss)
+        self.dismiss()
+
+    def display_message(self, message, level='info'):
+        self.notification_frame.show()
+        self.text_area.setText(message)
+        self.notification_frame.setProperty('level', level)
+
+    def dismiss(self):
+        self.notification_frame.hide()

@@ -1,9 +1,10 @@
 import os
 import sys
 import stat
-from PySide import QtGui
+from PySide import QtGui, QtCore
 from ade.manager.template import TemplateManager
 from ade.manager.config import ConfigManager
+from ade.manager import filesystem
 import widgets
 import time
 
@@ -88,6 +89,10 @@ class AdePrevisWindow(QtGui.QMainWindow):
         self.menu_bar.addMenu(self.file_menu)
         self.setMenuBar(self.menu_bar)
 
+        # Notification area
+        self.notification_area = widgets.NotificationArea(self.central_widget)
+        self.central_layout.addWidget(self.notification_area)
+
         # Mount Point
         self.mount_layout = QtGui.QHBoxLayout()
         self.mount_label = QtGui.QLabel('Current Mount Point:')
@@ -133,6 +138,19 @@ class AdePrevisWindow(QtGui.QMainWindow):
         self.tree_container.setLayout(self.tree_layout)
 
         self.tree_view = QtGui.QTreeView(self.tree_container)
+
+        self.tree_omit_empty = QtGui.QCheckBox('Omit Empty')
+        self.tree_omit_empty.stateChanged.connect(self.on_omit_empty)
+        self.tree_expand_all = QtGui.QPushButton('Expand All')
+        self.tree_expand_all.clicked.connect(self.tree_view.expandAll)
+        self.tree_collapse_all = QtGui.QPushButton('Collapse All')
+        self.tree_collapse_all.clicked.connect(self.tree_view.collapseAll)
+        self.tree_utils = QtGui.QHBoxLayout()
+
+        self.tree_utils.addWidget(self.tree_omit_empty)
+        self.tree_utils.addWidget(self.tree_expand_all)
+        self.tree_utils.addWidget(self.tree_collapse_all)
+        self.tree_layout.addLayout(self.tree_utils)
         self.tree_layout.addWidget(self.tree_view)
 
         self.tree_model = widgets.AdeTreeModel(
@@ -159,10 +177,18 @@ class AdePrevisWindow(QtGui.QMainWindow):
 
         self.create_button = QtGui.QPushButton('Create Folder Structure')
         self.central_layout.addWidget(self.create_button)
-        # self.create_button.clicked.connect(self.on_print_to_pdf)
+        self.create_button.clicked.connect(self.create_folder_structure)
         self.update_fields(self.config_dict.get('defaults', {}))
 
         self.update_stylesheet()
+
+    def report_message(self, message, level):
+        self.notification_area.display_message(message, level)
+        self.update_stylesheet()
+
+    def on_omit_empty(self, state):
+        self.tree_model.omit_empty = bool(state)
+        self.tree_view.collapseAll()
 
     def on_export(self, file_type):
         destination = QtGui.QFileDialog.getSaveFileName(
@@ -171,6 +197,9 @@ class AdePrevisWindow(QtGui.QMainWindow):
             os.path.expanduser('~'),
             'Tree File (*.%s)' % file_type
         )
+        if not any(destination):
+            return
+
         destination = destination[0]
         if not destination.endswith(file_type):
             destination += '.%s' % file_type
@@ -182,14 +211,22 @@ class AdePrevisWindow(QtGui.QMainWindow):
             data = self.data_to_txt(items)
             with file(destination, 'w') as f:
                 f.write(data)
+        else:
+            self.data_to_pdf(items, destination)
 
     def extract_tree_data(self, item, indent=0):
+        if self.tree_omit_empty.checkState():
+            if not item._name == self.tree_model._root._name:
+                alias = self.tree_model._name_map.get(item._name)
+                if item.is_variable and not alias:
+                    return []
         items = [
             {
                 'name': self.tree_model._name_map.get(item._name) or item.name,
+                'variable': item._name,
                 'indent': indent,
                 'folder': item.is_folder,
-                'icon': self.tree_model.get_icon(item, True)
+                'pixmap': self.tree_model.get_pixmap(item, True, 'black')
             }
         ]
 
@@ -198,13 +235,20 @@ class AdePrevisWindow(QtGui.QMainWindow):
 
         return items
 
-    def get_txt_header(self):
-        header = TXT_HEADER
+    def get_treemodel_data(self, strip_variable=False):
         data = {}
         for key, val in self.tree_model._name_map.items():
             if val:
+                if strip_variable:
+                    key = key[2:-2]
                 data[key] = val
 
+        return data
+
+    def get_txt_header(self):
+        header = TXT_HEADER
+
+        data = self.get_treemodel_data()
         formated_data = []
         for key, val in data.items():
             formated_data.append('#          - %s: %s' % (key, val))
@@ -224,13 +268,78 @@ class AdePrevisWindow(QtGui.QMainWindow):
         for item in data:
             line = '    ' * (item['indent'] - 1)
             line += '+ ' if item['folder'] else '* '
-            line += item['name']
+            if item['name'] == item['variable']:
+                line += item['name']
+            else:
+                line += item['name'] + ' (%s)' % item['variable']
             txt_file.append(line)
 
         return '\n'.join(txt_file)
 
-    def data_to_pdf(self, data):
-        pass
+    def data_to_pdf(self, data, file_path):
+        printer = QtGui.QPrinter(QtGui.QPrinter.HighResolution)
+        printer.setPageSize(QtGui.QPrinter.Letter)
+        printer.setOutputFormat(QtGui.QPrinter.PdfFormat)
+        printer.setOutputFileName(file_path)
+        painter = QtGui.QPainter()
+        painter.begin(printer)
+        painter.setRenderHints(
+            QtGui.QPainter.Antialiasing |
+            QtGui.QPainter.TextAntialiasing |
+            QtGui.QPainter.SmoothPixmapTransform
+        )
+
+        efesto_logo = QtGui.QPixmap(':/icons/efesto')
+        efesto_pos = [100, 100]
+        painter.drawPixmap(
+            QtCore.QPoint(*efesto_pos),
+            efesto_logo.scaled(
+                1500,
+                1500,
+                QtCore.Qt.KeepAspectRatio,
+                QtCore.Qt.SmoothTransformation
+            )
+        )
+        header = self.get_txt_header()
+        header_items = [x for x in header.split('\n') if x]
+        i = 0
+        for header_item in header_items:
+            header_item = header_item.strip('#')
+            header_pos = [1800, 300*i + 300]
+            if 'Template' in header_item:
+                while len(header_item) > 85:
+                    header_item_prev = header_item[:85]
+                    header_item = '\t' + header_item[85:]
+                    painter.drawText(QtCore.QPoint(
+                        *header_pos),
+                        header_item_prev
+                    )
+                    i += 1
+                    header_pos = [1800, 300*i + 300]
+            painter.drawText(QtCore.QPoint(*header_pos), header_item)
+            i += 1
+
+        i = 9
+        if len(header_items) > 6:
+            i += len(header_items) - 6
+        for item in data:
+            if i % 43 == 0 and not i == 0:
+                printer.newPage()
+                i = 0
+            pos = [item['indent']*400, i*300]
+            pixmap = item['pixmap']
+            scale = 200
+            pixmap_pos = [pos[0]-scale, pos[1]-(scale * 0.7)]
+            painter.drawPixmap(
+                QtCore.QPoint(*pixmap_pos), pixmap.scaled(scale, scale))
+            pos[0] += 100
+            if item['name'] == item['variable']:
+                label = item['name']
+            else:
+                label = item['name'] + ' (%s)' % item['variable']
+            painter.drawText(QtCore.QPoint(*pos), label)
+            i += 1
+        painter.end()
 
     def update_stylesheet(self):
         self.setStyleSheet(self.themes[self.theme])
@@ -271,6 +380,27 @@ class AdePrevisWindow(QtGui.QMainWindow):
                 text = self.format_list_layout.itemAtPosition(i, 1).widget()
                 if label.text() == '@+%s+@' % key:
                     text.setText(os.path.expandvars(val))
+
+    def create_folder_structure(self):
+        mount_point = self.config_dict.get('project_mount_point')
+        try:
+            manager = filesystem.FileSystemManager(
+                self.config_dict,
+                self.manager
+            )
+            manager.build(
+                self.build_root,
+                self.get_treemodel_data(True),
+                mount_point
+            )
+            self.report_message(
+                'Folders created in %s' % mount_point,
+                'success'
+            )
+        except Exception as e:
+            self.report_message('An error ocurred: %s' % e, 'error')
+            import traceback
+            print traceback.format_exc()
 
 
 def main(
