@@ -1,0 +1,30 @@
+QLineEdit {
+    border: 1px black solid;
+    border-radius: 2px;
+}
+
+QTreeView {
+    border-radius: 0px;
+    background: #F2F2F2;
+}
+
+QHeaderView::section {
+    background: #CCC;
+    border-radius: 0px;
+    border-right: 1px solid #787878;
+    padding: 4px;
+}
+
+QFrame {
+    background: #E3E3E3;
+}
+
+QPushButton {
+    background: #F2F2F2;
+    border-radius: 0px;
+    padding: 5px;
+}
+
+QLineEdit[valid=false] {
+    background: orange;
+}

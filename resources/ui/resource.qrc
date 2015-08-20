@@ -1,0 +1,49 @@
+<RCC>
+  <qresource prefix="black">
+    <file alias="folder">icons/black/folder.png</file>
+    <file alias="folder-open">icons/black/folder-open.png</file>
+    <file alias="folder-open-o">icons/black/folder-open-o.png</file>
+    <file alias="folder-o">icons/black/folder-o.png</file>
+    <file alias="files-o">icons/black/files-o.png</file>
+    <file alias="file">icons/black/file.png</file>
+    <file alias="file-word-o">icons/black/file-word-o.png</file>
+    <file alias="file-video-o">icons/black/file-video-o.png</file>
+    <file alias="file-text">icons/black/file-text.png</file>
+    <file alias="file-text-o">icons/black/file-text-o.png</file>
+    <file alias="file-powerpoint-o">icons/black/file-powerpoint-o.png</file>
+    <file alias="file-pdf-o">icons/black/file-pdf-o.png</file>
+    <file alias="file-o">icons/black/file-o.png</file>
+    <file alias="file-image-o">icons/black/file-image-o.png</file>
+    <file alias="file-excel-o">icons/black/file-excel-o.png</file>
+    <file alias="file-code-o">icons/black/file-code-o.png</file>
+    <file alias="file-audio-o">icons/black/file-audio-o.png</file>
+    <file alias="file-archive-o">icons/black/file-archive-o.png</file>
+  </qresource>
+  <qresource prefix="icons">
+    <file alias="hades">icons/hades.png</file>
+  </qresource>
+  <qresource prefix="white">
+    <file alias="folder">icons/white/folder.png</file>
+    <file alias="folder-open">icons/white/folder-open.png</file>
+    <file alias="folder-open-o">icons/white/folder-open-o.png</file>
+    <file alias="folder-o">icons/white/folder-o.png</file>
+    <file alias="files-o">icons/white/files-o.png</file>
+    <file alias="file">icons/white/file.png</file>
+    <file alias="file-word-o">icons/white/file-word-o.png</file>
+    <file alias="file-video-o">icons/white/file-video-o.png</file>
+    <file alias="file-text">icons/white/file-text.png</file>
+    <file alias="file-text-o">icons/white/file-text-o.png</file>
+    <file alias="file-powerpoint-o">icons/white/file-powerpoint-o.png</file>
+    <file alias="file-pdf-o">icons/white/file-pdf-o.png</file>
+    <file alias="file-o">icons/white/file-o.png</file>
+    <file alias="file-image-o">icons/white/file-image-o.png</file>
+    <file alias="file-excel-o">icons/white/file-excel-o.png</file>
+    <file alias="file-code-o">icons/white/file-code-o.png</file>
+    <file alias="file-audio-o">icons/white/file-audio-o.png</file>
+    <file alias="file-archive-o">icons/white/file-archive-o.png</file>
+  </qresource>
+  <qresource prefix="style">
+    <file alias="black">css/black.css</file>
+    <file alias="white">css/white.css</file>
+  </qresource>
+</RCC>

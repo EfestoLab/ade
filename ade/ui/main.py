@@ -1,35 +1,27 @@
 import os
 import sys
 import stat
-from PySide import QtGui
+from PySide import QtGui, QtCore
 from ade.manager.template import TemplateManager
 from ade.manager.config import ConfigManager
 import widgets
 
 
-style = '''
-QLineEdit {
-    border: 1px black solid;
-    border-radius: 4px;
-}
-QTreeView {
-    border-radius: 0px;
-}
-QHeaderView::section {
-    background: #CCC;
-    border-radius: 0px;
-    border-right: 1px solid #787878;
-    padding: 4px;
-}
-'''
+style_white = ''
 
 
 class AdePrevisWindow(QtGui.QMainWindow):
 
     def __init__(
             self, build_root=None, config=None, initial_data=None,
-            parent=None):
+            theme='white', parent=None):
         super(AdePrevisWindow, self).__init__(parent=parent)
+
+        self.themes = {
+            'white': style_white
+        }
+        self.theme = theme
+        self.icon_theme = 'black' if self.theme == 'white' else 'white'
 
         self.build_root = build_root
 
@@ -41,7 +33,7 @@ class AdePrevisWindow(QtGui.QMainWindow):
         if initial_data:
             self.update_fields(initial_data)
         self.setWindowTitle('Ade Template Preview')
-        self.setStyleSheet(style)
+        self.setWindowIcon(QtGui.QIcon(QtGui.QPixmap(':/icons/hades')))
 
     def get_root(self, build_root):
         build_root = build_root or '@+show+@'
@@ -55,20 +47,33 @@ class AdePrevisWindow(QtGui.QMainWindow):
                         stat.S_IMODE(
                             os.stat(
                                 self.config_mode['template_search_path']
-                                ).st_mode)
+                            ).st_mode
                         )
-                    ),
+                    )
+                ),
                 'children': [data]
             },
         )
         return root
 
     def setupUi(self):
+        self.resize(900, 500)
         self.central_widget = QtGui.QFrame(self)
-        self.central_layout = QtGui.QHBoxLayout()
+        self.central_layout = QtGui.QVBoxLayout()
         self.central_widget.setLayout(self.central_layout)
         self.setCentralWidget(self.central_widget)
 
+        self.mount_layout = QtGui.QHBoxLayout()
+        self.mount_label = QtGui.QLabel('Current Mount Point:')
+        self.mount_text = QtGui.QLineEdit(
+            self.config_mode.get('project_mount_point', 'Undefined'),
+        )
+        self.mount_text.setEnabled(False)
+        self.mount_layout.addWidget(self.mount_label)
+        self.mount_layout.addWidget(self.mount_text)
+        self.central_layout.addLayout(self.mount_layout)
+
+        self.main_layout = QtGui.QHBoxLayout()
         # Names
         self.format_container = QtGui.QFrame(self.central_widget)
         self.format_layout = QtGui.QVBoxLayout()
@@ -80,7 +85,7 @@ class AdePrevisWindow(QtGui.QMainWindow):
         self.format_layout.addWidget(self.format_box)
 
         self.format_list = QtGui.QFrame(self.format_container)
-        self.format_list_layout = QtGui.QVBoxLayout()
+        self.format_list_layout = QtGui.QGridLayout()
         self.format_list.setLayout(self.format_list_layout)
 
         self.format_box_layout.addWidget(self.format_list)
@@ -99,41 +104,81 @@ class AdePrevisWindow(QtGui.QMainWindow):
         self.tree_model = widgets.AdeTreeModel(
             self.get_root(self.build_root),
             parent=self.tree_view,
+            theme=self.icon_theme
         )
         self.tree_view.setModel(self.tree_model)
 
-        self.central_layout.addWidget(self.tree_container)
-        self.central_layout.addWidget(self.format_container)
+        self.tree_view.resizeColumnToContents(1)
+        self.tree_view.resizeColumnToContents(0)
+        self.tree_view.setColumnWidth(0, self.tree_view.columnWidth(0)*2)
+
+        # Add both widgets
+        self.main_layout.addWidget(self.tree_container)
+        self.main_layout.addWidget(self.format_container)
+        self.central_layout.addLayout(self.main_layout)
+
+        # Fill variables
         for i in self.manager._register:
             name = i['name']
             if name.startswith('@+'):
                 self.create_format_widget(name)
 
-    def create_format_widget(self, key):
-        container = QtGui.QFrame(self.format_list)
-        layout = QtGui.QHBoxLayout()
-        container.setLayout(layout)
+        self.create_button = QtGui.QPushButton('Create Folder Structure')
+        self.central_layout.addWidget(self.create_button)
+        self.create_button.clicked.connect(self.on_print_to_pdf)
+        self.update_fields(self.config_mode.get('defaults', {}))
 
+        self.update_stylesheet()
+
+    def on_print_to_pdf(self):
+        printer = QtGui.QPrinter(QtGui.QPrinter.HighResolution)
+        printer.setOutputFormat(QtGui.QPrinter.PdfFormat)
+        printer.setOutputFileName('/home/salva/Desktop/print.pdf')
+
+        painter = QtGui.QPainter()
+        painter.begin(printer)
+        self.tree_view.render(painter, QtCore.QPoint(0, 0))
+        painter.end()
+
+    def update_stylesheet(self):
+        self.setStyleSheet(self.themes[self.theme])
+
+    def create_format_widget(self, key):
         label = QtGui.QLabel(key)
         text = QtGui.QLineEdit()
 
-        layout.addWidget(label)
-        layout.addWidget(text)
+        index = self.format_list_layout.count() / 2
 
-        self.format_list_layout.addWidget(container)
+        self.format_list_layout.addWidget(label, index, 0)
+        self.format_list_layout.addWidget(text, index, 1)
 
         text.textChanged.connect(self.on_name_changed)
+        text.textChanged.connect(self.update_stylesheet)
+        mapping = self.config_mode.get('regexp_mapping', {})
+
+        text.setProperty('valid', True)
+        for variable, regex in mapping.items():
+            if variable in key:
+                regex_val = widgets.AdeValidator(regex, parent=text)
+                text.setValidator(regex_val)
 
     def on_name_changed(self, name):
-        key = self.sender().parent().layout().itemAt(0).widget().text()
-        self.tree_model.update_mapping(key, name)
+        index = self.format_list_layout.indexOf(self.sender())
+        label = self.format_list_layout.itemAt(index-1).widget()
+        text = self.sender()
+        key = label.text()
+        if name.strip() and text.property('valid'):
+            self.tree_model.update_mapping(key, name)
+        else:
+            self.tree_model.update_mapping(key, None)
 
     def update_fields(self, data):
         for key, val in data.items():
-            for i in range(self.format_list_layout.count()):
-                item = self.format_list_layout.itemAt(i).widget().layout()
-                if item.itemAt(0).widget().text() == '@+%s+@' % key:
-                    item.itemAt(1).widget().setText(val)
+            for i in range(self.format_list_layout.count() / 2):
+                label = self.format_list_layout.itemAtPosition(i, 0).widget()
+                text = self.format_list_layout.itemAtPosition(i, 1).widget()
+                if label.text() == '@+%s+@' % key:
+                    text.setText(os.path.expandvars(val))
 
 
 def main(build_root=None, config=None, initial_data=None):

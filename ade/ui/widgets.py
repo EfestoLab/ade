@@ -1,5 +1,6 @@
 from PySide import QtCore, QtGui
 import re
+import resource
 
 VARIABLE_REGEX = re.compile('@\+(.+)\+@')
 CONTAINER_REGEX = re.compile('@(.+)@')
@@ -23,6 +24,7 @@ class AdeItem(object):
             self.is_variable = True
         elif container_result:
             self.is_container = True
+            self.name = container_result.group(1)
 
         self.permission = self._data.get('permission')
 
@@ -42,11 +44,35 @@ class AdeItem(object):
 
 
 class AdeTreeModel(QtCore.QAbstractItemModel):
-    def __init__(self, root, parent=None):
+    def __init__(self, root, parent=None, theme='black'):
         super(AdeTreeModel, self).__init__(parent=parent)
         self._parent = parent
         self._root = root
         self._name_map = {}
+        self.theme = theme
+        self.icon_map = {
+            'folder': {
+                'expanded': ':/{theme}/folder-open-o',
+                'normal': ':/{theme}/folder-o'
+            },
+            'file': {
+                'default': ':/{theme}/file-o',
+                'pdf': ':/{theme}/file-pdf-o',
+                'code': ':/{theme}/file-code-o',
+                'image': ':/{theme}/file-image-o',
+                'archive': ':/{theme}/file-archive-o',
+                'audio': ':/{theme}/file-audio-o',
+                'text': ':/{theme}/file-text-o',
+            }
+        }
+        self.file_map = {
+            'pdf': ['pdf'],
+            'code': ['py', 'mel', 'sh'],
+            'image': ['png', 'jpg', 'jpeg', 'bmp', 'gif'],
+            'archive': ['zip', 'rar', 'tar', 'gz2'],
+            'audio': ['mp3', 'wav'],
+            'text': ['txt', 'rst', 'md', 'rtf']
+        }
 
     def update_mapping(self, key, val):
         self._name_map[key] = val
@@ -118,17 +144,63 @@ class AdeTreeModel(QtCore.QAbstractItemModel):
                 return mapped_name
             return node.name
 
+        elif role == QtCore.Qt.ToolTipRole:
+            if node.is_container or node.is_variable:
+                return node._name
+
         elif role == QtCore.Qt.DecorationRole:
             if index.column() == 1:
                 return
-            qApp = QtGui.QApplication.instance()
-            style = qApp.style()
             if node.is_folder:
+                icon = self.icon_map['folder']
                 if self._parent.isExpanded(index):
-                    icon = QtGui.QStyle.StandardPixmap.SP_DirOpenIcon
+                    icon = icon['expanded']
                 else:
-                    icon = QtGui.QStyle.StandardPixmap.SP_DirClosedIcon
+                    icon = icon['normal']
+                if node.is_container or node.is_variable:
+                    icon = icon[:-2]
             else:
-                icon = QtGui.QStyle.StandardPixmap.SP_FileIcon
+                icon = self.icon_map['file']
+                ext = node.name.split('.')
+                if len(ext) == 1:
+                    icon = icon['default']
+                else:
+                    ext = ext[-1]
+                    found = False
+                    for key, val in self.file_map.items():
+                        if ext in val:
+                            icon = icon[key]
+                            found = True
+                            break
 
-            return style.standardIcon(icon)
+                    if not found:
+                        icon = icon['default']
+
+            icon = icon.format(theme=self.theme)
+            return QtGui.QIcon(QtGui.QPixmap(icon))
+
+
+class AdeValidator(QtGui.QRegExpValidator):
+    def __init__(self, regex, parent=None):
+        self.regex = re.compile(regex)
+        super(AdeValidator, self).__init__(parent=parent)
+
+    def validate(self, string, pos):
+        _invalid = QtGui.QValidator.Invalid
+        _valid = QtGui.QValidator.Acceptable
+
+        match = self.regex.match(string)
+        if not string:
+            state = _valid
+        elif match:
+            name = match.groupdict().values()[0]
+            if not string == name:
+                state = _invalid
+            else:
+                state = _valid
+        else:
+            state = _invalid
+
+        is_valid = False if state == _invalid else True
+        self.parent().setProperty('valid', is_valid)
+        return _valid, string, pos
