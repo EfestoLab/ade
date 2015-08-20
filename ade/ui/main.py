@@ -28,9 +28,6 @@ class AdePrevisWindow(QtGui.QMainWindow):
             parent=None, config_path=None, config_mode=None):
         super(AdePrevisWindow, self).__init__(parent=parent)
 
-        self.themes = {
-            'white': style_white
-        }
         self.theme = theme
         self.icon_theme = 'black' if self.theme == 'white' else 'white'
 
@@ -80,8 +77,14 @@ class AdePrevisWindow(QtGui.QMainWindow):
         self.menu_bar = QtGui.QMenuBar(self.central_widget)
         self.file_menu = QtGui.QMenu('&File')
         self.export_txt = QtGui.QAction('Export as &TXT', self.file_menu)
+        self.export_txt.setIcon(
+            QtGui.QIcon(QtGui.QPixmap(':/%s/file-text-o' % self.icon_theme))
+        )
         self.export_txt.triggered.connect(lambda: self.on_export('txt'))
         self.export_pdf = QtGui.QAction('Export as &PDF', self.file_menu)
+        self.export_pdf.setIcon(
+            QtGui.QIcon(QtGui.QPixmap(':/%s/file-pdf-o' % self.icon_theme))
+        )
         self.export_pdf.triggered.connect(lambda: self.on_export('pdf'))
         self.file_menu.addAction(self.export_txt)
         self.file_menu.addAction(self.export_pdf)
@@ -342,7 +345,11 @@ class AdePrevisWindow(QtGui.QMainWindow):
         painter.end()
 
     def update_stylesheet(self):
-        self.setStyleSheet(self.themes[self.theme])
+        fileObject = QtCore.QFile(':/style/%s' % self.theme)
+        fileObject.open(QtCore.QFile.ReadOnly | QtCore.QFile.Text)
+        stream = QtCore.QTextStream(fileObject)
+        styleSheetContent = stream.readAll()
+        self.setStyleSheet(styleSheetContent)
 
     def create_format_widget(self, key):
         label = QtGui.QLabel(key)
@@ -415,6 +422,7 @@ def main(
         initial_data=initial_data
     )
     window.show()
+    signal.signal(signal.SIGINT, signal.SIG_DFL)
     sys.exit(app.exec_())
 
 if __name__ == '__main__':

@@ -21,6 +21,7 @@
   </qresource>
   <qresource prefix="icons">
     <file alias="hades">icons/hades.png</file>
+    <file alias="efesto">icons/efesto.png</file>
   </qresource>
   <qresource prefix="white">
     <file alias="folder">icons/white/folder.png</file>
