@@ -1,4 +1,5 @@
 import os
+import signal
 import sys
 import stat
 from PySide import QtGui, QtCore
@@ -75,7 +76,7 @@ class AdePrevisWindow(QtGui.QMainWindow):
 
         # Menu
         self.menu_bar = QtGui.QMenuBar(self.central_widget)
-        self.file_menu = QtGui.QMenu('&File')
+        self.file_menu = QtGui.QMenu('&File', self.menu_bar)
         self.export_txt = QtGui.QAction('Export as &TXT', self.file_menu)
         self.export_txt.setIcon(
             QtGui.QIcon(QtGui.QPixmap(':/%s/file-text-o' % self.icon_theme))
@@ -217,6 +218,11 @@ class AdePrevisWindow(QtGui.QMainWindow):
         else:
             self.data_to_pdf(items, destination)
 
+        self.report_message(
+            'Exported %s in %s' % (file_type, destination),
+            'success'
+        )
+
     def extract_tree_data(self, item, indent=0):
         if self.tree_omit_empty.checkState():
             if not item._name == self.tree_model._root._name:
@@ -353,7 +359,13 @@ class AdePrevisWindow(QtGui.QMainWindow):
 
     def create_format_widget(self, key):
         label = QtGui.QLabel(key)
-        text = QtGui.QLineEdit()
+        text = widgets.VariableLineEdit(
+            parent=self.format_list,
+            model=self.tree_model,
+            key=key
+        )
+
+        text.focusChanged.connect(self.update_stylesheet)
 
         index = self.format_list_layout.count() / 2
 

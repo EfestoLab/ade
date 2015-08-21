@@ -1,0 +1,120 @@
+QLabel {
+    color: white;
+}
+
+QFrame {
+    background: #454545;
+}
+
+QFrame#notification-area,
+QFrame#notification-area * {
+    color: #454545;
+    border-radius: 3px;
+    border: 0px;
+}
+
+QFrame#notification-area[level="success"],
+QFrame#notification-area[level="success"] * {
+    background-color: green;
+}
+
+QFrame#notification-area[level="error"],
+QFrame#notification-area[level="error"] * {
+    background-color: #A73838;
+}
+
+QFrame#notification-area[level="info"],
+QFrame#notification-area[level="info"] * {
+    background-color: blue;
+}
+
+QTreeView {
+    border-radius: 3px;
+    border: 1px solid #999999;
+}
+
+QTreeView::item {
+    color: white;
+}
+
+QTreeView::item[edited=true] {
+    color: gray;
+}
+
+
+/*
+QGroupBox {
+    color: white;
+    border: 1px solid #999999;
+    border-radius: 3px;
+}
+
+QGroupBox::title {
+    subcontrol-position: top left;
+    padding: 2 13px;
+}*/
+
+QCheckBox {
+    color: white
+}
+
+QLineEdit,
+QPushButton,
+QHeaderView::section {
+    background: #636363;
+    color: white;
+    border-radius: 3px;
+    padding: 5px;
+    border: 1px solid #5C5C5C;
+}
+
+QLineEdit[valid=false] {
+    background-color: orange;
+}
+
+QHeaderView::section {
+    border-radius: 0px;
+}
+
+QPushButton::hover {
+    background: #C6C6C6;
+}
+
+QCheckBox::indicator {
+    width: 13px;
+    height: 13px;
+    border: 1px solid #CCC;
+    border-radius: 2px;
+}
+
+QCheckBox::indicator:hover {
+    background-color: #C6C6C6;
+}
+
+QCheckBox::indicator:checked {
+    image: url(:/white/check);
+}
+
+QMenuBar {
+    border-bottom: 1px solid #C6C6C6;
+}
+
+QMenuBar,
+QMenu::item {
+    background-color: #454545;
+    color: white;
+}
+
+QMenu::item:selected {
+    color: white;
+}
+
+QTreeView::branch:closed:has-children {
+    border-image: none;
+    image: url(:/white/plus);
+}
+
+QTreeView::branch:open:has-children {
+    border-image: none;
+    image: url(:/white/minus);
+}

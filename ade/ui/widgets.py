@@ -11,6 +11,7 @@ class AdeItem(object):
         self._data = data
         self._parent = parent
         self._children = []
+        self.highlight = False
 
         self.is_folder = self._data.get('folder')
         self._name = self._data.get('name')
@@ -128,7 +129,7 @@ class AdeTreeModel(QtCore.QAbstractItemModel):
         node = self.getNode(index)
         parentNode = node.parent()
 
-        if parentNode == self._root:
+        if parentNode == self._root or not parentNode:
             return QtCore.QModelIndex()
 
         return self.createIndex(parentNode.row(), 0, parentNode)
@@ -163,6 +164,17 @@ class AdeTreeModel(QtCore.QAbstractItemModel):
                 return
             is_expanded = self._parent.isExpanded(index)
             return QtGui.QIcon(self.get_pixmap(node, is_expanded))
+
+        elif role == QtCore.Qt.UserRole:
+            return node._name
+
+        elif role == QtCore.Qt.BackgroundColorRole:
+            if node.highlight:
+                color = QtGui.QColor()
+                color.setRgba(QtGui.qRgba(178, 227, 255, 120))
+                return color
+            else:
+                return
 
     def get_pixmap(self, node, is_expanded=False, theme=None):
         if node.is_folder:
@@ -251,3 +263,34 @@ class NotificationArea(QtGui.QFrame):
 
     def dismiss(self):
         self.notification_frame.hide()
+
+
+class VariableLineEdit(QtGui.QLineEdit):
+    focusChanged = QtCore.Signal()
+
+    def __init__(self, parent=None, model=None, key=None):
+        super(VariableLineEdit, self).__init__(parent)
+        self.model = model
+        self.key = key
+
+    def focusInEvent(self, e):
+        self.set_highligh_property(True)
+        super(VariableLineEdit, self).focusInEvent(e)
+
+    def focusOutEvent(self, e):
+        self.set_highligh_property(False)
+        super(VariableLineEdit, self).focusOutEvent(e)
+
+    def set_highligh_property(self, state):
+        items = self.model.match(
+            self.model.createIndex(0, 0),
+            QtCore.Qt.UserRole,
+            self.key,
+            -1,
+            QtCore.Qt.MatchRecursive
+        )
+        for item in items:
+            node = item.internalPointer()
+            node.highlight = state
+
+        self.focusChanged.emit()

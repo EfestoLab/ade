@@ -54,3 +54,41 @@ QHeaderView::section {
 QPushButton::hover {
     background: #C6C6C6;
 }
+
+QCheckBox::indicator {
+    width: 13px;
+    height: 13px;
+    border: 1px solid #CCC;
+    border-radius: 2px;
+}
+
+QCheckBox::indicator:hover {
+    background-color: #C6C6C6;
+}
+
+QCheckBox::indicator:checked {
+    image: url(:/black/check);
+}
+
+QMenuBar {
+    border-bottom: 1px solid #C6C6C6;
+}
+
+QMenuBar,
+QMenu::item {
+    background-color: white;
+}
+
+QMenu::item:selected {
+    color: black;
+}
+
+QTreeView::branch:closed:has-children {
+    border-image: none;
+    image: url(:/black/plus);
+}
+
+QTreeView::branch:open:has-children {
+    border-image: none;
+    image: url(:/black/minus);
+}

@@ -18,6 +18,9 @@
     <file alias="file-code-o">icons/black/file-code-o.png</file>
     <file alias="file-audio-o">icons/black/file-audio-o.png</file>
     <file alias="file-archive-o">icons/black/file-archive-o.png</file>
+    <file alias="check">icons/black/check.png</file>
+    <file alias="plus">icons/black/plus.png</file>
+    <file alias="minus">icons/black/minus.png</file>
   </qresource>
   <qresource prefix="icons">
     <file alias="hades">icons/hades.png</file>
@@ -42,6 +45,9 @@
     <file alias="file-code-o">icons/white/file-code-o.png</file>
     <file alias="file-audio-o">icons/white/file-audio-o.png</file>
     <file alias="file-archive-o">icons/white/file-archive-o.png</file>
+    <file alias="check">icons/white/check.png</file>
+    <file alias="plus">icons/white/plus.png</file>
+    <file alias="minus">icons/white/minus.png</file>
   </qresource>
   <qresource prefix="style">
     <file alias="black">css/black.css</file>
