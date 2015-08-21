@@ -17,15 +17,15 @@ resource_file_dest = os.path.join(
 
 class Build(build):
     def run(self):
-        pyside_rcc_command = 'pyside-rcc'
-        if sys.platform == 'win32':
-            import PySide
-            pyside_rcc_command = os.path.join(
-                os.path.dirname(PySide.__file__),
-                'pyside-rcc.exe'
-            )
-
         try:
+            pyside_rcc_command = 'pyside-rcc'
+            if sys.platform == 'win32':
+                import PySide
+                pyside_rcc_command = os.path.join(
+                    os.path.dirname(PySide.__file__),
+                    'pyside-rcc.exe'
+                )
+
             subprocess.check_call([
                 pyside_rcc_command,
                 '-os',
