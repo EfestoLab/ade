@@ -108,6 +108,7 @@ def run():
     if config_mode not in config_manager.modes:
         raise ConfigError('Mode {0} is not available'.format(config_mode))
 
+    ui_config_mode = config_mode
     config_mode = config_manager.get(config_mode)
 
     root_template = config_mode['root_template']
@@ -127,7 +128,7 @@ def run():
         main.main(
             build_root=input_template,
             config_path=config_path,
-            config_mode=config_mode,
+            config_mode=ui_config_mode,
             initial_data=input_data
         )
         raise SystemExit(0)
