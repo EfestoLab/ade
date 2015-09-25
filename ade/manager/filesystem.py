@@ -16,7 +16,7 @@ except:
     import logging
 
 
-log = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 class FileSystemManager(object):
@@ -30,7 +30,6 @@ class FileSystemManager(object):
     '''
 
     def __init__(self, config, template_manager):
-        self.log = log
         self.template_manager = template_manager
 
         self.mount_point = config['project_mount_point']
@@ -56,19 +55,19 @@ class FileSystemManager(object):
         current_path = path or self.mount_point
         current_path = os.path.realpath(current_path)
 
-        self.log.debug('Building template : {0} in : {1}'.format(
+        logger.debug('Building template : {0} in : {1}'.format(
             name, current_path)
         )
 
         if os.path.abspath(self.mount_point) not in os.path.abspath(current_path):
-            self.log.error(
+            logger.error(
                 ('Structure can not be created'
                  ' outside of mount_point {0}').format(self.mount_point)
             )
             return
 
         if not os.path.exists(current_path):
-            self.log.error('Path {0} does not exist.'.format(self.mount_point))
+            logger.error('Path {0} does not exist.'.format(self.mount_point))
             return
 
         built = self.template_manager.resolve_template(name)
@@ -79,16 +78,16 @@ class FileSystemManager(object):
             try:
                 if result['folder']:
                     #: Create the folder
-                    self.log.debug('creating folder: {0}'.format(path))
+                    logger.debug('creating folder: {0}'.format(path))
                     os.makedirs(path)
                 else:
-                    self.log.debug('creating file: {0}'.format(path))
+                    logger.debug('creating file: {0}'.format(path))
                     file_content = result['content']
                     with open(path, 'w') as file_data:
                         file_data.write(file_content)
 
             except (IOError, OSError) as error:
-                self.log.debug('{0}'.format(error))
+                logger.debug('{0}'.format(error))
                 pass
 
         #: Set permissions, using the reversed results
@@ -98,13 +97,13 @@ class FileSystemManager(object):
                 path = os.path.join(current_path, result['path'])
                 permission = result['permission']
                 permission = int(permission, 8)
-                self.log.debug('Setting permission of {1} as {0}'.format(
+                logger.debug('Setting permission of {1} as {0}'.format(
                     oct(permission), os.path.realpath(path)
                 ))
                 try:
                     os.chmod(path, permission)
                 except OSError, error:
-                    self.log.debug(error)
+                    logger.debug(error)
 
         return path_results
 
@@ -123,7 +122,7 @@ class FileSystemManager(object):
             path = path[:-1]
 
         if not path.startswith(self.mount_point):
-            self.log.exception(
+            logger.exception(
                 ('The path %s does not seems contained'
                  ' in the given mount_point %s') % (
                     path, self.mount_point
@@ -135,23 +134,23 @@ class FileSystemManager(object):
         if path.startswith(os.sep):
             path = path[1:]
 
-        self.log.debug('Parsing {0} against {1}'.format(name, path))
+        logger.debug('Parsing {0} against {1}'.format(name, path))
         matched_results = []
         built = self.template_manager.resolve_template(name)
         results = self.template_manager.resolve(built)
         parsers = self._to_parser(results)
 
         for parser in parsers:
-            self.log.debug('Creating parser : {0}'.format(parser))
+            logger.debug('Creating parser : {0}'.format(parser))
             check = re.compile(parser)
             match = check.match(path)
             if not match:
-                self.log.debug('no match found for {0} with {1}'.format(
+                logger.debug('no match found for {0} with {1}'.format(
                     path, parser
                 ))
                 continue
 
-            self.log.debug('Match found for {0} with {1}'.format(
+            logger.debug('Match found for {0} with {1}'.format(
                 path, parser
             ))
             result = match.groupdict()
@@ -205,7 +204,7 @@ class FileSystemManager(object):
             # TODO: Protect slashes with backslashes in (os.sep*2).join...
             formatted_path = (os.sep).join(result_path)
             result_path = r'^{0}$'.format(formatted_path)
-            self.log.debug('Building regex : {0}'.format(result_path))
+            logger.debug('Building regex : {0}'.format(result_path))
             result_paths.append(result_path)
 
         result_paths.sort(key=len)
@@ -218,19 +217,19 @@ class FileSystemManager(object):
                 regexp = re.compile(self.regexp_mapping[name])
                 match = regexp.match(value)
                 if not match:
-                    self.log.warning(
+                    logger.warning(
                         'Key {1} for data {0} does not match {2}'.format(
                             name, value, self.regexp_mapping[name].keys()
                         )
                     )
                     data.pop(name)
             else:
-                self.log.debug('Key %s not in %s' % (
+                logger.debug('Key %s not in %s' % (
                     name, self.regexp_mapping.keys())
                 )
 
     def _set_default_values(self, data):
-        self.log.debug('Updating data with defaults: {0}'.format(
+        logger.debug('Updating data with defaults: {0}'.format(
             pformat(self.default_field_values)
             )
         )
@@ -269,12 +268,12 @@ class FileSystemManager(object):
             isnotinresults = result_path not in result_paths
             if isnotinresults:
                 final_path = (os.sep).join(result_path)
-                self.log.debug('Building path for %s and data %s' % (final_path, data.keys()))
+                logger.debug('Building path for %s and data %s' % (final_path, data.keys()))
                 try:
                     final_path = final_path.format(**data)
 
                 except Exception, error:
-                    self.log.debug('{1} not found for {0}'.format(
+                    logger.debug('{1} not found for {0}'.format(
                         final_path,
                         error
                         )
@@ -283,7 +282,7 @@ class FileSystemManager(object):
                 entry['path'] = final_path
                 result_paths.append(entry)
             else:
-                self.log.debug('{0} already in {1}'.format(
+                logger.debug('{0} already in {1}'.format(
                     result_path, result_paths
                     ))
 

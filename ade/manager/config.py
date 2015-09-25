@@ -9,7 +9,7 @@ except:
     import logging
 
 
-log = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 class ConfigManager(object):
@@ -22,17 +22,16 @@ class ConfigManager(object):
 
     '''
     def __init__(self, config_search_path):
-        self.log = log
 
         self.registry = OrderedDict()
-        self.log.debug('Using config_search_path: {0}'.format(
+        logger.debug('Using config_search_path: {0}'.format(
             config_search_path
             )
         )
 
         if not os.path.exists(config_search_path):
             msg = 'config_path {0} does not exist'.format(config_search_path)
-            self.log.warning(msg)
+            logger.warning(msg)
             raise ConfigError(msg)
 
         for root, folders, files in os.walk(config_search_path):
@@ -44,7 +43,7 @@ class ConfigManager(object):
                     self._resolve_envs(result)
                     self.registry.setdefault(config_name, result)
 
-        self.log.debug('Config found: {0}'.format(self.registry.keys()))
+        logger.debug('Config found: {0}'.format(self.registry.keys()))
 
     def _resolve_envs(self, config):
         for k, v in config.items():

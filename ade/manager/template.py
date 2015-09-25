@@ -14,7 +14,7 @@ try:
 except:
     import logging
 
-log = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 class TemplateManager(object):
@@ -30,7 +30,6 @@ class TemplateManager(object):
         ''' Initialization function.
 
         '''
-        self.log = log
         # current_path = os.path.dirname(os.path.abspath(__file__))
         self.__reference_indicator = '@'
         self.__variable_indicator = '+'
@@ -38,7 +37,7 @@ class TemplateManager(object):
         self._register = []
         template_folder = config.get('template_search_path')
         self._template_folder = os.path.realpath(template_folder)
-        self.log.debug(
+        logger.debug(
             'Using template path: {0}'.format(self._template_folder)
         )
         self.register_templates()
@@ -145,14 +144,14 @@ class TemplateManager(object):
 
         for item in self.register:
             if not item.get('name') == name:
-                # self.log.debug((msg % name) + '... keep looking')
+                # logger.debug((msg % name) + '... keep looking')
                 continue
 
-            self.log.debug('found template %s ' % name)
+            logger.debug('found template %s ' % name)
             item = copy.deepcopy(item)
             return item
 
-        self.log.error(msg % name)
+        logger.error(msg % name)
         raise KeyError(msg % name)
 
     def resolve_template(self, name):
@@ -192,7 +191,7 @@ class TemplateManager(object):
         '''
         for index, entry in enumerate(schema.get('children', [])):
             item = entry.get('name', '')
-            self.log.debug('resolving item %s' % item)
+            logger.debug('resolving item %s' % item)
             if self.__reference_indicator in item:
                 removed = schema['children'].pop(index)
                 fragment = self._get_in_register(removed['name'])
