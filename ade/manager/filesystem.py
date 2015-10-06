@@ -217,7 +217,7 @@ class FileSystemManager(object):
                 regexp = re.compile(self.regexp_mapping[name])
                 match = regexp.match(value)
                 if not match:
-                    logger.warning(
+                    logger.debug(
                         'Key {1} for data {0} does not match {2}'.format(
                             name, value, self.regexp_mapping[name].keys()
                         )
