@@ -37,9 +37,7 @@ class FileSystemManager(object):
         self.default_field_values = config['defaults']
         self.regexp_mapping = config['regexp_mapping']
 
-        self.regexp_extractor = re.compile(
-            '(?P<prefix>.+)?(\+)(?P<variable>.+)(\+)(?P<suffix>.+)?'
-        )
+        self.regexp_extractor = '(?P<prefix>.+)?(\+)(?P<variable>.+)(\+)(?P<suffix>.+)?'
 
     def build(self, name, data, path):
         ''' Build the given schema name, and replace data,
@@ -168,11 +166,12 @@ class FileSystemManager(object):
 
         '''
         result_paths = []
+        catcher = re.compile(self.regexp_extractor)
         for path in paths:
             result_path = []
             path = path['path']
             for entry in path:
-                matches = self.regexp_extractor.match(entry)
+                matches = catcher.match(entry)
                 if matches:
                     data = matches.groupdict()
                     prefix = data.get('prefix')
@@ -244,11 +243,12 @@ class FileSystemManager(object):
         data = data or OrderedDict()
         self._set_default_values(data)
         self._validate_data(data)
+        catcher = re.compile(self.regexp_extractor)
         result_paths = []
         for entry in paths:
             result_path = []
             for item in entry['path']:
-                matches = self.regexp_extractor.match(item)
+                matches = catcher.match(item)
                 if matches:
                     match = matches.groupdict()
                     prefix = match.get('prefix')
