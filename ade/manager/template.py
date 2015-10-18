@@ -87,6 +87,21 @@ class TemplateManager(object):
         # paths.sort(key=lambda x: len(x['path']))
         return result_paths
 
+    def find_path(self, startwith=None, contains=None, endswith=None, paths=None, **kwargs):
+        startwith = startwith or ''
+        endswith = endswith or ''
+        contains = contains or []
+
+        for path in paths:
+
+            _start = startwith in path[0]
+            _ends = endswith in path[-1]
+            _contains = bool([c for c in contains if c in path]) if contains else True
+
+            if all([_start, _ends, _contains]):
+                print "/// RETURNING PATH -->", path
+                return path
+
     def _resolve(self, schema, final_path_list, path=None):
         ''' Recursively build the final_path_list from schema.
 
