@@ -218,7 +218,7 @@ class FileSystemManager(object):
                 if not match:
                     logger.debug(
                         'Key {1} for data {0} does not match {2}'.format(
-                            name, value, self.regexp_mapping[name].keys()
+                            name, value, self.regexp_mapping[name]
                         )
                     )
                     data.pop(name)
