@@ -10,6 +10,21 @@ from ade.manager.config import ConfigManager
 
 logging.getLogger(__name__)
 
+class Test_TemplateManagerFindPath(unittest.TestCase):
+
+    def setUp(self):
+        """Setup test session.
+        """
+        self.maxDiff = None
+        config = 'test/resources/config'
+        os.environ['ADE_CONFIG_PATH'] = config
+        config_manager = ConfigManager(config)
+        config_mode = config_manager.get('test')
+        config_mode['project_mount_point'] = tempfile.mkdtemp()
+        self.config_mode = config_mode
+
+
+
 
 class Test_TemplateManager(unittest.TestCase):
 
