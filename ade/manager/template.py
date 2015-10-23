@@ -162,7 +162,7 @@ class TemplateManager(object):
                 # logger.debug((msg % name) + '... keep looking')
                 continue
 
-            logger.debug('found template %s ' % name)
+            #logger.debug('found template %s ' % name)
             item = copy.deepcopy(item)
             return item
 
@@ -206,7 +206,7 @@ class TemplateManager(object):
         '''
         for index, entry in enumerate(schema.get('children', [])):
             item = entry.get('name', '')
-            logger.debug('resolving item %s' % item)
+            #logger.debug('resolving item %s' % item)
             if self.__reference_indicator in item:
                 removed = schema['children'].pop(index)
                 fragment = self._get_in_register(removed['name'])
