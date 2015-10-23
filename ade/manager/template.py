@@ -87,19 +87,22 @@ class TemplateManager(object):
         # paths.sort(key=lambda x: len(x['path']))
         return result_paths
 
-    def find_path(self, startwith=None, contains=None, endswith=None, paths=None, **kwargs):
+    def find_path(self, startwith=None, contains=None, endswith=None, template_name='@+show+@'):
+
+        built = self.resolve_template(template_name)
+        resolved = self.resolve(built)
+        paths = [p['path'] for p in resolved]
+
         startwith = startwith or ''
         endswith = endswith or ''
         contains = contains or []
 
-        for path in paths:
-
+        for path in reversed(paths):
             _start = startwith in path[0]
             _ends = endswith in path[-1]
-            _contains = bool([c for c in contains if c in path]) if contains else True
+            _contains = all([True if c in path else False for c in contains])
 
             if all([_start, _ends, _contains]):
-                print "/// RETURNING PATH -->", path
                 return path
 
     def _resolve(self, schema, final_path_list, path=None):

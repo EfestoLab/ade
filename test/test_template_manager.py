@@ -22,8 +22,221 @@ class Test_TemplateManagerFindPath(unittest.TestCase):
         config_mode = config_manager.get('test')
         config_mode['project_mount_point'] = tempfile.mkdtemp()
         self.config_mode = config_mode
+        self.template_name = "@+test_A+@"
+
+    def test_path_find_all(self):
+        template_manager = TemplateManager(self.config_mode)
+        result = template_manager.find_path(
+            startwith=None, 
+            contains=None, 
+            endswith=None,
+            template_name=self.template_name)
+
+        expexted_result = [
+            '+test_A+', 
+            '+test_B+', 
+            'test_C', 
+            'test_C1', 
+            'test_D', 
+            'file_D.txt'
+        ] 
+        
+        self.assertEqual(result, expexted_result)
+
+    def test_path_find_startswith(self):
+        template_manager = TemplateManager(self.config_mode)
+        result = template_manager.find_path(
+            startwith='test_A', 
+            contains=None, 
+            endswith=None,
+            template_name=self.template_name)
+
+        expexted_result = [
+            '+test_A+', 
+            '+test_B+', 
+            'test_C', 
+            'test_C1', 
+            'test_D', 
+            'file_D.txt'
+        ] 
+        
+        self.assertEqual(result, expexted_result)
 
 
+    def test_path_find_contains(self):
+        template_manager = TemplateManager(self.config_mode)
+        result = template_manager.find_path(
+            startwith=None, 
+            contains=['test_D1'], 
+            endswith=None,
+            template_name=self.template_name)
+
+        expexted_result = [
+            '+test_A+', 
+            '+test_B+', 
+            'test_C', 
+            'test_C1', 
+            'test_D', 
+            'test_D1'
+        ] 
+        
+        self.assertEqual(result, expexted_result)
+
+    def test_path_find_endswith(self):
+        template_manager = TemplateManager(self.config_mode)
+        result = template_manager.find_path(
+            startwith=None, 
+            contains=None, 
+            endswith='test_D1',
+            template_name=self.template_name)
+
+        expexted_result = [
+            '+test_A+', 
+            '+test_B+', 
+            'test_C', 
+            'test_C1', 
+            'test_D', 
+            'test_D1'
+        ] 
+        
+        self.assertEqual(result, expexted_result)
+
+    def test_path_non_existing_startswith(self):
+        template_manager = TemplateManager(self.config_mode)
+        result = template_manager.find_path(
+            startwith='foobar', 
+            contains=None, 
+            endswith=None,
+            template_name=self.template_name)
+
+        expexted_result = None
+        self.assertEqual(result, expexted_result)
+
+    def test_path_non_existing_contains(self):
+        template_manager = TemplateManager(self.config_mode)
+        result = template_manager.find_path(
+            startwith=None, 
+            contains=['test_C1', 'foobar'], 
+            endswith=None,
+            template_name=self.template_name)
+
+        expexted_result = None
+        
+        self.assertEqual(result, expexted_result)
+
+    def test_path_non_existing_endswith(self):
+        template_manager = TemplateManager(self.config_mode)
+        result = template_manager.find_path(
+            startwith=None, 
+            contains=None, 
+            endswith='foobar',
+            template_name=self.template_name)
+
+        expexted_result = None
+        
+        self.assertEqual(result, expexted_result)
+
+    def test_path_non_existing_template_name(self):
+        template_manager = TemplateManager(self.config_mode)
+        with self.assertRaises(KeyError):
+            template_manager.find_path(
+                startwith='test_A', 
+                contains=['test_D1'], 
+                endswith=None,
+                template_name='foobar')
+
+    def test_path_contains_and_endswith(self):
+        template_manager = TemplateManager(self.config_mode)
+        result = template_manager.find_path(
+            startwith=None, 
+            contains=['test_C'], 
+            endswith='test_D1',
+            template_name=self.template_name)
+
+        expexted_result = [
+            '+test_A+', 
+            '+test_B+', 
+            'test_C', 
+            'test_C1', 
+            'test_D', 
+            'test_D1'
+        ] 
+        
+        self.assertEqual(result, expexted_result)
+
+    def test_path_startswith_and_endwith(self):
+        template_manager = TemplateManager(self.config_mode)
+        result = template_manager.find_path(
+            startwith='test_A', 
+            contains=None, 
+            endswith='test_D1',
+            template_name=self.template_name)
+
+        expexted_result = [
+            '+test_A+', 
+            '+test_B+', 
+            'test_C', 
+            'test_C1', 
+            'test_D', 
+            'test_D1'
+        ] 
+        
+        self.assertEqual(result, expexted_result)
+
+    def test_path_startswith_and_contains(self):
+        template_manager = TemplateManager(self.config_mode)
+        result = template_manager.find_path(
+            startwith='test_A', 
+            contains=['test_D1'], 
+            endswith=None,
+            template_name=self.template_name)
+
+        expexted_result = [
+            '+test_A+', 
+            '+test_B+', 
+            'test_C', 
+            'test_C1', 
+            'test_D', 
+            'test_D1'
+        ]
+        
+        self.assertEqual(result, expexted_result)
+
+    def test_path_all_existing(self):
+        template_manager = TemplateManager(self.config_mode)
+        result = template_manager.find_path(
+            startwith='test_A', 
+            contains=['test_D'], 
+            endswith='file_D.txt',
+            template_name=self.template_name)
+
+        expexted_result = [
+            '+test_A+', 
+            '+test_B+', 
+            'test_C', 
+            'test_C1', 
+            'test_D', 
+            'file_D.txt'
+        ]
+        
+        self.assertEqual(result, expexted_result)
+
+    def test_path_prefixes(self):
+        template_manager = TemplateManager(self.config_mode)
+        result = template_manager.find_path(
+            startwith=None, 
+            contains=['pfx_+test_E+_sfx'], 
+            endswith=None,
+            template_name='@+test_F+@')
+
+        expexted_result = [
+            '+test_F+', 
+            'pfx_+test_E+_sfx', 
+            'test_D', 
+            'file_D.txt'
+        ]
+
+        self.assertEqual(result, expexted_result)
 
 
 class Test_TemplateManager(unittest.TestCase):
