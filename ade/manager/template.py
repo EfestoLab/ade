@@ -98,9 +98,19 @@ class TemplateManager(object):
         contains = contains or []
 
         for path in reversed(paths):
+            outs = []
+            for c in contains:
+                is_in = False
+                for p in path:
+                    if c in p:
+                        is_in = True
+                        outs.append(is_in)
+                if is_in == False:
+                    outs.append(is_in)
+
             _start = startwith in path[0]
             _ends = endswith in path[-1]
-            _contains = all([True if c in path else False for c in contains])
+            _contains = all(outs)
 
             if all([_start, _ends, _contains]):
                 return path

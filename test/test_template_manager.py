@@ -149,7 +149,7 @@ class Test_TemplateManagerFindPath(unittest.TestCase):
         template_manager = TemplateManager(self.config_mode)
         result = template_manager.find_path(
             startwith=None, 
-            contains=['test_C'], 
+            contains=['test_B'], 
             endswith='test_D1',
             template_name=self.template_name)
 
