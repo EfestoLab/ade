@@ -225,7 +225,7 @@ class Test_TemplateManagerFindPath(unittest.TestCase):
         template_manager = TemplateManager(self.config_mode)
         result = template_manager.find_path(
             startwith=None, 
-            contains=['pfx_+test_E+_sfx'], 
+            contains=['pfx_'], 
             endswith=None,
             template_name='@+test_F+@')
 

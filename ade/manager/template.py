@@ -89,18 +89,36 @@ class TemplateManager(object):
 
     def find_path(self, startwith=None, contains=None, endswith=None, template_name='@+show+@'):
 
+
+        def sanitize(var):
+            if not var:
+                return None
+
+            if '+' in var:
+                var = var.replace('+', '')
+
+            if '{' in var:
+                var = var[1:-1]
+
+            return var
+
         built = self.resolve_template(template_name)
         resolved = self.resolve(built)
         paths = [p['path'] for p in resolved]
 
-        startwith = startwith or ''
-        endswith = endswith or ''
-        contains = contains or []
+        startwith = sanitize(startwith) or ''
+        endswith = sanitize(endswith) or ''
+        contains = map(sanitize, contains or []) or []
+        print startwith, endswith, contains
 
         for path in reversed(paths):
+            _start = startwith in path[0]
+            _ends = endswith in path[-1]
+
             outs = []
             for c in contains:
                 is_in = False
+
                 for p in path:
                     if c in p:
                         is_in = True
@@ -108,8 +126,7 @@ class TemplateManager(object):
                 if is_in == False:
                     outs.append(is_in)
 
-            _start = startwith in path[0]
-            _ends = endswith in path[-1]
+
             _contains = all(outs)
 
             if all([_start, _ends, _contains]):
