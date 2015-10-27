@@ -218,7 +218,7 @@ class FileSystemManager(object):
                 if not match:
                     logger.debug(
                         'Key {1} for data {0} does not match {2}'.format(
-                            name, value, self.regexp_mapping[name].keys()
+                            name, value, self.regexp_mapping[name]
                         )
                     )
                     data.pop(name)
@@ -273,11 +273,6 @@ class FileSystemManager(object):
                     final_path = final_path.format(**data)
 
                 except Exception, error:
-                    logger.debug('{1} not found for {0}'.format(
-                        final_path,
-                        error
-                        )
-                    )
                     continue
                 entry['path'] = final_path
                 result_paths.append(entry)

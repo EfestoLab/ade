@@ -157,10 +157,10 @@ class Test_FilesystemManager(unittest.TestCase):
         path_results = filesystem_manager._to_path(results, data)
         path_results = [item['path'] for item in path_results]
         expected_path = [
-            'BOOO',
-            'BOOO/pfx_ZOOO_sfx',
-            'BOOO/pfx_ZOOO_sfx/test_D',
-            'BOOO/pfx_ZOOO_sfx/test_D/file_D.txt',
-            'BOOO/pfx_ZOOO_sfx/test_D/test_D1'
+            u'BOOO',
+            u'BOOO/pfx_ZOOO_sfx',
+            u'BOOO/pfx_ZOOO_sfx/test_D',
+            u'BOOO/pfx_ZOOO_sfx/test_D/test_D1',
+            u'BOOO/pfx_ZOOO_sfx/test_D/file_D.txt'
         ]
         self.assertEqual(path_results, expected_path)

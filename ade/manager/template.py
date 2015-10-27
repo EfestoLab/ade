@@ -87,6 +87,70 @@ class TemplateManager(object):
         # paths.sort(key=lambda x: len(x['path']))
         return result_paths
 
+    def find_path(self, startwith=None, contains=None, endswith=None, template_name='@+show+@'):
+        ''' Finds a path based on some filtering arguments.
+
+        :param startwith: filters out paths that do not start with this element
+        :type startwith: string
+        :param contains: filters out paths that do not contain what in this list
+        :type contains: list
+        :param endswith: filters out paths that do not end with this element
+        :type endswith: string
+        :param template_name: where to start resolving the template from
+        :type template_name: string
+        :return: the first matched path
+        :rtype: ``list``
+        '''
+
+        def sanitize(var):
+            if not var:
+                return None
+
+            if '+' in var:
+                var = var.replace('+', '')
+
+            if '{' in var:
+                var = var[1:-1]
+
+            return var
+
+        built = self.resolve_template(template_name)
+        resolved = self.resolve(built)
+        paths = [item['path'] for item in resolved]
+
+        startwith = sanitize(startwith) or ''
+        endswith = sanitize(endswith) or ''
+        contains = map(sanitize, contains or []) or []
+
+        for path in reversed(paths):
+            _start = startwith in path[0]
+            _ends = endswith in path[-1]
+
+            outs = []
+            for item_in_contains in contains:
+                is_in = False
+
+                for path_element in path:
+                    if item_in_contains in path_element:
+                        is_in = True
+                        outs.append(is_in)
+                if is_in == False:
+                    outs.append(is_in)
+
+
+            _contains = all(outs)
+
+            if all([_start, _ends, _contains]):
+                return path
+            else:
+                logger.warn(
+                    'Could not find a path that matches the criteria:\n'
+                    'Starts with: %s\n'
+                    'Contains: %s\n'
+                    'Ends with: %s'
+                    % (startwith, contains, endswith)
+                )
+
     def _resolve(self, schema, final_path_list, path=None):
         ''' Recursively build the final_path_list from schema.
 
@@ -147,7 +211,7 @@ class TemplateManager(object):
                 # logger.debug((msg % name) + '... keep looking')
                 continue
 
-            logger.debug('found template %s ' % name)
+            #logger.debug('found template %s ' % name)
             item = copy.deepcopy(item)
             return item
 
@@ -191,7 +255,7 @@ class TemplateManager(object):
         '''
         for index, entry in enumerate(schema.get('children', [])):
             item = entry.get('name', '')
-            logger.debug('resolving item %s' % item)
+            #logger.debug('resolving item %s' % item)
             if self.__reference_indicator in item:
                 removed = schema['children'].pop(index)
                 fragment = self._get_in_register(removed['name'])
