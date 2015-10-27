@@ -89,7 +89,6 @@ class TemplateManager(object):
 
     def find_path(self, startwith=None, contains=None, endswith=None, template_name='@+show+@'):
 
-
         def sanitize(var):
             if not var:
                 return None
