@@ -88,6 +88,19 @@ class TemplateManager(object):
         return result_paths
 
     def find_path(self, startwith=None, contains=None, endswith=None, template_name='@+show+@'):
+        ''' Finds a path based on some filtering arguments.
+
+        :param startwith: filters out paths that do not start with this element
+        :type startwith: string
+        :param contains: filters out paths that do not contain what in this list
+        :type contains: list
+        :param endswith: filters out paths that do not end with this element
+        :type endswith: string
+        :param template_name: where to start resolving the template from
+        :type template_name: string
+        :return: the first matched path
+        :rtype: ``list``
+        '''
 
         def sanitize(var):
             if not var:
@@ -103,7 +116,7 @@ class TemplateManager(object):
 
         built = self.resolve_template(template_name)
         resolved = self.resolve(built)
-        paths = [p['path'] for p in resolved]
+        paths = [item['path'] for item in resolved]
 
         startwith = sanitize(startwith) or ''
         endswith = sanitize(endswith) or ''
@@ -114,11 +127,11 @@ class TemplateManager(object):
             _ends = endswith in path[-1]
 
             outs = []
-            for c in contains:
+            for item_in_contains in contains:
                 is_in = False
 
-                for p in path:
-                    if c in p:
+                for path_element in path:
+                    if item_in_contains in path_element:
                         is_in = True
                         outs.append(is_in)
                 if is_in == False:
@@ -129,6 +142,14 @@ class TemplateManager(object):
 
             if all([_start, _ends, _contains]):
                 return path
+            else:
+                logger.warn(
+                    'Could not find a path that matches the criteria:\n'
+                    'Starts with: %s\n'
+                    'Contains: %s\n'
+                    'Ends with: %s'
+                    % (startwith, contains, endswith)
+                )
 
     def _resolve(self, schema, final_path_list, path=None):
         ''' Recursively build the final_path_list from schema.

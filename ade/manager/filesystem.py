@@ -273,11 +273,6 @@ class FileSystemManager(object):
                     final_path = final_path.format(**data)
 
                 except Exception, error:
-                    # logger.debug('{1} not found for {0}'.format(
-                    #     final_path,
-                    #     error
-                    #     )
-                    # )
                     continue
                 entry['path'] = final_path
                 result_paths.append(entry)
