@@ -108,7 +108,6 @@ class TemplateManager(object):
         startwith = sanitize(startwith) or ''
         endswith = sanitize(endswith) or ''
         contains = map(sanitize, contains or []) or []
-        print startwith, endswith, contains
 
         for path in reversed(paths):
             _start = startwith in path[0]
