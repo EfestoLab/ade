@@ -1,3 +1,2 @@
-test: 
-	script:
-		- python setup.py test
+test:
+  script: "python setup.py test"
