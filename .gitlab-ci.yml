@@ -1,2 +1,4 @@
-test: 
-	python setup.py test
+test_app: 
+	type: test
+	script: 
+		- python setup.py test
