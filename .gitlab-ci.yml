@@ -1,4 +1,3 @@
-test_app: 
-	type: test
-	script: 
+test: 
+	script:
 		- python setup.py test
