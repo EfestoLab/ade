@@ -147,7 +147,7 @@ class TemplateManager(object):
             if all([_start, _ends, _contains]):
                 return path
             else:
-                logger.warn(
+                logger.debug(
                     'Could not find a path that matches the criteria:\n'
                     'Starts with: %s\n'
                     'Contains: %s\n'
