@@ -118,13 +118,17 @@ class TemplateManager(object):
         resolved = self.resolve(built)
         paths = [item['path'] for item in resolved]
 
-        startwith = sanitize(startwith) or ''
-        endswith = sanitize(endswith) or ''
+        startwith = sanitize(startwith) or None
+        endswith = sanitize(endswith) or None
         contains = map(sanitize, contains or []) or []
 
         for path in reversed(paths):
-            _start = startwith in path[0]
-            _ends = endswith in path[-1]
+            # sanitize
+            sanitized_last_path_item = sanitize(path[-1])
+            sanitized_first_path_item = sanitize(path[0])
+
+            _start = startwith == sanitized_first_path_item if startwith else True
+            _ends = endswith == sanitized_last_path_item if endswith else True
 
             outs = []
             for item_in_contains in contains:

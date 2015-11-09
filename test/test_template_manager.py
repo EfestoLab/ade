@@ -238,6 +238,26 @@ class Test_TemplateManagerFindPath(unittest.TestCase):
 
         self.assertEqual(result, expexted_result)
 
+    def test_path_short(self):
+        ''' By default it would get +test_R+/+test_Z+/TEST1/+shot+/+shot_task+,
+        we do not want this one, we want the one ending with +shot+!
+        '''
+        template_manager = TemplateManager(self.config_mode)
+        result = template_manager.find_path(
+            startwith=None, 
+            contains=None, 
+            endswith='shot',
+            template_name='@+test_R+@')
+
+        expexted_result = [
+            '+test_R+', 
+            '+test_Z+', 
+            'TEST1', 
+            '+shot+'
+        ]
+
+        self.assertEqual(result, expexted_result)
+
 
 class Test_TemplateManager(unittest.TestCase):
 
