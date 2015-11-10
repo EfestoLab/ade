@@ -138,6 +138,7 @@ class Test_FilesystemManager(unittest.TestCase):
         resolved_template = filesystem_manager.template_manager.resolve_template('@+test_F+@')
         results = filesystem_manager.template_manager.resolve(resolved_template)
         parsers_results = filesystem_manager._to_parser(results)
+
         expected_path = [
             '^(?P<test_E>[a-zA-Z0-9_]+)$',
             '^(?P<test_E>[a-zA-Z0-9_]+)/pfx_(?P<test_E>[a-zA-Z0-9_]+)_sfx$',
@@ -145,7 +146,8 @@ class Test_FilesystemManager(unittest.TestCase):
             '^(?P<test_E>[a-zA-Z0-9_]+)/pfx_(?P<test_E>[a-zA-Z0-9_]+)_sfx/test_D/test_D1$',
             '^(?P<test_E>[a-zA-Z0-9_]+)/pfx_(?P<test_E>[a-zA-Z0-9_]+)_sfx/test_D/file_D.txt$'
         ]
-        self.assertEqual(parsers_results, expected_path)
+        for expath in expected_path:
+            self.assertTrue(expath in parsers_results)
 
     def test_template_to_path_prefix(self):
         """ Build the template structure and convert it to path
@@ -163,4 +165,6 @@ class Test_FilesystemManager(unittest.TestCase):
             u'BOOO/pfx_ZOOO_sfx/test_D/test_D1',
             u'BOOO/pfx_ZOOO_sfx/test_D/file_D.txt'
         ]
-        self.assertEqual(path_results, expected_path)
+
+        for expath in expected_path:
+            self.assertTrue(expath in path_results)
