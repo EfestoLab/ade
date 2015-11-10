@@ -1,2 +1,2 @@
 test:
-  script: "python setup.py test"
+  script: "python2.7 setup.py test"
