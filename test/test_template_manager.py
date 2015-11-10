@@ -278,13 +278,13 @@ class Test_TemplateManager(unittest.TestCase):
         self.assertTrue(folder_A.get('children', False))
         # self.assertEqual(folder_A.get('permission', 000), '0775')
 
-    # def test_registered_templates_is_file(self):
-    #     '''Check for template file attributes.
-    #     '''
-    #     manager = TemplateManager(self.config_mode)
-    #     file_D = manager._get_in_register('@test_D@')['children'][-1]
-    #     self.assertFalse(file_D.get('folder'))
-    #     self.assertFalse(file_D.get('children'))
+    def test_registered_templates_is_file(self):
+        '''Check for template file attributes.
+        '''
+        manager = TemplateManager(self.config_mode)
+        file_D = manager._get_in_register('@test_D@')['children'][-1]
+        self.assertFalse(file_D.get('folder'))
+        self.assertFalse(file_D.get('children'))
     #     self.assertEqual(file_D.get('permission', 000), '0775')
 
     # def test_registered_templates(self):
