@@ -12,7 +12,8 @@ log = logging.getLogger(__name__)
 class Test_FilesystemManager(unittest.TestCase):
 
     def setUp(self):
-        """Setup test session.
+        """
+        Setup test session.
         """
         self.maxDiff = None
         config = 'test/resources/config'
@@ -36,6 +37,7 @@ class Test_FilesystemManager(unittest.TestCase):
     #     results = filesystem_manager.template_manager.resolve(resolved_template)
     #     path_results = filesystem_manager._to_path(results, self.data)
     #     permission_results = [item['permission'] for item in path_results]
+        
     #     expected_results = [
     #         '0775', '0775', '0775',
     #         '0775', '0775', '0775',
@@ -45,7 +47,8 @@ class Test_FilesystemManager(unittest.TestCase):
     #     self.assertEqual(permission_results, expected_results)
 
     def test_template_to_parser(self):
-        """ Build the template structure and convert it to parser
+        """ 
+        Build the template structure and convert it to parser
         """
         filesystem_manager = FileSystemManager(self.config_mode, self.template_manager)
         resolved_template = filesystem_manager.template_manager.resolve_template('@+test_A+@')
@@ -68,7 +71,8 @@ class Test_FilesystemManager(unittest.TestCase):
         self.assertEqual(parsers_results, expected_path)
 
     def test_template_to_path(self):
-        """ Build the template structure and convert it to path
+        """ 
+        Build the template structure and convert it to path
         """
         filesystem_manager = FileSystemManager(
             self.config_mode,
@@ -99,7 +103,8 @@ class Test_FilesystemManager(unittest.TestCase):
         self.assertEqual(path_results, expected_path)
 
     def test_parse_complete_path(self):
-        """Check parse of a complete path.
+        """
+        Check parse of a complete path.
         """
         filesystem_manager = FileSystemManager(
             self.config_mode, self.template_manager
@@ -111,8 +116,9 @@ class Test_FilesystemManager(unittest.TestCase):
         self.assertEqual(result[0], self.data)
 
     def test_parse_root_path(self):
-        '''Parse the root path only of the project,
-            This is to check the bug which was affecting it.
+        '''
+        Parse the root path only of the project,
+        This is to check the bug which was affecting it.
         '''
         filesystem_manager = FileSystemManager(
             self.config_mode, self.template_manager
@@ -124,7 +130,8 @@ class Test_FilesystemManager(unittest.TestCase):
         self.assertEqual(result[0], {'test_A': 'Hello'})
 
     def test_parse_trailing_path(self):
-        ''' Check trailing slashes in path to parse
+        ''' 
+        Check trailing slashes in path to parse
         '''
         filesystem_manager = FileSystemManager(
             self.config_mode, self.template_manager
@@ -135,13 +142,14 @@ class Test_FilesystemManager(unittest.TestCase):
         self.assertEqual(result[0], {'test_A': 'Hello'})
 
     def test_template_to_parser_prefix(self):
-        """ Build the template structure and convert it to parser
+        """ 
+        Build the template structure and convert it to parser
         """
         filesystem_manager = FileSystemManager(self.config_mode, self.template_manager)
         resolved_template = filesystem_manager.template_manager.resolve_template('@+test_F+@')
         results = filesystem_manager.template_manager.resolve(resolved_template)
         parsers_results = filesystem_manager._to_parser(results)
-
+        path_results = sorted(parsers_results, key= lambda x : [len(y) for y in x])
         expected_path = [
             '^(?P<test_E>[a-zA-Z0-9_]+)$',
             '^(?P<test_E>[a-zA-Z0-9_]+)/pfx_(?P<test_E>[a-zA-Z0-9_]+)_sfx$',
@@ -149,11 +157,12 @@ class Test_FilesystemManager(unittest.TestCase):
             '^(?P<test_E>[a-zA-Z0-9_]+)/pfx_(?P<test_E>[a-zA-Z0-9_]+)_sfx/test_D/test_D1$',
             '^(?P<test_E>[a-zA-Z0-9_]+)/pfx_(?P<test_E>[a-zA-Z0-9_]+)_sfx/test_D/file_D.txt$'
         ]
-        for expath in expected_path:
-            self.assertTrue(expath in parsers_results)
+
+        self.assertEqual(path_results, expected_path)
 
     def test_template_to_path_prefix(self):
-        """ Build the template structure and convert it to path
+        """ 
+        Build the template structure and convert it to path
         """
         filesystem_manager = FileSystemManager(self.config_mode, self.template_manager)
         resolved_template = filesystem_manager.template_manager.resolve_template('@+test_F+@')

@@ -13,7 +13,8 @@ logging.getLogger(__name__)
 class Test_TemplateManagerFindPath(unittest.TestCase):
 
     def setUp(self):
-        """Setup test session.
+        """
+        Setup test session.
         """
         self.maxDiff = None
         config = 'test/resources/config'
@@ -225,7 +226,8 @@ class Test_TemplateManagerFindPath(unittest.TestCase):
         self.assertEqual(result, expexted_result)
 
     def test_path_short(self):
-        ''' By default it would get +test_R+/+test_Z+/TEST1/+shot+/+shot_task+,
+        ''' 
+        By default it would get +test_R+/+test_Z+/TEST1/+shot+/+shot_task+,
         we do not want this one, we want the one ending with +shot+!
         '''
         template_manager = TemplateManager(self.config_mode)
@@ -248,7 +250,8 @@ class Test_TemplateManagerFindPath(unittest.TestCase):
 class Test_TemplateManager(unittest.TestCase):
 
     def setUp(self):
-        """Setup test session.
+        """
+        Setup test session.
         """
         self.maxDiff = None
         config = 'test/resources/config'
@@ -259,13 +262,15 @@ class Test_TemplateManager(unittest.TestCase):
         self.config_mode = config_mode
 
     def test_register_unexisting_template(self):
-        '''Check when template doesn't exist
+        '''
+        Check when template doesn't exist
         '''
         manager = TemplateManager(self.config_mode)
         self.assertRaises(KeyError, manager._get_in_register, '@+test_fake+@')
 
     def test_registered_templates_is_folder(self):
-        '''Check for template folder attributes.
+        '''
+        Check for template folder attributes.
         '''
         manager = TemplateManager(self.config_mode)
         folder_A = manager._get_in_register('@+test_A+@')
