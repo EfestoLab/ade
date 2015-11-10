@@ -32,14 +32,7 @@ class Test_TemplateManagerFindPath(unittest.TestCase):
             endswith=None,
             template_name=self.template_name)
 
-        expexted_result = [
-            '+test_A+', 
-            '+test_B+', 
-            'test_C', 
-            'test_C1', 
-            'test_D', 
-            'file_D.txt'
-        ] 
+        expexted_result = ['+test_A+', '+test_B+', 'file_B.txt']
         
         self.assertEqual(result, expexted_result)
 
@@ -51,14 +44,7 @@ class Test_TemplateManagerFindPath(unittest.TestCase):
             endswith=None,
             template_name=self.template_name)
 
-        expexted_result = [
-            '+test_A+', 
-            '+test_B+', 
-            'test_C', 
-            'test_C1', 
-            'test_D', 
-            'file_D.txt'
-        ] 
+        expexted_result = ['+test_A+', '+test_B+', 'file_B.txt']
         
         self.assertEqual(result, expexted_result)
 

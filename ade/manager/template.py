@@ -6,9 +6,12 @@ from a folder containing fragments.
 
 '''
 import os
+import re
 import stat
 import copy
 from collections import OrderedDict
+from operator import itemgetter
+
 try:
     import efesto_logger as logging
 except:
@@ -117,13 +120,13 @@ class TemplateManager(object):
         built = self.resolve_template(template_name)
         resolved = self.resolve(built)
         paths = [item['path'] for item in resolved]
+        paths = sorted(paths, key= lambda x : [len(y) for y in x])
 
         startwith = sanitize(startwith) or None
         endswith = sanitize(endswith) or None
         contains = map(sanitize, contains or []) or []
 
         for path in reversed(paths):
-            # sanitize
             sanitized_last_path_item = sanitize(path[-1])
             sanitized_first_path_item = sanitize(path[0])
 
