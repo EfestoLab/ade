@@ -263,7 +263,7 @@ class TemplateManager(object):
         '''
         print "\nCHILDREN", schema.get('children', [])
 
-        sorted_stuff = sorted(schema.get('children', []), key= lambda x : schema.get('name'))
+        sorted_stuff = sorted(schema.get('children', []), key= lambda x : x.get('name'))
         print "\nSORTED -->", sorted_stuff
 
         for index, entry in enumerate(sorted_stuff):
