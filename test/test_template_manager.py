@@ -426,7 +426,7 @@ class Test_TemplateManager(unittest.TestCase):
                                 OrderedDict([
                                     ('folder', True),
                                     ('name', u'test_C1'),
-                                    ('permission', '0775'),
+                                    ('permission', '0755'),
                                     ('children', [
                                         OrderedDict([
                                             ('folder', True),
@@ -434,55 +434,55 @@ class Test_TemplateManager(unittest.TestCase):
                                                 OrderedDict([
                                                     ('folder', True),
                                                     ('name', u'test_D1'),
-                                                    ('permission', '0775'),
+                                                    ('permission', '0755'),
                                                     ('children', [])
                                                 ]),
                                                 OrderedDict([
                                                     ('folder', False),
                                                     ('name', u'file_D.txt'),
-                                                    ('permission', '0775'),
+                                                    ('permission', '0755'),
                                                     ('content', '')
                                                 ]),
                                             ]),
                                             ('name', u'@test_D@'),
-                                            ('permission', '0775')
+                                            ('permission', '0755')
                                         ])
                                     ])
                                 ])
                             ]),
                             ('name', u'@test_C@'),
-                            ('permission', '0775')
+                            ('permission', '0755')
                         ]),
                         OrderedDict([
                             ('folder', True),
                             ('name', u'test_B1'),
-                            ('permission', '0775'),
+                            ('permission', '0755'),
                             ('children', [])
                         ]),
                         OrderedDict([
                             ('folder', True),
                             ('name', u'test_B2'),
-                            ('permission', '0775'),
+                            ('permission', '0755'),
                             ('children', [])]),
                         OrderedDict([
                             ('folder', False),
                             ('name', u'file_B.txt'),
-                            ('permission', '0775'),
+                            ('permission', '0755'),
                             ('content', 'test')
                         ])
                     ]),
                     ('name', u'@+test_B+@'),
-                    ('permission', '0775')
+                    ('permission', '0755')
                 ]),
                 OrderedDict([
                     ('folder', True),
                     ('name', u'test_A1'),
-                    ('permission', '0775'),
+                    ('permission', '0755'),
                     ('children', [])
                 ])
             ]),
             ('name', u'@+test_A+@'),
-            ('permission', '0775')
+            ('permission', '0755')
         ])
         result = manager.resolve_template('@+test_A+@')
         from pprint import pformat
