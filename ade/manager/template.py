@@ -248,6 +248,17 @@ class TemplateManager(object):
         self._resolve_template(
             root,
         )
+
+        print "\n\nBEFORE -->", root, '\n'
+        def sort_children(chunk):
+            if len(chunk.get('children', [])) > 0:
+                sorted_children = sorted(chunk.get('children', []), key= lambda x : (not(x.get('folder')), x.get('name')))
+                chunk['children'] = sorted_children
+                for child in chunk['children']:
+                    sort_children(child)
+
+        sort_children(root)
+        print "\nAFTER --> ", root, '\n'
         return root
 
     def _resolve_template(self, schema):
@@ -261,15 +272,10 @@ class TemplateManager(object):
             the resolve_template function.
 
         '''
-        print "\nCHILDREN", schema.get('children', [])
 
-        sorted_stuff = sorted(schema.get('children', []), key= lambda x : x.get('name'))
-        print "\nSORTED -->", sorted_stuff
 
-        for index, entry in enumerate(sorted_stuff):
-            print "INDEX", index, "ENTRY", entry
+        for index, entry in enumerate(schema.get('children', [])):
             item = entry.get('name', '')
-            print "\nRESOLVING ITEM -->", item
             #logger.debug('resolving item %s' % item)
             if self.__reference_indicator in item:
                 removed = schema['children'].pop(index)
