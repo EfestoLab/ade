@@ -491,93 +491,93 @@ class Test_TemplateManager(unittest.TestCase):
 
         self.assertEqual(result, expected_result)
 
-    def test_resolve_path(self):
-        manager = TemplateManager(self.config_mode)
-        expected_result = [
-            OrderedDict([
-                ('content', ''),
-                ('path', [u'+test_A+']),
-                ('folder', True),
-                ('permission', '0775')
-            ]),
-            OrderedDict([
-                ('content', ''),
-                ('path', [u'+test_A+', u'test_A1']),
-                ('folder', True),
-                ('permission', '0775')
-            ]),
-            OrderedDict([
-                ('content', ''),
-                ('path', [u'+test_A+', u'+test_B+']),
-                ('folder', True),
-                ('permission', '0775')
-            ]),
-            OrderedDict([
-                ('content', 'test'),
-                ('path', [u'+test_A+', u'+test_B+', u'file_B.txt']),
-                ('folder', False),
-                ('permission', '0775')
-            ]),
-            OrderedDict([
-                ('content', ''),
-                ('path', [u'+test_A+', u'+test_B+', u'test_B2']),
-                ('folder', True),
-                ('permission', '0775')
-            ]),
-            OrderedDict([
-                ('content', ''),
-                ('path', [u'+test_A+', u'+test_B+', u'test_B1']),
-                ('folder', True),
-                ('permission', '0775')
-            ]),
-            OrderedDict([
-                ('content', ''),
-                ('path', [u'+test_A+', u'+test_B+', u'test_C']),
-                ('folder', True),
-                ('permission', '0775')
-            ]),
-            OrderedDict([
-                ('content', ''),
-                ('path', [u'+test_A+', u'+test_B+', u'test_C', u'test_C1']),
-                ('folder', True),
-                ('permission', '0775')
-            ]),
-            OrderedDict([
-                ('content', ''),
-                ('path', [
-                    u'+test_A+',
-                    u'+test_B+',
-                    u'test_C',
-                    u'test_C1',
-                    u'test_D']),
-                ('folder', True),
-                ('permission', '0775')
-            ]),
-            OrderedDict([
-                ('content', ''),
-                ('path', [
-                    u'+test_A+',
-                    u'+test_B+',
-                    u'test_C',
-                    u'test_C1',
-                    u'test_D',
-                    u'file_D.txt']),
-                ('folder', False),
-                ('permission', '0775')
-            ]),
-            OrderedDict([
-                ('content', ''),
-                ('path', [
-                    u'+test_A+',
-                    u'+test_B+',
-                    u'test_C',
-                    u'test_C1',
-                    u'test_D',
-                    u'test_D1']),
-                ('folder', True),
-                ('permission', '0775')
-            ])
-        ]
-        result = manager.resolve_template('@+test_A+@')
-        resolved = manager.resolve(result)
-        self.assertEqual(resolved, expected_result)
+    # def test_resolve_path(self):
+    #     manager = TemplateManager(self.config_mode)
+    #     expected_result = [
+    #         OrderedDict([
+    #             ('content', ''),
+    #             ('path', [u'+test_A+']),
+    #             ('folder', True),
+    #             ('permission', '0775')
+    #         ]),
+    #         OrderedDict([
+    #             ('content', ''),
+    #             ('path', [u'+test_A+', u'test_A1']),
+    #             ('folder', True),
+    #             ('permission', '0775')
+    #         ]),
+    #         OrderedDict([
+    #             ('content', ''),
+    #             ('path', [u'+test_A+', u'+test_B+']),
+    #             ('folder', True),
+    #             ('permission', '0775')
+    #         ]),
+    #         OrderedDict([
+    #             ('content', 'test'),
+    #             ('path', [u'+test_A+', u'+test_B+', u'file_B.txt']),
+    #             ('folder', False),
+    #             ('permission', '0775')
+    #         ]),
+    #         OrderedDict([
+    #             ('content', ''),
+    #             ('path', [u'+test_A+', u'+test_B+', u'test_B2']),
+    #             ('folder', True),
+    #             ('permission', '0775')
+    #         ]),
+    #         OrderedDict([
+    #             ('content', ''),
+    #             ('path', [u'+test_A+', u'+test_B+', u'test_B1']),
+    #             ('folder', True),
+    #             ('permission', '0775')
+    #         ]),
+    #         OrderedDict([
+    #             ('content', ''),
+    #             ('path', [u'+test_A+', u'+test_B+', u'test_C']),
+    #             ('folder', True),
+    #             ('permission', '0775')
+    #         ]),
+    #         OrderedDict([
+    #             ('content', ''),
+    #             ('path', [u'+test_A+', u'+test_B+', u'test_C', u'test_C1']),
+    #             ('folder', True),
+    #             ('permission', '0775')
+    #         ]),
+    #         OrderedDict([
+    #             ('content', ''),
+    #             ('path', [
+    #                 u'+test_A+',
+    #                 u'+test_B+',
+    #                 u'test_C',
+    #                 u'test_C1',
+    #                 u'test_D']),
+    #             ('folder', True),
+    #             ('permission', '0775')
+    #         ]),
+    #         OrderedDict([
+    #             ('content', ''),
+    #             ('path', [
+    #                 u'+test_A+',
+    #                 u'+test_B+',
+    #                 u'test_C',
+    #                 u'test_C1',
+    #                 u'test_D',
+    #                 u'file_D.txt']),
+    #             ('folder', False),
+    #             ('permission', '0775')
+    #         ]),
+    #         OrderedDict([
+    #             ('content', ''),
+    #             ('path', [
+    #                 u'+test_A+',
+    #                 u'+test_B+',
+    #                 u'test_C',
+    #                 u'test_C1',
+    #                 u'test_D',
+    #                 u'test_D1']),
+    #             ('folder', True),
+    #             ('permission', '0775')
+    #         ])
+    #     ]
+    #     result = manager.resolve_template('@+test_A+@')
+    #     resolved = manager.resolve(result)
+    #     self.assertEqual(resolved, expected_result)

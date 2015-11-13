@@ -261,8 +261,15 @@ class TemplateManager(object):
             the resolve_template function.
 
         '''
-        for index, entry in enumerate(schema.get('children', [])):
+        print "\nCHILDREN", schema.get('children', [])
+
+        sorted_stuff = sorted(schema.get('children', []), key= lambda x : schema.get('name'))
+        print "\nSORTED -->", sorted_stuff
+
+        for index, entry in enumerate(sorted_stuff):
+            print "INDEX", index, "ENTRY", entry
             item = entry.get('name', '')
+            print "\nRESOLVING ITEM -->", item
             #logger.debug('resolving item %s' % item)
             if self.__reference_indicator in item:
                 removed = schema['children'].pop(index)
