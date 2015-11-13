@@ -298,18 +298,18 @@ class Test_TemplateManager(unittest.TestCase):
                 OrderedDict([
                     ('folder', True),
                     ('name', u'@+shot_task+@'),
-                    ('permission', '0775'),
+                    ('permission', '0755'),
                     ('children', [])
                 ])
             ]),
             ('name', u'@+shot+@'),
-            ('permission', '0775')
+            ('permission', '0755')
         ]),
         OrderedDict([
             ('folder', True),
             ('children', []),
             ('name', u'@+shot_task+@'),
-            ('permission', '0775')
+            ('permission', '0755')
         ]),
         OrderedDict([
             ('folder', True),
@@ -317,12 +317,12 @@ class Test_TemplateManager(unittest.TestCase):
                 OrderedDict([
                     ('folder', True),
                     ('name', u'@+test_B+@'),
-                    ('permission', '0775'),
+                    ('permission', '0755'),
                     ('children', [
                         OrderedDict([
                             ('folder', False),
                             ('name', u'file_B.txt'),
-                            ('permission', '0775'),
+                            ('permission', '0755'),
                             ('content', 'test')
                         ])
                     ])
@@ -330,12 +330,12 @@ class Test_TemplateManager(unittest.TestCase):
                 OrderedDict([
                     ('folder', True),
                     ('name', u'test_A1'),
-                    ('permission', '0775'),
+                    ('permission', '0755'),
                     ('children', [])
                 ])
             ]),
             ('name', u'@+test_A+@'),
-            ('permission', '0775')
+            ('permission', '0755')
         ]),
         OrderedDict([
             ('folder', True),
@@ -343,25 +343,25 @@ class Test_TemplateManager(unittest.TestCase):
                 OrderedDict([
                     ('folder', True),
                     ('name', u'@test_C@'),
-                    ('permission', '0775'),
+                    ('permission', '0755'),
                     ('children', [])
                 ]),
                 OrderedDict([
                     ('folder', True),
                     ('name', u'test_B1'),
-                    ('permission', '0775'),
+                    ('permission', '0755'),
                     ('children', [])
                 ]),
                 OrderedDict([
                     ('folder', True),
                     ('name', u'test_B2'),
-                    ('permission', '0775'),
+                    ('permission', '0755'),
                     ('children', [])
 
                 ])
             ]),
             ('name', u'@+test_B+@'),
-            ('permission', '0775')
+            ('permission', '0755')
         ]),
         OrderedDict([
             ('folder', True),
@@ -369,12 +369,12 @@ class Test_TemplateManager(unittest.TestCase):
                 OrderedDict([
                     ('folder', True),
                     ('name', u'pfx_@+test_E+@_sfx'),
-                    ('permission', '0775'),
+                    ('permission', '0755'),
                     ('children', [])
                 ])
             ]),
             ('name', u'@+test_F+@'),
-            ('permission', '0775')
+            ('permission', '0755')
         ]),
         OrderedDict([
             ('folder', True),
@@ -382,25 +382,25 @@ class Test_TemplateManager(unittest.TestCase):
                 OrderedDict([
                     ('folder', True),
                     ('name', u'@+test_Z+@'),
-                    ('permission', '0775'),
+                    ('permission', '0755'),
                     ('children', [])
                 ])
             ]),
             ('name', u'@+test_R+@'),
-            ('permission', '0775')
+            ('permission', '0755')
         ]),
         OrderedDict([('folder', True),
             ('children', [
                 OrderedDict([
                     ('folder', True),
                     ('name', u'@TEST1@'),
-                    ('permission', '0775'),
+                    ('permission', '0755'),
                     ('children', [])
                 ]),
                 OrderedDict([
                     ('folder', True),
                     ('name', u'@TEST2@'),
-                    ('permission', '0775'),
+                    ('permission', '0755'),
                     ('children', [
                         OrderedDict([
                             ('folder', False),
@@ -412,25 +412,25 @@ class Test_TemplateManager(unittest.TestCase):
                 ])
             ]),
             ('name', u'@+test_Z+@'),
-            ('permission', '0775')
+            ('permission', '0755')
         ]),
         OrderedDict([('folder', True),
             ('children', [
                 OrderedDict([
                     ('folder', True),
                     ('name', u'@+shot+@'),
-                    ('permission', '0775'),
+                    ('permission', '0755'),
                     ('children', [])
                 ])
             ]),
             ('name', u'@TEST1@'),
-            ('permission', '0775')
+            ('permission', '0755')
         ]),
         OrderedDict([
             ('folder', True),
             ('children', []),
             ('name', u'@TEST2@'),
-            ('permission', '0775')
+            ('permission', '0755')
         ]),
         OrderedDict([
             ('folder', True),
@@ -438,19 +438,19 @@ class Test_TemplateManager(unittest.TestCase):
                 OrderedDict([
                     ('folder', True),
                     ('name', u'test_C1'),
-                    ('permission', '0775'),
+                    ('permission', '0755'),
                     ('children', [
                         OrderedDict([
                             ('folder', True),
                             ('name', u'@test_D@'),
-                            ('permission', '0775'),
+                            ('permission', '0755'),
                             ('children', [])
                         ])
                     ])
                 ])
             ]),
             ('name', u'@test_C@'),
-            ('permission', '0775')
+            ('permission', '0755')
         ]),
         OrderedDict([
             ('folder', True),
@@ -458,18 +458,18 @@ class Test_TemplateManager(unittest.TestCase):
                 OrderedDict([
                     ('folder', True),
                     ('name', u'test_D1'),
-                    ('permission', '0775'),
+                    ('permission', '0755'),
                     ('children', [])
                 ]),
                 OrderedDict([
                     ('folder', False),
                     ('name', u'file_D.txt'),
-                    ('permission', '0775'),
+                    ('permission', '0755'),
                     ('content', '')
                 ])
             ]),
             ('name', u'@test_D@'),
-            ('permission', '0775')
+            ('permission', '0755')
         ]),
         OrderedDict([
             ('folder', True),
@@ -477,12 +477,12 @@ class Test_TemplateManager(unittest.TestCase):
                 OrderedDict([
                     ('folder', True),
                     ('name', u'@test_D@'),
-                    ('permission', '0775'),
+                    ('permission', '0755'),
                     ('children', [])
                 ])
             ]),
             ('name', u'pfx_@+test_E+@_sfx'),
-            ('permission', '0775')])
+            ('permission', '0755')])
         ]
 
         print "\n\n\nREGISTER --> \n\n\n", register
