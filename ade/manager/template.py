@@ -311,7 +311,7 @@ class TemplateManager(object):
                 current_template_path,
                 current_template_map['children']
             )
-            
+
             self._register.append(current_template_map)
 
     def _register_templates(self, root, mapped):
@@ -334,9 +334,7 @@ class TemplateManager(object):
 
             # Collect the content
             entries = os.listdir(root)
-            
             entries = sorted(entries, key=lambda x : os.path.isfile(os.path.join(root, x)))
-
 
             for entry in entries:
                 if entry.startswith('.git'):
@@ -353,8 +351,8 @@ class TemplateManager(object):
 
                 if os.path.isdir(subentry):
                     # If it's a folder, mark it with children and type
-                    item['children'] = []
                     item['folder'] = True
+                    item['children'] = []
 
                     # Continue searching in folder
                     self._register_templates(subentry, item['children'])

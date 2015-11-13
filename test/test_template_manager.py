@@ -441,8 +441,9 @@ class Test_TemplateManager(unittest.TestCase):
                                                     ('folder', False),
                                                     ('name', u'file_D.txt'),
                                                     ('permission', '0775'),
-                                                    ('content', '')])
+                                                    ('content', '')
                                                 ]),
+                                            ]),
                                             ('name', u'@test_D@'),
                                             ('permission', '0775')
                                         ])
@@ -484,7 +485,10 @@ class Test_TemplateManager(unittest.TestCase):
             ('permission', '0775')
         ])
         result = manager.resolve_template('@+test_A+@')
-        print result
+        from pprint import pformat
+
+        print pformat(result)
+
         self.assertEqual(result, expected_result)
 
     def test_resolve_path(self):
