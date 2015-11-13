@@ -51,45 +51,6 @@ class TemplateManager(object):
         '''
         return self._register
 
-    def resolve(self, schema):
-        ''' Resolve the given *schema* data and return all the entries.
-
-            :param schema: The schema to resolve.
-            :type schema: dict
-            :returns:  list -- the resolved paths.
-            :raises: AttributeError, KeyError
-
-            .. code-block:: python
-
-                from ade.schema.template import TemplateManager
-
-                manager = TemplateManager('./templates')
-                schema = manager.resolve_template('@+show+@')
-                resolved_schema = manager.resolve_template(schema)
-
-        '''
-        root_name = schema.get('name').replace(self.__reference_indicator, '')
-        root = OrderedDict(
-            path=[root_name],
-            permission=schema.get('permission', 777),
-            folder=schema.get('folder', True),
-            content=schema.get('content', '')
-        )
-
-        paths = [root_name]
-
-        result_paths = []
-        self._resolve(
-            schema,
-            result_paths,
-            paths
-        )
-        result_paths.append(root)
-        result_paths.reverse()
-
-        # paths.sort(key=lambda x: len(x['path']))
-        return result_paths
-
     def find_path(self, startwith=None, contains=None, endswith=None, template_name='@+show+@'):
         ''' Finds a path based on some filtering arguments.
 
@@ -157,6 +118,46 @@ class TemplateManager(object):
                     'Ends with: %s'
                     % (startwith, contains, endswith)
                 )
+
+    def resolve(self, schema):
+        ''' Resolve the given *schema* data and return all the entries.
+
+            :param schema: The schema to resolve.
+            :type schema: dict
+            :returns:  list -- the resolved paths.
+            :raises: AttributeError, KeyError
+
+            .. code-block:: python
+
+                from ade.schema.template import TemplateManager
+
+                manager = TemplateManager('./templates')
+                schema = manager.resolve_template('@+show+@')
+                resolved_schema = manager.resolve_template(schema)
+
+        '''
+        root_name = schema.get('name').replace(self.__reference_indicator, '')
+        root = OrderedDict(
+            path=[root_name],
+            permission=schema.get('permission', 777),
+            folder=schema.get('folder', True),
+            content=schema.get('content', '')
+        )
+
+        paths = [root_name]
+
+        result_paths = []
+        self._resolve(
+            schema,
+            result_paths,
+            paths
+        )
+        result_paths.append(root)
+        # paths = sorted(paths, key= lambda x : [len(y) for y in x])
+        result_paths.reverse()
+
+        # paths.sort(key=lambda x: len(x['path']))
+        return result_paths
 
     def _resolve(self, schema, final_path_list, path=None):
         ''' Recursively build the final_path_list from schema.
@@ -310,7 +311,7 @@ class TemplateManager(object):
                 current_template_path,
                 current_template_map['children']
             )
-
+            
             self._register.append(current_template_map)
 
     def _register_templates(self, root, mapped):
@@ -333,6 +334,10 @@ class TemplateManager(object):
 
             # Collect the content
             entries = os.listdir(root)
+            
+            entries = sorted(entries, key=lambda x : os.path.isfile(os.path.join(root, x)))
+
+
             for entry in entries:
                 if entry.startswith('.git'):
                     continue
@@ -356,5 +361,6 @@ class TemplateManager(object):
                 else:
                     # If it's a file store the content
                     item['content'] = open(subentry, 'r').read()
+
 
                 mapped.append(item)
