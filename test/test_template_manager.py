@@ -2,6 +2,7 @@ import os
 import unittest
 import tempfile
 import logging
+import copy
 from pprint import pformat
 from collections import OrderedDict
 
@@ -426,7 +427,7 @@ class Test_TemplateManager(unittest.TestCase):
                                 OrderedDict([
                                     ('folder', True),
                                     ('name', u'test_C1'),
-                                    ('permission', '0755'),
+                                    ('permission', '0775'),
                                     ('children', [
                                         OrderedDict([
                                             ('folder', True),
@@ -434,62 +435,76 @@ class Test_TemplateManager(unittest.TestCase):
                                                 OrderedDict([
                                                     ('folder', True),
                                                     ('name', u'test_D1'),
-                                                    ('permission', '0755'),
+                                                    ('permission', '0775'),
                                                     ('children', [])
                                                 ]),
                                                 OrderedDict([
                                                     ('folder', False),
                                                     ('name', u'file_D.txt'),
-                                                    ('permission', '0755'),
+                                                    ('permission', '0775'),
                                                     ('content', '')
                                                 ]),
                                             ]),
                                             ('name', u'@test_D@'),
-                                            ('permission', '0755')
+                                            ('permission', '0775')
                                         ])
                                     ])
                                 ])
                             ]),
                             ('name', u'@test_C@'),
-                            ('permission', '0755')
+                            ('permission', '0775')
                         ]),
                         OrderedDict([
                             ('folder', True),
                             ('name', u'test_B1'),
-                            ('permission', '0755'),
+                            ('permission', '0775'),
                             ('children', [])
                         ]),
                         OrderedDict([
                             ('folder', True),
                             ('name', u'test_B2'),
-                            ('permission', '0755'),
+                            ('permission', '0775'),
                             ('children', [])]),
                         OrderedDict([
                             ('folder', False),
                             ('name', u'file_B.txt'),
-                            ('permission', '0755'),
+                            ('permission', '0775'),
                             ('content', 'test')
                         ])
                     ]),
                     ('name', u'@+test_B+@'),
-                    ('permission', '0755')
+                    ('permission', '0775')
                 ]),
                 OrderedDict([
                     ('folder', True),
                     ('name', u'test_A1'),
-                    ('permission', '0755'),
+                    ('permission', '0775'),
                     ('children', [])
                 ])
             ]),
             ('name', u'@+test_A+@'),
-            ('permission', '0755')
+            ('permission', '0775')
         ])
+        
+        git_expected = copy.deepcopy(expected_result)
+
+        def set_git_permissions(local):
+            local['permission'] = '0755'
+            if len(local.get('children', [])) > 0:
+                for child in local['children']:
+                    set_git_permissions(child)
+
+        set_git_permissions(git_expected)
+
         result = manager.resolve_template('@+test_A+@')
-        from pprint import pformat
 
-        print pformat(result)
 
-        self.assertEqual(result, expected_result)
+        print '\n\n\n### LOCAL EXPECTED\n\n\n', expected_result
+        print '\n\n\n### GIT EXPECTED\n\n\n', git_expected
+
+        success = (result == expected_result) or (result == git_expected)
+
+        self.assertEqual(success, True)
 
     # def test_resolve_path(self):
     #     manager = TemplateManager(self.config_mode)
