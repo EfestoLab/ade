@@ -486,6 +486,9 @@ class Test_TemplateManager(unittest.TestCase):
             ])
         ]
 
+        print "\n\n\nREGISTER --> \n\n\n", register
+        print "\n\n\nEXPECTED --> \n\n\n", expected_result
+
         self.assertEqual(register, expected_result)
 
     def test_resolve_template(self):
