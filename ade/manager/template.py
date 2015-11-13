@@ -45,11 +45,11 @@ class TemplateManager(object):
         )
         self.register_templates()
 
-        print "REGISTER BEFORA:", self._register
-
         def sort_children(reg_item):
             if len(reg_item.get('children', [])):
-                sorted_children = sorted(reg_item.get('children', []), key= lambda x : (not(x.get('folder')), x.get('name')))
+                sorted_children = sorted(
+                    reg_item.get('children', []),
+                    key= lambda x : (not(x.get('folder')), x.get('name')))
                 reg_item['children'] = sorted_children
                 for child in reg_item['children']:
                     sort_children(child)
@@ -58,7 +58,6 @@ class TemplateManager(object):
             sort_children(reg_item)
 
         self._register = sorted(self._register, key= lambda x : x.get('name'))
-        print "\n\n\nREGISTER AFTER:", self._register
 
     @property
     def register(self):
