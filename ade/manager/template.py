@@ -248,8 +248,6 @@ class TemplateManager(object):
         self._resolve_template(
             root,
         )
-
-        print "\n\nBEFORE -->", root, '\n'
         def sort_children(chunk):
             if len(chunk.get('children', [])) > 0:
                 sorted_children = sorted(chunk.get('children', []), key= lambda x : (not(x.get('folder')), x.get('name')))
@@ -258,7 +256,6 @@ class TemplateManager(object):
                     sort_children(child)
 
         sort_children(root)
-        print "\nAFTER --> ", root, '\n'
         return root
 
     def _resolve_template(self, schema):
