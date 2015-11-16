@@ -33,7 +33,7 @@ class Test_TemplateManagerFindPath(unittest.TestCase):
             endswith=None,
             template_name=self.template_name)
 
-        expexted_result = ['+test_A+', '+test_B+', 'file_B.txt']
+        expexted_result = ['+test_A+']
         
         self.assertEqual(result, expexted_result)
 
@@ -45,7 +45,7 @@ class Test_TemplateManagerFindPath(unittest.TestCase):
             endswith=None,
             template_name=self.template_name)
 
-        expexted_result = ['+test_A+', '+test_B+', 'file_B.txt']
+        expexted_result = ['+test_A+']
         
         self.assertEqual(result, expexted_result)
 
@@ -194,7 +194,7 @@ class Test_TemplateManagerFindPath(unittest.TestCase):
         result = template_manager.find_path(
             startwith='test_A', 
             contains=['test_D'], 
-            endswith='file_D.txt',
+            endswith='test_D1.txt',
             template_name=self.template_name)
 
         expexted_result = [
@@ -203,7 +203,7 @@ class Test_TemplateManagerFindPath(unittest.TestCase):
             'test_C', 
             'test_C1', 
             'test_D', 
-            'file_D.txt'
+            'test_D1.txt'
         ]
         
         self.assertEqual(result, expexted_result)
@@ -218,9 +218,7 @@ class Test_TemplateManagerFindPath(unittest.TestCase):
 
         expexted_result = [
             '+test_F+', 
-            'pfx_+test_E+_sfx', 
-            'test_D', 
-            'file_D.txt'
+            'pfx_+test_E+_sfx'
         ]
 
         self.assertEqual(result, expexted_result)
@@ -292,197 +290,223 @@ class Test_TemplateManager(unittest.TestCase):
         register = manager.register
 
         expected = [
-        OrderedDict([
-            ('folder', True),
-            ('children', [
-                OrderedDict([
-                    ('folder', True),
-                    ('name', u'@+shot_task+@'),
-                    ('permission', '0775'),
-                    ('children', [])
-                ])
+            OrderedDict([
+                ('folder', True),
+                ('children', [
+                    OrderedDict([
+                        ('folder', True),
+                        ('name', u'@test_D@'),
+                        ('permission', '0775'),
+                        ('children', [])
+                    ])
+                ]),
+                ('name', u'pfx_@+test_E+@_sfx'),
+                ('permission', '0775')
             ]),
-            ('name', u'@+shot+@'),
-            ('permission', '0775')
-        ]),
-        OrderedDict([
-            ('folder', True),
-            ('children', []),
-            ('name', u'@+shot_task+@'),
-            ('permission', '0775')
-        ]),
-        OrderedDict([
-            ('folder', True),
-            ('children', [
-                OrderedDict([
-                    ('folder', True),
-                    ('name', u'@+test_B+@'),
-                    ('permission', '0775'),
-                    ('children', [
-                        OrderedDict([
-                            ('folder', False),
-                            ('name', u'file_B.txt'),
-                            ('permission', '0775'),
-                            ('content', 'test')
+            OrderedDict([
+                ('folder', True),
+                ('children', []),
+                ('name', u'@Publish@'),
+                ('permission', '0775')
+            ]),
+            OrderedDict([
+                ('folder', True),
+                ('children', [
+                    OrderedDict([
+                        ('folder', True),
+                        ('name', u'@+shot_task+@'),
+                        ('permission', '0775'),
+                        ('children', [])
+                    ])
+                ]),
+                ('name', u'@+shot+@'),
+                ('permission', '0775')
+            ]),
+            OrderedDict([
+                ('folder', True),
+                ('children', [
+                    OrderedDict([
+                        ('folder', True),
+                        ('name', u'@Publish@'),
+                        ('permission', '0775'),
+                        ('children', [])
+                    ]),
+                    OrderedDict([
+                        ('folder', True),
+                        ('name', u'@Work@'),
+                        ('permission', '0775'),
+                        ('children', [])
+                    ])
+                ]),
+                ('name', u'@+shot_task+@'),
+                ('permission', '0775')
+            ]),
+            OrderedDict([
+                ('folder', True),
+                ('children', [
+                    OrderedDict([
+                        ('folder', True),
+                        ('name', u'@+shot+@'),
+                        ('permission', '0775'),
+                        ('children', [])
+                    ])
+                ]),
+                ('name', u'@TEST1@'),
+                ('permission', '0775')
+            ]),
+            OrderedDict([
+                ('folder', True),
+                ('children', []),
+                ('name', u'@TEST2@'),
+                ('permission', '0775')
+            ]),
+            OrderedDict([
+                ('folder', True),
+                ('children', [
+                    OrderedDict([
+                        ('folder', True),
+                        ('name', u'test_A1'),
+                        ('permission', '0775'),
+                        ('children', [])
+                    ]),
+                    OrderedDict([
+                        ('folder', True),
+                        ('name', u'@+test_B+@'),
+                        ('permission', '0775'),
+                        ('children', [
+                            OrderedDict([
+                                ('folder', False),
+                                ('name', u'file_B.txt'),
+                                ('permission', '0775'),
+                                ('content', 'test')
+                            ])
                         ])
                     ])
                 ]),
-                OrderedDict([
-                    ('folder', True),
-                    ('name', u'test_A1'),
-                    ('permission', '0775'),
-                    ('children', [])
-                ])
+                ('name', u'@+test_A+@'),
+                ('permission', '0775')
             ]),
-            ('name', u'@+test_A+@'),
-            ('permission', '0775')
-        ]),
-        OrderedDict([
-            ('folder', True),
-            ('children', [
-                OrderedDict([
-                    ('folder', True),
-                    ('name', u'@test_C@'),
-                    ('permission', '0775'),
-                    ('children', [])
+            OrderedDict([
+                ('folder', True),
+                ('children', [
+                    OrderedDict([
+                        ('folder', True),
+                        ('name', u'test_B1'),
+                        ('permission', '0775'),
+                        ('children', [])
+                    ]),
+                    OrderedDict([
+                        ('folder', True),
+                        ('name', u'test_B2'),
+                        ('permission', '0775'),
+                        ('children', [])
+                    ]),
+                    OrderedDict([
+                        ('folder', True),
+                        ('name', u'@test_C@'),
+                        ('permission', '0775'),
+                        ('children', [])
+                    ])
                 ]),
-                OrderedDict([
-                    ('folder', True),
-                    ('name', u'test_B1'),
-                    ('permission', '0775'),
-                    ('children', [])
-                ]),
-                OrderedDict([
-                    ('folder', True),
-                    ('name', u'test_B2'),
-                    ('permission', '0775'),
-                    ('children', [])
-
-                ])
+                ('name', u'@+test_B+@'),
+                ('permission', '0775')
             ]),
-            ('name', u'@+test_B+@'),
-            ('permission', '0775')
-        ]),
-        OrderedDict([
-            ('folder', True),
-            ('children', [
-                OrderedDict([
-                    ('folder', True),
-                    ('name', u'pfx_@+test_E+@_sfx'),
-                    ('permission', '0775'),
-                    ('children', [])
-                ])
-            ]),
-            ('name', u'@+test_F+@'),
-            ('permission', '0775')
-        ]),
-        OrderedDict([
-            ('folder', True),
-            ('children', [
-                OrderedDict([
-                    ('folder', True),
-                    ('name', u'@+test_Z+@'),
-                    ('permission', '0775'),
-                    ('children', [])
-                ])
-            ]),
-            ('name', u'@+test_R+@'),
-            ('permission', '0775')
-        ]),
-        OrderedDict([('folder', True),
-            ('children', [
-                OrderedDict([
-                    ('folder', True),
-                    ('name', u'@TEST1@'),
-                    ('permission', '0775'),
-                    ('children', [])
-                ]),
-                OrderedDict([
-                    ('folder', True),
-                    ('name', u'@TEST2@'),
-                    ('permission', '0775'),
-                    ('children', [
-                        OrderedDict([
-                            ('folder', False),
-                            ('name', u'gitignore'),
-                            ('permission', '0664'),
-                            ('content', '')
+            OrderedDict([
+                ('folder', True),
+                ('children', [
+                    OrderedDict([
+                        ('folder', True),
+                        ('name', u'test_C1'),
+                        ('permission', '0775'),
+                        ('children', [
+                            OrderedDict([
+                                ('folder', True),
+                                ('name', u'@test_D@'),
+                                ('permission', '0775'),
+                                ('children', [])
+                            ])
                         ])
                     ])
-                ])
+                ]),
+                ('name', u'@test_C@'),
+                ('permission', '0775')
             ]),
-            ('name', u'@+test_Z+@'),
-            ('permission', '0775')
-        ]),
-        OrderedDict([('folder', True),
-            ('children', [
-                OrderedDict([
-                    ('folder', True),
-                    ('name', u'@+shot+@'),
-                    ('permission', '0775'),
-                    ('children', [])
-                ])
+            OrderedDict([
+                ('folder', True),
+                ('children', [
+                    OrderedDict([
+                        ('folder', True),
+                        ('name', u'test_D1'),
+                        ('permission', '0775'),
+                        ('children', [])
+                    ]),
+                    OrderedDict([
+                        ('folder', False),
+                        ('name', u'test_D1.txt'),
+                        ('permission', '0664'),
+                        ('content', '')
+                    ])
+                ]),
+                ('name', u'@test_D@'),
+                ('permission', '0775')
             ]),
-            ('name', u'@TEST1@'),
-            ('permission', '0775')
-        ]),
-        OrderedDict([
-            ('folder', True),
-            ('children', []),
-            ('name', u'@TEST2@'),
-            ('permission', '0775')
-        ]),
-        OrderedDict([
-            ('folder', True),
-            ('children', [
-                OrderedDict([
-                    ('folder', True),
-                    ('name', u'test_C1'),
-                    ('permission', '0775'),
-                    ('children', [
-                        OrderedDict([
-                            ('folder', True),
-                            ('name', u'@test_D@'),
-                            ('permission', '0775'),
-                            ('children', [])
+            OrderedDict([
+                ('folder', True),
+                ('children', [
+                    OrderedDict([
+                        ('folder', True),
+                        ('name', u'pfx_@+test_E+@_sfx'),
+                        ('permission', '0775'),
+                        ('children', [])
+                    ])
+                ]),
+                ('name', u'@+test_F+@'),
+                ('permission', '0775')
+            ]),
+            OrderedDict([
+                ('folder', True),
+                ('children', [
+                    OrderedDict([
+                        ('folder', True),
+                        ('name', u'@+test_Z+@'),
+                        ('permission', '0775'),
+                        ('children', [])
+                    ])
+                ]),
+                ('name', u'@+test_R+@'),
+                ('permission', '0775')
+            ]),
+            OrderedDict([
+                ('folder', True),
+                ('children', [
+                    OrderedDict([
+                        ('folder', True),
+                        ('name', u'@TEST1@'),
+                        ('permission', '0775'),
+                        ('children', [])
+                    ]),
+                    OrderedDict([
+                        ('folder', True),
+                        ('name', u'@TEST2@'),
+                        ('permission', '0775'),
+                        ('children', [
+                            OrderedDict([
+                                ('folder', False),
+                                ('name', u'gitignore'),
+                                ('permission', '0664'),
+                                ('content', '')
+                            ])
                         ])
                     ])
-                ])
-            ]),
-            ('name', u'@test_C@'),
-            ('permission', '0775')
-        ]),
-        OrderedDict([
-            ('folder', True),
-            ('children', [
-                OrderedDict([
-                    ('folder', True),
-                    ('name', u'test_D1'),
-                    ('permission', '0775'),
-                    ('children', [])
                 ]),
-                OrderedDict([
-                    ('folder', False),
-                    ('name', u'file_D.txt'),
-                    ('permission', '0775'),
-                    ('content', '')
-                ])
-            ]),
-            ('name', u'@test_D@'),
-            ('permission', '0775')
-        ]),
-        OrderedDict([
-            ('folder', True),
-            ('children', [
-                OrderedDict([
-                    ('folder', True),
-                    ('name', u'@test_D@'),
-                    ('permission', '0775'),
-                    ('children', [])
-                ])
-            ]),
-            ('name', u'pfx_@+test_E+@_sfx'),
-            ('permission', '0775')])
+                ('name', u'@+test_Z+@'),
+                ('permission', '0775')]),
+            OrderedDict([
+                ('folder', True),
+                ('children', []),
+                ('name', u'@Work@'),
+                ('permission', '0775')
+            ])
         ]
 
         self.assertEqual(register, expected)
@@ -491,12 +515,32 @@ class Test_TemplateManager(unittest.TestCase):
         '''Resolve the registered template.
         '''
         manager = TemplateManager(self.config_mode)
-        expected_result = OrderedDict([
+        result = manager.resolve_template('@+test_A+@')
+
+        expected = OrderedDict([
             ('folder', True),
             ('children', [
                 OrderedDict([
                     ('folder', True),
+                    ('name', u'test_A1'),
+                    ('permission', '0775'),
+                    ('children', [])
+                ]),
+                OrderedDict([
+                    ('folder', True),
                     ('children', [
+                        OrderedDict([
+                            ('folder', True),
+                            ('name', u'test_B1'),
+                            ('permission', '0775'),
+                            ('children', [])
+                        ]),
+                        OrderedDict([
+                            ('folder', True),
+                            ('name', u'test_B2'),
+                            ('permission', '0775'),
+                            ('children', [])
+                        ]),
                         OrderedDict([
                             ('folder', True),
                             ('children', [
@@ -516,10 +560,10 @@ class Test_TemplateManager(unittest.TestCase):
                                                 ]),
                                                 OrderedDict([
                                                     ('folder', False),
-                                                    ('name', u'file_D.txt'),
-                                                    ('permission', '0775'),
+                                                    ('name', u'test_D1.txt'),
+                                                    ('permission', '0664'),
                                                     ('content', '')
-                                                ]),
+                                                ])
                                             ]),
                                             ('name', u'@test_D@'),
                                             ('permission', '0775')
@@ -531,17 +575,6 @@ class Test_TemplateManager(unittest.TestCase):
                             ('permission', '0775')
                         ]),
                         OrderedDict([
-                            ('folder', True),
-                            ('name', u'test_B1'),
-                            ('permission', '0775'),
-                            ('children', [])
-                        ]),
-                        OrderedDict([
-                            ('folder', True),
-                            ('name', u'test_B2'),
-                            ('permission', '0775'),
-                            ('children', [])]),
-                        OrderedDict([
                             ('folder', False),
                             ('name', u'file_B.txt'),
                             ('permission', '0775'),
@@ -550,109 +583,133 @@ class Test_TemplateManager(unittest.TestCase):
                     ]),
                     ('name', u'@+test_B+@'),
                     ('permission', '0775')
-                ]),
-                OrderedDict([
-                    ('folder', True),
-                    ('name', u'test_A1'),
-                    ('permission', '0775'),
-                    ('children', [])
                 ])
             ]),
             ('name', u'@+test_A+@'),
             ('permission', '0775')
         ])
         
-        result = manager.resolve_template('@+test_A+@')
-
-        self.assertEqual(result, expected_result)
+        self.assertEqual(result, expected)
 
     def test_resolve_path(self):
         manager = TemplateManager(self.config_mode)
+        result = manager.resolve_template('@+test_A+@')
+        resolved = manager.resolve(result)
         expected_result = [
             OrderedDict([
                 ('content', ''),
-                ('path', [u'+test_A+']),
+                ('path', [
+                    u'+test_A+'
+                ]),
                 ('folder', True),
                 ('permission', '0775')
             ]),
             OrderedDict([
                 ('content', ''),
-                ('path', [u'+test_A+', u'test_A1']),
+                ('path', [
+                    u'+test_A+',
+                    u'test_A1'
+                ]),
                 ('folder', True),
                 ('permission', '0775')
             ]),
             OrderedDict([
                 ('content', ''),
-                ('path', [u'+test_A+', u'+test_B+']),
+                ('path', [
+                    u'+test_A+',
+                    u'+test_B+'
+                ]),
                 ('folder', True),
                 ('permission', '0775')
+            ]),
+            OrderedDict([
+                ('content', ''),
+                ('path', [
+                    u'+test_A+',
+                    u'+test_B+',
+                    u'test_B1'
+                ]),
+                ('folder', True),
+                ('permission', '0775')
+            ]),
+            OrderedDict([
+                ('content', ''),
+                ('path', [
+                    u'+test_A+',
+                    u'+test_B+',
+                    u'test_B2'
+                ]),
+                ('folder', True),
+                ('permission', '0775')
+            ]),
+            OrderedDict([
+                ('content', ''),
+                ('path', [
+                    u'+test_A+',
+                    u'+test_B+',
+                    u'test_C'
+                ]),
+                ('folder', True),
+                ('permission', '0775')
+            ]),
+            OrderedDict([
+                ('content', ''),
+                ('path', [
+                    u'+test_A+',
+                    u'+test_B+',
+                    u'test_C',
+                    u'test_C1'
+                ]),
+                ('folder', True),
+                ('permission', '0775')
+            ]),
+            OrderedDict([
+                ('content', ''),
+                ('path', [
+                    u'+test_A+',
+                    u'+test_B+',
+                    u'test_C',
+                    u'test_C1',
+                    u'test_D'
+                ]),
+                ('folder', True),
+                ('permission', '0775')
+            ]),
+            OrderedDict([
+                ('content', ''),
+                ('path', [
+                    u'+test_A+',
+                    u'+test_B+',
+                    u'test_C',
+                    u'test_C1',
+                    u'test_D',
+                    u'test_D1'
+                ]),
+                ('folder', True),
+                ('permission', '0775')
+            ]),
+            OrderedDict([
+                ('content', ''),
+                ('path', [
+                    u'+test_A+',
+                    u'+test_B+',
+                    u'test_C',
+                    u'test_C1',
+                    u'test_D',
+                    u'test_D1.txt'
+                ]),
+                ('folder', False),
+                ('permission', '0664')
             ]),
             OrderedDict([
                 ('content', 'test'),
-                ('path', [u'+test_A+', u'+test_B+', u'file_B.txt']),
+                ('path', [
+                    u'+test_A+',
+                    u'+test_B+',
+                    u'file_B.txt'
+                ]),
                 ('folder', False),
-                ('permission', '0775')
-            ]),
-            OrderedDict([
-                ('content', ''),
-                ('path', [u'+test_A+', u'+test_B+', u'test_B2']),
-                ('folder', True),
-                ('permission', '0775')
-            ]),
-            OrderedDict([
-                ('content', ''),
-                ('path', [u'+test_A+', u'+test_B+', u'test_B1']),
-                ('folder', True),
-                ('permission', '0775')
-            ]),
-            OrderedDict([
-                ('content', ''),
-                ('path', [u'+test_A+', u'+test_B+', u'test_C']),
-                ('folder', True),
-                ('permission', '0775')
-            ]),
-            OrderedDict([
-                ('content', ''),
-                ('path', [u'+test_A+', u'+test_B+', u'test_C', u'test_C1']),
-                ('folder', True),
-                ('permission', '0775')
-            ]),
-            OrderedDict([
-                ('content', ''),
-                ('path', [
-                    u'+test_A+',
-                    u'+test_B+',
-                    u'test_C',
-                    u'test_C1',
-                    u'test_D']),
-                ('folder', True),
-                ('permission', '0775')
-            ]),
-            OrderedDict([
-                ('content', ''),
-                ('path', [
-                    u'+test_A+',
-                    u'+test_B+',
-                    u'test_C',
-                    u'test_C1',
-                    u'test_D',
-                    u'file_D.txt']),
-                ('folder', False),
-                ('permission', '0775')
-            ]),
-            OrderedDict([
-                ('content', ''),
-                ('path', [
-                    u'+test_A+',
-                    u'+test_B+',
-                    u'test_C',
-                    u'test_C1',
-                    u'test_D',
-                    u'test_D1']),
-                ('folder', True),
                 ('permission', '0775')
             ])
         ]
-        result = manager.resolve_template('@+test_A+@')
-        resolved = manager.resolve(result)
         self.assertEqual(resolved, expected_result)

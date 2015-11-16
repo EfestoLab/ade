@@ -45,11 +45,24 @@ class TemplateManager(object):
         )
         self.register_templates()
 
+        def sanitize(var):
+            if not var:
+                return None
+
+            if '@' in var:
+                var = var.replace('@', '')
+
+            if '+' in var:
+                var = var.replace('+', '')
+
+            return var
+
         def sort_children(reg_item):
             if len(reg_item.get('children', [])):
                 sorted_children = sorted(
                     reg_item.get('children', []),
-                    key= lambda x : (not(x.get('folder')), x.get('name')))
+                    key= lambda x : (not(x.get('folder')), sanitize(x.get('name')).lower()))
+                
                 reg_item['children'] = sorted_children
                 for child in reg_item['children']:
                     sort_children(child)
@@ -57,7 +70,7 @@ class TemplateManager(object):
         for reg_item in self._register:
             sort_children(reg_item)
 
-        self._register = sorted(self._register, key= lambda x : x.get('name'))
+        self._register = sorted(self._register, key= lambda x : (sanitize(x.get('name')).lower()))
 
     @property
     def register(self):
@@ -95,13 +108,13 @@ class TemplateManager(object):
         built = self.resolve_template(template_name)
         resolved = self.resolve(built)
         paths = [item['path'] for item in resolved]
-        paths = sorted(paths, key= lambda x : [len(y) for y in x])
+        # paths = sorted(paths, key= lambda x : [len(y) for y in x])
 
         startwith = sanitize(startwith) or None
         endswith = sanitize(endswith) or None
         contains = map(sanitize, contains or []) or []
 
-        for path in reversed(paths):
+        for path in paths:
             sanitized_last_path_item = sanitize(path[-1])
             sanitized_first_path_item = sanitize(path[0])
 
@@ -166,11 +179,12 @@ class TemplateManager(object):
             result_paths,
             paths
         )
-        result_paths.append(root)
-        # paths = sorted(paths, key= lambda x : [len(y) for y in x])
-        result_paths.reverse()
+        
+        #paths = sorted(paths, key= lambda x : [len(y) for y in x])
+        #result_paths.reverse()
+        result_paths.insert(0,root)
 
-        # paths.sort(key=lambda x: len(x['path']))
+        #paths.sort(key=lambda x: len(x['path']))
         return result_paths
 
     def _resolve(self, schema, final_path_list, path=None):
@@ -193,7 +207,6 @@ class TemplateManager(object):
             name = name.replace(self.__reference_indicator, '')
             path.append(name)
             current_path = path[:]
-            self._resolve(entry, final_path_list, path)
 
             new_entry = OrderedDict(
                 path=current_path,
@@ -205,6 +218,7 @@ class TemplateManager(object):
             final_path_list.append(
                 new_entry
             )
+            self._resolve(entry, final_path_list, path)
 
             path.pop()
 
@@ -262,15 +276,28 @@ class TemplateManager(object):
         self._resolve_template(
             root,
         )
+        
+        def sanitize(var):
+            if not var:
+                return None
+
+            if '@' in var:
+                var = var.replace('@', '')
+
+            if '+' in var:
+                var = var.replace('+', '')
+
+            return var        
 
         def sort_children(chunk):
             if len(chunk.get('children', [])) > 0:
-                sorted_children = sorted(chunk.get('children', []), key= lambda x : (not(x.get('folder')), x.get('name')))
+                sorted_children = sorted(chunk.get('children', []), key= lambda x : (not(x.get('folder')), sanitize(x.get('name')).lower()))
                 chunk['children'] = sorted_children
                 for child in chunk['children']:
                     sort_children(child)
 
         sort_children(root)
+
         return root
 
     def _resolve_template(self, schema):
