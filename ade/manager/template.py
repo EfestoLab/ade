@@ -62,7 +62,7 @@ class TemplateManager(object):
                 sorted_children = sorted(
                     reg_item.get('children', []),
                     key= lambda x : (not(x.get('folder')), sanitize(x.get('name')).lower()))
-                
+
                 reg_item['children'] = sorted_children
                 for child in reg_item['children']:
                     sort_children(child)
@@ -114,7 +114,17 @@ class TemplateManager(object):
         endswith = sanitize(endswith) or None
         contains = map(sanitize, contains or []) or []
 
+        logger.debug(
+            'Filters are:\n'
+            'Starts with: %s\n'
+            'Contains: %s\n'
+            'Ends with: %s'
+            % (startwith, contains, endswith)
+        )
+
         for path in paths:
+            logger.debug('Filtering against path %s' % path)
+
             sanitized_last_path_item = sanitize(path[-1])
             sanitized_first_path_item = sanitize(path[0])
 
@@ -137,14 +147,14 @@ class TemplateManager(object):
 
             if all([_start, _ends, _contains]):
                 return path
-            else:
-                logger.debug(
-                    'Could not find a path that matches the criteria:\n'
-                    'Starts with: %s\n'
-                    'Contains: %s\n'
-                    'Ends with: %s'
-                    % (startwith, contains, endswith)
-                )
+        else:
+            logger.debug(
+                'Could not find a path that matches the criteria:\n'
+                'Starts with: %s\n'
+                'Contains: %s\n'
+                'Ends with: %s'
+                % (startwith, contains, endswith)
+            )
 
     def resolve(self, schema):
         ''' Resolve the given *schema* data and return all the entries.
@@ -179,7 +189,7 @@ class TemplateManager(object):
             result_paths,
             paths
         )
-        
+
         #paths = sorted(paths, key= lambda x : [len(y) for y in x])
         #result_paths.reverse()
         result_paths.insert(0,root)
@@ -276,7 +286,7 @@ class TemplateManager(object):
         self._resolve_template(
             root,
         )
-        
+
         def sanitize(var):
             if not var:
                 return None
@@ -287,7 +297,7 @@ class TemplateManager(object):
             if '+' in var:
                 var = var.replace('+', '')
 
-            return var        
+            return var
 
         def sort_children(chunk):
             if len(chunk.get('children', [])) > 0:
