@@ -115,10 +115,12 @@ class TemplateManager(object):
         contains = map(sanitize, contains or []) or []
 
         logger.debug(
+            '\n---------------------------\n'
             'Filters are:\n'
             'Starts with: %s\n'
             'Contains: %s\n'
-            'Ends with: %s'
+            'Ends with: %s\n'
+            '-----------------------------'
             % (startwith, contains, endswith)
         )
 
