@@ -36,6 +36,11 @@ class ConfigManager(object):
 
         for root, folders, files in os.walk(config_search_path):
             for _file in files:
+
+                if _file.startswith('.'):
+                    logger.debug('Ignoring file %s' % _file)
+                    continue
+
                 if _file.endswith('json'):
                     config_name = _file.split('.')[0]
                     config_path = os.path.join(root, _file)
