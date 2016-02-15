@@ -38,7 +38,6 @@ class ConfigManager(object):
             for _file in files:
 
                 if _file.startswith('.'):
-                    logger.debug('Ignoring file %s' % _file)
                     continue
 
                 if _file.endswith('json'):
