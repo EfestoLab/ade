@@ -38,7 +38,6 @@ class ConfigManager(object):
             for _file in files:
 
                 if _file.startswith('.'):
-                    logger.debug('Ignoring file %s' % _file)
                     continue
 
                 if _file.endswith('json'):
@@ -73,4 +72,3 @@ class ConfigManager(object):
             raise ConfigError('config profile {0} not found'.format(profile))
 
         return self.registry[profile]
-
