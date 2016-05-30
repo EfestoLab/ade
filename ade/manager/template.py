@@ -9,7 +9,6 @@ import os
 import re
 import stat
 import copy
-from collections import OrderedDict
 from operator import itemgetter
 
 try:
@@ -176,7 +175,7 @@ class TemplateManager(object):
 
         '''
         root_name = schema.get('name').replace(self.__reference_indicator, '')
-        root = OrderedDict(
+        root = dict(
             path=[root_name],
             permission=schema.get('permission', 777),
             folder=schema.get('folder', True),
@@ -220,7 +219,7 @@ class TemplateManager(object):
             path.append(name)
             current_path = path[:]
 
-            new_entry = OrderedDict(
+            new_entry = dict(
                 path=current_path,
                 permission=entry.get('permission', 777),
                 folder=entry.get('folder', True),
@@ -364,7 +363,7 @@ class TemplateManager(object):
                 os.stat(current_template_path).st_mode
             ))
 
-            current_template_map = OrderedDict(
+            current_template_map = dict(
                 name=template,
                 children=[],
                 permission=permission,
@@ -407,7 +406,7 @@ class TemplateManager(object):
                 subentry = os.path.join(root, entry)
                 permission = oct(stat.S_IMODE(os.stat(subentry).st_mode))
 
-                item = OrderedDict(
+                item = dict(
                     name=entry,
                     permission=permission,
                     folder=False

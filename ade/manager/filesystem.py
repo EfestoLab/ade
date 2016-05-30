@@ -8,7 +8,6 @@ import os
 import re
 from pprint import pformat
 from ade.manager.exceptions import ConfigError
-from collections import OrderedDict
 
 try:
     import efesto_logger as logging
@@ -240,7 +239,7 @@ class FileSystemManager(object):
         set of schema paths.
 
         '''
-        data = data or OrderedDict()
+        data = data or dict()
         self._set_default_values(data)
         self._validate_data(data)
         catcher = re.compile(self.regexp_extractor)

@@ -1,7 +1,6 @@
 import os
 import json
 from ade.manager.exceptions import ConfigError
-from collections import OrderedDict
 
 try:
     import efesto_logger as logging
@@ -23,7 +22,7 @@ class ConfigManager(object):
     '''
     def __init__(self, config_search_path):
 
-        self.registry = OrderedDict()
+        self.registry = dict()
         logger.debug('Using config_search_path: {0}'.format(
             config_search_path
             )

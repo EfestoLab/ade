@@ -3,7 +3,6 @@ import unittest
 import tempfile
 import logging
 import copy
-from collections import OrderedDict
 
 from ade.manager.template import TemplateManager
 from ade.manager.config import ConfigManager
@@ -290,10 +289,10 @@ class Test_TemplateManager(unittest.TestCase):
         register = manager.register
 
         expected = [
-            OrderedDict([
+            dict([
                 ('folder', True),
                 ('children', [
-                    OrderedDict([
+                    dict([
                         ('folder', True),
                         ('name', u'@test_D@'),
                         ('permission', '0775'),
@@ -303,16 +302,16 @@ class Test_TemplateManager(unittest.TestCase):
                 ('name', u'pfx_@+test_E+@_sfx'),
                 ('permission', '0775')
             ]),
-            OrderedDict([
+            dict([
                 ('folder', True),
                 ('children', []),
                 ('name', u'@Publish@'),
                 ('permission', '0775')
             ]),
-            OrderedDict([
+            dict([
                 ('folder', True),
                 ('children', [
-                    OrderedDict([
+                    dict([
                         ('folder', True),
                         ('name', u'@+shot_task+@'),
                         ('permission', '0775'),
@@ -322,16 +321,16 @@ class Test_TemplateManager(unittest.TestCase):
                 ('name', u'@+shot+@'),
                 ('permission', '0775')
             ]),
-            OrderedDict([
+            dict([
                 ('folder', True),
                 ('children', [
-                    OrderedDict([
+                    dict([
                         ('folder', True),
                         ('name', u'@Publish@'),
                         ('permission', '0775'),
                         ('children', [])
                     ]),
-                    OrderedDict([
+                    dict([
                         ('folder', True),
                         ('name', u'@Work@'),
                         ('permission', '0775'),
@@ -341,10 +340,10 @@ class Test_TemplateManager(unittest.TestCase):
                 ('name', u'@+shot_task+@'),
                 ('permission', '0775')
             ]),
-            OrderedDict([
+            dict([
                 ('folder', True),
                 ('children', [
-                    OrderedDict([
+                    dict([
                         ('folder', True),
                         ('name', u'@+shot+@'),
                         ('permission', '0775'),
@@ -354,27 +353,27 @@ class Test_TemplateManager(unittest.TestCase):
                 ('name', u'@TEST1@'),
                 ('permission', '0775')
             ]),
-            OrderedDict([
+            dict([
                 ('folder', True),
                 ('children', []),
                 ('name', u'@TEST2@'),
                 ('permission', '0775')
             ]),
-            OrderedDict([
+            dict([
                 ('folder', True),
                 ('children', [
-                    OrderedDict([
+                    dict([
                         ('folder', True),
                         ('name', u'test_A1'),
                         ('permission', '0775'),
                         ('children', [])
                     ]),
-                    OrderedDict([
+                    dict([
                         ('folder', True),
                         ('name', u'@+test_B+@'),
                         ('permission', '0775'),
                         ('children', [
-                            OrderedDict([
+                            dict([
                                 ('folder', False),
                                 ('name', u'file_B.txt'),
                                 ('permission', '0775'),
@@ -386,22 +385,22 @@ class Test_TemplateManager(unittest.TestCase):
                 ('name', u'@+test_A+@'),
                 ('permission', '0775')
             ]),
-            OrderedDict([
+            dict([
                 ('folder', True),
                 ('children', [
-                    OrderedDict([
+                    dict([
                         ('folder', True),
                         ('name', u'test_B1'),
                         ('permission', '0775'),
                         ('children', [])
                     ]),
-                    OrderedDict([
+                    dict([
                         ('folder', True),
                         ('name', u'test_B2'),
                         ('permission', '0775'),
                         ('children', [])
                     ]),
-                    OrderedDict([
+                    dict([
                         ('folder', True),
                         ('name', u'@test_C@'),
                         ('permission', '0775'),
@@ -411,15 +410,15 @@ class Test_TemplateManager(unittest.TestCase):
                 ('name', u'@+test_B+@'),
                 ('permission', '0775')
             ]),
-            OrderedDict([
+            dict([
                 ('folder', True),
                 ('children', [
-                    OrderedDict([
+                    dict([
                         ('folder', True),
                         ('name', u'test_C1'),
                         ('permission', '0775'),
                         ('children', [
-                            OrderedDict([
+                            dict([
                                 ('folder', True),
                                 ('name', u'@test_D@'),
                                 ('permission', '0775'),
@@ -431,16 +430,16 @@ class Test_TemplateManager(unittest.TestCase):
                 ('name', u'@test_C@'),
                 ('permission', '0775')
             ]),
-            OrderedDict([
+            dict([
                 ('folder', True),
                 ('children', [
-                    OrderedDict([
+                    dict([
                         ('folder', True),
                         ('name', u'test_D1'),
                         ('permission', '0775'),
                         ('children', [])
                     ]),
-                    OrderedDict([
+                    dict([
                         ('folder', False),
                         ('name', u'test_D1.txt'),
                         ('permission', '0664'),
@@ -450,10 +449,10 @@ class Test_TemplateManager(unittest.TestCase):
                 ('name', u'@test_D@'),
                 ('permission', '0775')
             ]),
-            OrderedDict([
+            dict([
                 ('folder', True),
                 ('children', [
-                    OrderedDict([
+                    dict([
                         ('folder', True),
                         ('name', u'pfx_@+test_E+@_sfx'),
                         ('permission', '0775'),
@@ -463,10 +462,10 @@ class Test_TemplateManager(unittest.TestCase):
                 ('name', u'@+test_F+@'),
                 ('permission', '0775')
             ]),
-            OrderedDict([
+            dict([
                 ('folder', True),
                 ('children', [
-                    OrderedDict([
+                    dict([
                         ('folder', True),
                         ('name', u'@+test_Z+@'),
                         ('permission', '0775'),
@@ -476,21 +475,21 @@ class Test_TemplateManager(unittest.TestCase):
                 ('name', u'@+test_R+@'),
                 ('permission', '0775')
             ]),
-            OrderedDict([
+            dict([
                 ('folder', True),
                 ('children', [
-                    OrderedDict([
+                    dict([
                         ('folder', True),
                         ('name', u'@TEST1@'),
                         ('permission', '0775'),
                         ('children', [])
                     ]),
-                    OrderedDict([
+                    dict([
                         ('folder', True),
                         ('name', u'@TEST2@'),
                         ('permission', '0775'),
                         ('children', [
-                            OrderedDict([
+                            dict([
                                 ('folder', False),
                                 ('name', u'gitignore'),
                                 ('permission', '0664'),
@@ -501,7 +500,7 @@ class Test_TemplateManager(unittest.TestCase):
                 ]),
                 ('name', u'@+test_Z+@'),
                 ('permission', '0775')]),
-            OrderedDict([
+            dict([
                 ('folder', True),
                 ('children', []),
                 ('name', u'@Work@'),
@@ -517,48 +516,48 @@ class Test_TemplateManager(unittest.TestCase):
         manager = TemplateManager(self.config_mode)
         result = manager.resolve_template('@+test_A+@')
 
-        expected = OrderedDict([
+        expected = dict([
             ('folder', True),
             ('children', [
-                OrderedDict([
+                dict([
                     ('folder', True),
                     ('name', u'test_A1'),
                     ('permission', '0775'),
                     ('children', [])
                 ]),
-                OrderedDict([
+                dict([
                     ('folder', True),
                     ('children', [
-                        OrderedDict([
+                        dict([
                             ('folder', True),
                             ('name', u'test_B1'),
                             ('permission', '0775'),
                             ('children', [])
                         ]),
-                        OrderedDict([
+                        dict([
                             ('folder', True),
                             ('name', u'test_B2'),
                             ('permission', '0775'),
                             ('children', [])
                         ]),
-                        OrderedDict([
+                        dict([
                             ('folder', True),
                             ('children', [
-                                OrderedDict([
+                                dict([
                                     ('folder', True),
                                     ('name', u'test_C1'),
                                     ('permission', '0775'),
                                     ('children', [
-                                        OrderedDict([
+                                        dict([
                                             ('folder', True),
                                             ('children', [
-                                                OrderedDict([
+                                                dict([
                                                     ('folder', True),
                                                     ('name', u'test_D1'),
                                                     ('permission', '0775'),
                                                     ('children', [])
                                                 ]),
-                                                OrderedDict([
+                                                dict([
                                                     ('folder', False),
                                                     ('name', u'test_D1.txt'),
                                                     ('permission', '0664'),
@@ -574,7 +573,7 @@ class Test_TemplateManager(unittest.TestCase):
                             ('name', u'@test_C@'),
                             ('permission', '0775')
                         ]),
-                        OrderedDict([
+                        dict([
                             ('folder', False),
                             ('name', u'file_B.txt'),
                             ('permission', '0775'),
@@ -596,7 +595,7 @@ class Test_TemplateManager(unittest.TestCase):
         result = manager.resolve_template('@+test_A+@')
         resolved = manager.resolve(result)
         expected_result = [
-            OrderedDict([
+            dict([
                 ('content', ''),
                 ('path', [
                     u'+test_A+'
@@ -604,7 +603,7 @@ class Test_TemplateManager(unittest.TestCase):
                 ('folder', True),
                 ('permission', '0775')
             ]),
-            OrderedDict([
+            dict([
                 ('content', ''),
                 ('path', [
                     u'+test_A+',
@@ -613,7 +612,7 @@ class Test_TemplateManager(unittest.TestCase):
                 ('folder', True),
                 ('permission', '0775')
             ]),
-            OrderedDict([
+            dict([
                 ('content', ''),
                 ('path', [
                     u'+test_A+',
@@ -622,7 +621,7 @@ class Test_TemplateManager(unittest.TestCase):
                 ('folder', True),
                 ('permission', '0775')
             ]),
-            OrderedDict([
+            dict([
                 ('content', ''),
                 ('path', [
                     u'+test_A+',
@@ -632,7 +631,7 @@ class Test_TemplateManager(unittest.TestCase):
                 ('folder', True),
                 ('permission', '0775')
             ]),
-            OrderedDict([
+            dict([
                 ('content', ''),
                 ('path', [
                     u'+test_A+',
@@ -642,7 +641,7 @@ class Test_TemplateManager(unittest.TestCase):
                 ('folder', True),
                 ('permission', '0775')
             ]),
-            OrderedDict([
+            dict([
                 ('content', ''),
                 ('path', [
                     u'+test_A+',
@@ -652,7 +651,7 @@ class Test_TemplateManager(unittest.TestCase):
                 ('folder', True),
                 ('permission', '0775')
             ]),
-            OrderedDict([
+            dict([
                 ('content', ''),
                 ('path', [
                     u'+test_A+',
@@ -663,7 +662,7 @@ class Test_TemplateManager(unittest.TestCase):
                 ('folder', True),
                 ('permission', '0775')
             ]),
-            OrderedDict([
+            dict([
                 ('content', ''),
                 ('path', [
                     u'+test_A+',
@@ -675,7 +674,7 @@ class Test_TemplateManager(unittest.TestCase):
                 ('folder', True),
                 ('permission', '0775')
             ]),
-            OrderedDict([
+            dict([
                 ('content', ''),
                 ('path', [
                     u'+test_A+',
@@ -688,7 +687,7 @@ class Test_TemplateManager(unittest.TestCase):
                 ('folder', True),
                 ('permission', '0775')
             ]),
-            OrderedDict([
+            dict([
                 ('content', ''),
                 ('path', [
                     u'+test_A+',
@@ -701,7 +700,7 @@ class Test_TemplateManager(unittest.TestCase):
                 ('folder', False),
                 ('permission', '0664')
             ]),
-            OrderedDict([
+            dict([
                 ('content', 'test'),
                 ('path', [
                     u'+test_A+',
