@@ -72,4 +72,3 @@ class ConfigManager(object):
             raise ConfigError('config profile {0} not found'.format(profile))
 
         return self.registry[profile]
-
