@@ -410,10 +410,14 @@ class TemplateManager(object):
 
                 subentry = os.path.join(root, entry)
                 permission = oct(stat.S_IMODE(os.stat(subentry).st_mode))
+                group = getpwuid(
+                    os.stat(subentry).st_uid
+                ).pw_name
 
                 item = dict(
                     name=entry,
                     permission=permission,
+                    group=group,
                     folder=False
                 )
 

@@ -296,17 +296,20 @@ class Test_TemplateManager(unittest.TestCase):
                         ('folder', True),
                         ('name', u'@test_D@'),
                         ('permission', '0775'),
+                        ('group', 'efesto'),
                         ('children', [])
                     ])
                 ]),
                 ('name', u'pfx_@+test_E+@_sfx'),
-                ('permission', '0775')
+                ('permission', '0775'),
+                ('group', 'efesto'),
             ]),
             dict([
                 ('folder', True),
                 ('children', []),
                 ('name', u'@Publish@'),
-                ('permission', '0775')
+                ('permission', '0775'),
+                ('group', 'efesto'),
             ]),
             dict([
                 ('folder', True),
@@ -315,11 +318,13 @@ class Test_TemplateManager(unittest.TestCase):
                         ('folder', True),
                         ('name', u'@+shot_task+@'),
                         ('permission', '0775'),
+                        ('group', 'efesto'),
                         ('children', [])
                     ])
                 ]),
                 ('name', u'@+shot+@'),
-                ('permission', '0775')
+                ('permission', '0775'),
+                ('group', 'efesto'),
             ]),
             dict([
                 ('folder', True),
@@ -328,17 +333,20 @@ class Test_TemplateManager(unittest.TestCase):
                         ('folder', True),
                         ('name', u'@Publish@'),
                         ('permission', '0775'),
+                        ('group', 'efesto'),
                         ('children', [])
                     ]),
                     dict([
                         ('folder', True),
                         ('name', u'@Work@'),
                         ('permission', '0775'),
+                        ('group', 'efesto'),
                         ('children', [])
                     ])
                 ]),
                 ('name', u'@+shot_task+@'),
-                ('permission', '0775')
+                ('permission', '0775'),
+                ('group', 'efesto'),
             ]),
             dict([
                 ('folder', True),
@@ -347,17 +355,20 @@ class Test_TemplateManager(unittest.TestCase):
                         ('folder', True),
                         ('name', u'@+shot+@'),
                         ('permission', '0775'),
+                        ('group', 'efesto'),
                         ('children', [])
                     ])
                 ]),
                 ('name', u'@TEST1@'),
-                ('permission', '0775')
+                ('permission', '0775'),
+                ('group', 'efesto'),
             ]),
             dict([
                 ('folder', True),
                 ('children', []),
                 ('name', u'@TEST2@'),
-                ('permission', '0775')
+                ('permission', '0775'),
+                ('group', 'efesto'),
             ]),
             dict([
                 ('folder', True),
@@ -366,24 +377,28 @@ class Test_TemplateManager(unittest.TestCase):
                         ('folder', True),
                         ('name', u'test_A1'),
                         ('permission', '0775'),
+                        ('group', 'efesto'),
                         ('children', [])
                     ]),
                     dict([
                         ('folder', True),
                         ('name', u'@+test_B+@'),
                         ('permission', '0775'),
+                        ('group', 'efesto'),
                         ('children', [
                             dict([
                                 ('folder', False),
                                 ('name', u'file_B.txt'),
                                 ('permission', '0775'),
+                                ('group', 'efesto'),
                                 ('content', 'test')
                             ])
                         ])
                     ])
                 ]),
                 ('name', u'@+test_A+@'),
-                ('permission', '0775')
+                ('permission', '0775'),
+                ('group', 'efesto'),
             ]),
             dict([
                 ('folder', True),
@@ -392,23 +407,27 @@ class Test_TemplateManager(unittest.TestCase):
                         ('folder', True),
                         ('name', u'test_B1'),
                         ('permission', '0775'),
+                        ('group', 'efesto'),
                         ('children', [])
                     ]),
                     dict([
                         ('folder', True),
                         ('name', u'test_B2'),
                         ('permission', '0775'),
+                        ('group', 'efesto'),
                         ('children', [])
                     ]),
                     dict([
                         ('folder', True),
                         ('name', u'@test_C@'),
                         ('permission', '0775'),
+                        ('group', 'efesto'),
                         ('children', [])
                     ])
                 ]),
                 ('name', u'@+test_B+@'),
-                ('permission', '0775')
+                ('permission', '0775'),
+                ('group', 'efesto'),
             ]),
             dict([
                 ('folder', True),
@@ -417,18 +436,21 @@ class Test_TemplateManager(unittest.TestCase):
                         ('folder', True),
                         ('name', u'test_C1'),
                         ('permission', '0775'),
+                        ('group', 'efesto'),
                         ('children', [
                             dict([
                                 ('folder', True),
                                 ('name', u'@test_D@'),
                                 ('permission', '0775'),
+                                ('group', 'efesto'),
                                 ('children', [])
                             ])
                         ])
                     ])
                 ]),
                 ('name', u'@test_C@'),
-                ('permission', '0775')
+                ('permission', '0775'),
+                ('group', 'efesto'),
             ]),
             dict([
                 ('folder', True),
@@ -437,17 +459,20 @@ class Test_TemplateManager(unittest.TestCase):
                         ('folder', True),
                         ('name', u'test_D1'),
                         ('permission', '0775'),
+                        ('group', 'efesto'),
                         ('children', [])
                     ]),
                     dict([
                         ('folder', False),
                         ('name', u'test_D1.txt'),
                         ('permission', '0664'),
+                        ('group', 'efesto'),
                         ('content', '')
                     ])
                 ]),
                 ('name', u'@test_D@'),
-                ('permission', '0775')
+                ('permission', '0775'),
+                ('group', 'efesto'),
             ]),
             dict([
                 ('folder', True),
@@ -456,11 +481,13 @@ class Test_TemplateManager(unittest.TestCase):
                         ('folder', True),
                         ('name', u'pfx_@+test_E+@_sfx'),
                         ('permission', '0775'),
+                        ('group', 'efesto'),
                         ('children', [])
                     ])
                 ]),
                 ('name', u'@+test_F+@'),
-                ('permission', '0775')
+                ('permission', '0775'),
+                ('group', 'efesto'),
             ]),
             dict([
                 ('folder', True),
@@ -469,11 +496,13 @@ class Test_TemplateManager(unittest.TestCase):
                         ('folder', True),
                         ('name', u'@+test_Z+@'),
                         ('permission', '0775'),
+                        ('group', 'efesto'),
                         ('children', [])
                     ])
                 ]),
                 ('name', u'@+test_R+@'),
-                ('permission', '0775')
+                ('permission', '0775'),
+                ('group', 'efesto'),
             ]),
             dict([
                 ('folder', True),
@@ -482,29 +511,35 @@ class Test_TemplateManager(unittest.TestCase):
                         ('folder', True),
                         ('name', u'@TEST1@'),
                         ('permission', '0775'),
+                        ('group', 'efesto'),
                         ('children', [])
                     ]),
                     dict([
                         ('folder', True),
                         ('name', u'@TEST2@'),
                         ('permission', '0775'),
+                        ('group', 'efesto'),
                         ('children', [
                             dict([
                                 ('folder', False),
                                 ('name', u'gitignore'),
                                 ('permission', '0664'),
+                                ('group', 'efesto'),
                                 ('content', '')
                             ])
                         ])
                     ])
                 ]),
                 ('name', u'@+test_Z+@'),
-                ('permission', '0775')]),
+                ('permission', '0775'),
+                ('group', 'efesto')
+            ]),
             dict([
                 ('folder', True),
                 ('children', []),
                 ('name', u'@Work@'),
-                ('permission', '0775')
+                ('permission', '0775'),
+                ('group', 'efesto')
             ])
         ]
 
@@ -522,6 +557,7 @@ class Test_TemplateManager(unittest.TestCase):
                 dict([
                     ('folder', True),
                     ('name', u'test_A1'),
+                    ('group', 'efesto'),
                     ('permission', '0775'),
                     ('children', [])
                 ]),
@@ -532,12 +568,14 @@ class Test_TemplateManager(unittest.TestCase):
                             ('folder', True),
                             ('name', u'test_B1'),
                             ('permission', '0775'),
+                            ('group', 'efesto'),
                             ('children', [])
                         ]),
                         dict([
                             ('folder', True),
                             ('name', u'test_B2'),
                             ('permission', '0775'),
+                            ('group', 'efesto'),
                             ('children', [])
                         ]),
                         dict([
@@ -547,6 +585,7 @@ class Test_TemplateManager(unittest.TestCase):
                                     ('folder', True),
                                     ('name', u'test_C1'),
                                     ('permission', '0775'),
+                                    ('group', 'efesto'),
                                     ('children', [
                                         dict([
                                             ('folder', True),
@@ -555,37 +594,46 @@ class Test_TemplateManager(unittest.TestCase):
                                                     ('folder', True),
                                                     ('name', u'test_D1'),
                                                     ('permission', '0775'),
+                                                    ('group', 'efesto'),
                                                     ('children', [])
                                                 ]),
                                                 dict([
                                                     ('folder', False),
                                                     ('name', u'test_D1.txt'),
                                                     ('permission', '0664'),
+                                                    ('group', 'efesto'),
                                                     ('content', '')
                                                 ])
                                             ]),
+                                            ('group', 'efesto'),
                                             ('name', u'@test_D@'),
-                                            ('permission', '0775')
+                                            ('permission', '0775'),
+                                            ('group', 'efesto'),
                                         ])
                                     ])
                                 ])
                             ]),
                             ('name', u'@test_C@'),
-                            ('permission', '0775')
+                            ('permission', '0775'),
+                            ('group', 'efesto'),
+
                         ]),
                         dict([
                             ('folder', False),
                             ('name', u'file_B.txt'),
                             ('permission', '0775'),
+                            ('group', 'efesto'),
                             ('content', 'test')
                         ])
                     ]),
                     ('name', u'@+test_B+@'),
-                    ('permission', '0775')
+                    ('permission', '0775'),
+                    ('group', 'efesto'),
                 ])
             ]),
             ('name', u'@+test_A+@'),
-            ('permission', '0775')
+            ('permission', '0775'),
+            ('group', 'efesto'),
         ])
         
         self.assertEqual(result, expected)
@@ -601,7 +649,8 @@ class Test_TemplateManager(unittest.TestCase):
                     u'+test_A+'
                 ]),
                 ('folder', True),
-                ('permission', '0775')
+                ('permission', '0775'),
+                ('group', 'efesto')
             ]),
             dict([
                 ('content', ''),
@@ -610,7 +659,8 @@ class Test_TemplateManager(unittest.TestCase):
                     u'test_A1'
                 ]),
                 ('folder', True),
-                ('permission', '0775')
+                ('permission', '0775'),
+                ('group', 'efesto')
             ]),
             dict([
                 ('content', ''),
@@ -619,7 +669,8 @@ class Test_TemplateManager(unittest.TestCase):
                     u'+test_B+'
                 ]),
                 ('folder', True),
-                ('permission', '0775')
+                ('permission', '0775'),
+                ('group', 'efesto')
             ]),
             dict([
                 ('content', ''),
@@ -629,7 +680,8 @@ class Test_TemplateManager(unittest.TestCase):
                     u'test_B1'
                 ]),
                 ('folder', True),
-                ('permission', '0775')
+                ('permission', '0775'),
+                ('group', 'efesto')
             ]),
             dict([
                 ('content', ''),
@@ -639,7 +691,8 @@ class Test_TemplateManager(unittest.TestCase):
                     u'test_B2'
                 ]),
                 ('folder', True),
-                ('permission', '0775')
+                ('permission', '0775'),
+                ('group', 'efesto')
             ]),
             dict([
                 ('content', ''),
@@ -649,7 +702,8 @@ class Test_TemplateManager(unittest.TestCase):
                     u'test_C'
                 ]),
                 ('folder', True),
-                ('permission', '0775')
+                ('permission', '0775'),
+                ('group', 'efesto')
             ]),
             dict([
                 ('content', ''),
@@ -660,7 +714,8 @@ class Test_TemplateManager(unittest.TestCase):
                     u'test_C1'
                 ]),
                 ('folder', True),
-                ('permission', '0775')
+                ('permission', '0775'),
+                ('group', 'efesto')
             ]),
             dict([
                 ('content', ''),
@@ -672,7 +727,8 @@ class Test_TemplateManager(unittest.TestCase):
                     u'test_D'
                 ]),
                 ('folder', True),
-                ('permission', '0775')
+                ('permission', '0775'),
+                ('group', 'efesto')
             ]),
             dict([
                 ('content', ''),
@@ -685,7 +741,8 @@ class Test_TemplateManager(unittest.TestCase):
                     u'test_D1'
                 ]),
                 ('folder', True),
-                ('permission', '0775')
+                ('permission', '0775'),
+                ('group', 'efesto')
             ]),
             dict([
                 ('content', ''),
@@ -698,7 +755,8 @@ class Test_TemplateManager(unittest.TestCase):
                     u'test_D1.txt'
                 ]),
                 ('folder', False),
-                ('permission', '0664')
+                ('permission', '0664'),
+                ('group', 'efesto')
             ]),
             dict([
                 ('content', 'test'),
@@ -708,7 +766,8 @@ class Test_TemplateManager(unittest.TestCase):
                     u'file_B.txt'
                 ]),
                 ('folder', False),
-                ('permission', '0775')
+                ('permission', '0775'),
+                ('group', 'efesto')
             ])
         ]
         self.assertEqual(resolved, expected_result)

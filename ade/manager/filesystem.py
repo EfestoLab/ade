@@ -96,11 +96,13 @@ class FileSystemManager(object):
                 permission = result['permission']
                 permission = int(permission, 8)
 
-                group = grp.getgrnam(result['group']).gr_gid
+                group = grp.getgrnam().gr_gid
 
-                logger.debug('Setting permission of {1} as {0}'.format(
-                    oct(permission), os.path.realpath(path)
-                ))
+                logger.debug(
+                    'Setting permission of {1} as {0} for group: {2}'.format(
+                    oct(permission), os.path.realpath(path), result['group']
+                    )
+                )
                 try:
                     os.chmod(path, permission, group)
                 except OSError, error:
