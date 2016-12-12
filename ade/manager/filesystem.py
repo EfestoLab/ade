@@ -96,7 +96,7 @@ class FileSystemManager(object):
                 permission = result['permission']
                 permission = int(permission, 8)
 
-                group = grp.getgrnam().gr_gid
+                group = grp.getgrnam(result['group']).gr_gid
 
                 logger.debug(
                     'Setting permission of {1} as {0} for group: {2}'.format(
