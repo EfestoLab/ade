@@ -364,7 +364,7 @@ class TemplateManager(object):
                 os.stat(current_template_path).st_mode
             ))
             group = getpwuid(
-                os.stat(current_template_path).st_uid
+                os.stat(current_template_path).st_gid
             ).pw_name
 
             current_template_map = dict(
