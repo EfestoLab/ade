@@ -6,6 +6,7 @@ Construct and parse results of the teplate manager
 '''
 import os
 import re
+import grp
 from pprint import pformat
 from ade.manager.exceptions import ConfigError
 
@@ -94,11 +95,14 @@ class FileSystemManager(object):
                 path = os.path.join(current_path, result['path'])
                 permission = result['permission']
                 permission = int(permission, 8)
+
+                group = grp.getgrnam(result['group']).gr_gid
+
                 logger.debug('Setting permission of {1} as {0}'.format(
                     oct(permission), os.path.realpath(path)
                 ))
                 try:
-                    os.chmod(path, permission)
+                    os.chmod(path, permission, group)
                 except OSError, error:
                     logger.debug(error)
 

@@ -8,6 +8,8 @@ from a folder containing fragments.
 import os
 import re
 import stat
+from pwd import getpwuid
+import grp
 import copy
 from operator import itemgetter
 
@@ -178,6 +180,7 @@ class TemplateManager(object):
         root = dict(
             path=[root_name],
             permission=schema.get('permission', 777),
+            group=schema.get('group', 'nogroup'),
             folder=schema.get('folder', True),
             content=schema.get('content', '')
         )
@@ -191,11 +194,8 @@ class TemplateManager(object):
             paths
         )
 
-        #paths = sorted(paths, key= lambda x : [len(y) for y in x])
-        #result_paths.reverse()
-        result_paths.insert(0,root)
+        result_paths.insert(0, root)
 
-        #paths.sort(key=lambda x: len(x['path']))
         return result_paths
 
     def _resolve(self, schema, final_path_list, path=None):
@@ -222,6 +222,7 @@ class TemplateManager(object):
             new_entry = dict(
                 path=current_path,
                 permission=entry.get('permission', 777),
+                group=entry.get('group', 'nogroup'),
                 folder=entry.get('folder', True),
                 content=entry.get('content', '')
             )
@@ -362,10 +363,14 @@ class TemplateManager(object):
             permission = oct(stat.S_IMODE(
                 os.stat(current_template_path).st_mode
             ))
+            group = getpwuid(
+                os.stat(current_template_path).st_uid
+            ).pw_name
 
             current_template_map = dict(
                 name=template,
                 children=[],
+                group=group,
                 permission=permission,
                 folder=True
             )
