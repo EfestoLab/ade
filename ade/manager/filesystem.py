@@ -104,7 +104,8 @@ class FileSystemManager(object):
                     )
                 )
                 try:
-                    os.chmod(path, permission, group)
+                    os.chown(path, -1, group)
+                    os.chmod(path, permission)
                 except OSError, error:
                     logger.debug(error)
 
