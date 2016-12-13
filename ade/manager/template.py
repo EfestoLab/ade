@@ -8,7 +8,6 @@ from a folder containing fragments.
 import os
 import re
 import stat
-from pwd import getpwuid
 import grp
 import copy
 from operator import itemgetter
@@ -363,9 +362,9 @@ class TemplateManager(object):
             permission = oct(stat.S_IMODE(
                 os.stat(current_template_path).st_mode
             ))
-            group = getpwuid(
+            group = grp.getgrgid(
                 os.stat(current_template_path).st_gid
-            ).pw_name
+            ).gr_name
 
             current_template_map = dict(
                 name=template,
@@ -410,9 +409,9 @@ class TemplateManager(object):
 
                 subentry = os.path.join(root, entry)
                 permission = oct(stat.S_IMODE(os.stat(subentry).st_mode))
-                group = getpwuid(
-                    os.stat(subentry).st_uid
-                ).pw_name
+                group = grp.getgrgid(
+                    os.stat(subentry).st_gid
+                ).gr_name
 
                 item = dict(
                     name=entry,
