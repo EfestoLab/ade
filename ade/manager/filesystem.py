@@ -274,7 +274,7 @@ class FileSystemManager(object):
             isnotinresults = result_path not in result_paths
             if isnotinresults:
                 final_path = (os.sep).join(result_path)
-                logger.debug('Building path for %s and data %s' % (final_path, data.keys()))
+                # logger.debug('Building path for %s and data %s' % (final_path, data.keys()))
                 try:
                     final_path = final_path.format(**data)
 
