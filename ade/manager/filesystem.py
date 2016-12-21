@@ -6,7 +6,6 @@ Construct and parse results of the teplate manager
 '''
 import os
 import re
-import grp
 from pprint import pformat
 from ade.manager.exceptions import ConfigError
 
@@ -96,6 +95,7 @@ class FileSystemManager(object):
                 permission = result['permission']
                 permission = int(permission, 8)
 
+                import grp
                 group = grp.getgrnam(result['group']).gr_gid
 
                 logger.debug(
